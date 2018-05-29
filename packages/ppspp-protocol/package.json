@@ -8,9 +8,11 @@
   "scripts": {
     "test": "mocha --recursive",
     "coverage": "nyc yarn test",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "ci-coverage": "nyc report --reporter=text-lcov yarn test > coverage.lcov && codecov"
   },
   "devDependencies": {
+    "codecov": "^3.0.2",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-prettier": "^2.6.0",
