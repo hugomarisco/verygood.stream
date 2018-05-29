@@ -1,0 +1,20 @@
+{
+  "name": "ppspp-protocol",
+  "version": "0.1.0",
+  "main": "index.js",
+  "repository": "git@github.com:hugomarisco/ppspp-protocol.git",
+  "author": "hugomarisco <hello@hugomarisco.in>",
+  "license": "MIT",
+  "scripts": {
+    "test": "mocha --recursive",
+    "coverage": "nyc yarn test"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "nyc": "^11.8.0"
+  },
+  "dependencies": {
+    "buffer": "^5.1.0",
+    "safe-buffer": "^5.1.2"
+  }
+}
