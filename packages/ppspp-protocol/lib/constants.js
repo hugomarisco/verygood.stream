@@ -31,7 +31,7 @@ module.exports = {
   CHUNK_ADDR_METHODS: {
     "32BINs": 0,
     //"64ByteRanges": 1,
-    "32ChunkRanges": 2,
+    "32ChunkRanges": 2
     //"64BINs": 3,
     //"64ChunkRanges": 4
   },
@@ -48,4 +48,4 @@ module.exports = {
     ECDSAP256SHA256: 13,
     ECDSAP384SHA384: 14
   }
-}
+};

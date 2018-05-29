@@ -1,5 +1,9 @@
 # ppspp-protocol
 
+![Travis](https://img.shields.io/travis/hugomarisco/ppspp-protocol/master.svg)
+![Codecov](https://img.shields.io/codecov/c/github/hugomarisco/ppspp-protocol.svg)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+
 An implementation of Peer-to-Peer Streaming Peer Protocol (RFC7574) in JavaScript
 
 **Under active development**
@@ -11,7 +15,7 @@ An implementation of Peer-to-Peer Streaming Peer Protocol (RFC7574) in JavaScrip
 
 ## Usage
 
-```
+```javascript
 const Protocol = require('ppspp-protocol');
 
 const protocol = new Protocol();

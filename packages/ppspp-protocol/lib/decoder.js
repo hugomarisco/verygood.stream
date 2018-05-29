@@ -31,7 +31,7 @@ module.exports = {
 
           decoded.swarmId = buf
             .slice(length, length + swarmIdLength)
-            .toString('base64');
+            .toString("base64");
 
           length += swarmIdLength;
           break;
@@ -126,13 +126,13 @@ module.exports = {
       [MERKLE_HASH_FUNCS.SHA512]: 64
     }[hashFunc];
 
-    return { length: bytes, decoded: buf.slice(0, bytes).toString('hex') };
+    return { length: bytes, decoded: buf.slice(0, bytes).toString("hex") };
   },
 
   signature(buf, { swarmId }) {
     let bytes;
 
-    const swarmIdBuf = Buffer.from(swarmId, 'base64');
+    const swarmIdBuf = Buffer.from(swarmId, "base64");
 
     const sigAlgo = swarmIdBuf.readUInt8(0);
 
@@ -151,6 +151,6 @@ module.exports = {
         break;
     }
 
-    return { length: bytes, decoded: buf.slice(0, bytes).toString('base64') };
+    return { length: bytes, decoded: buf.slice(0, bytes).toString("base64") };
   }
 };

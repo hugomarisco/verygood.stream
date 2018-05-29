@@ -33,7 +33,7 @@ module.exports = {
           break;
 
         case "swarmId":
-          const swarmId = Buffer.from(value, 'base64');
+          const swarmId = Buffer.from(value, "base64");
 
           buf = Buffer.alloc(2);
           buf.writeUInt16BE(swarmId.length);
