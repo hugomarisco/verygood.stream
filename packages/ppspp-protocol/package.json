@@ -9,7 +9,7 @@
     "test": "mocha --recursive",
     "coverage": "nyc yarn test",
     "lint": "eslint .",
-    "ci-coverage": "nyc report --reporter=text-lcov yarn test > coverage.lcov && codecov"
+    "ci-coverage": "nyc --reporter=text-lcov yarn test > coverage.lcov && codecov"
   },
   "devDependencies": {
     "codecov": "^3.0.2",
