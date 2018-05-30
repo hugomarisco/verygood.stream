@@ -1,0 +1,23 @@
+{
+  "name": "ppspp-tv",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive",
+    "coverage": "nyc yarn test",
+    "lint": "eslint .",
+    "ci-coverage": "nyc --reporter=text-lcov yarn test > coverage.lcov && codecov"
+  },
+  "repository": "git@github.com:hugomarisco/ppspp-tv.git",
+  "author": "hugomarisco <hello@hugomarisco.in>",
+  "license": "MIT",
+  "devDependencies": {
+    "codecov": "^3.0.2",
+    "eslint": "^4.19.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "mocha": "^5.2.0",
+    "nyc": "^11.8.0",
+    "prettier": "^1.13.3"
+  }
+}
