@@ -1,4 +1,6 @@
 module.exports = {
+  PROTOCOL_VERSION: 1,
+  MIN_PROTOCOL_VERSION: 1,
   MESSAGE_TYPES: {
     HANDSHAKE: 0x00,
     DATA: 0x01,
@@ -29,7 +31,7 @@ module.exports = {
     end: 255
   },
   CHUNK_ADDR_METHODS: {
-    "32BINs": 0,
+    //"32BINs": 0,
     //"64ByteRanges": 1,
     "32ChunkRanges": 2
     //"64BINs": 3,

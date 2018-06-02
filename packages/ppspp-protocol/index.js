@@ -1,28 +1,49 @@
 const { Duplex } = require("stream");
-const { MESSAGE_TYPES } = require("./lib/constants");
+const {
+  MESSAGE_TYPES,
+  CHUNK_ADDR_METHODS,
+  MERKLE_HASH_FUNCS,
+  SIG_ALGOS,
+  PROTOCOL_VERSION,
+  MIN_PROTOCOL_VERSION
+} = require("./lib/constants");
 const decoder = require("./lib/decoder");
 const encoder = require("./lib/encoder");
 
 class PPSPPProtocol extends Duplex {
-  constructor() {
+  static get CHUNK_ADDR_METHODS() {
+    return CHUNK_ADDR_METHODS;
+  }
+
+  static get MERKLE_HASH_FUNCS() {
+    return MERKLE_HASH_FUNCS;
+  }
+
+  static get SIG_ALGOS() {
+    return SIG_ALGOS;
+  }
+
+  constructor(protocolOptions, destChannel = 0) {
     super();
 
-    this._protocolOpts = {};
+    this._protocolOptions = {
+      version: PROTOCOL_VERSION,
+      minVersion: MIN_PROTOCOL_VERSION,
+      ...protocolOptions
+    };
 
     this._destChannelBuf = Buffer.alloc(4);
   }
 
   _read(size) {}
 
-  handshake({ destChannel = 0, srcChannel, protocolOptions }) {
+  handshake({ destChannel = 0, srcChannel }) {
     const codeBuf = Buffer.from([MESSAGE_TYPES.HANDSHAKE]);
-
-    this._destChannelBuf.writeUInt32BE(destChannel);
 
     const srcChannelBuf = Buffer.alloc(4);
     srcChannelBuf.writeUInt32BE(srcChannel);
 
-    const protocolOptionsBuf = encoder.protocolOptions(protocolOptions);
+    const protocolOptionsBuf = encoder.protocolOptions(this._protocolOptions);
 
     const buf = Buffer.concat([codeBuf, srcChannelBuf, protocolOptionsBuf]);
 
@@ -38,7 +59,7 @@ class PPSPPProtocol extends Duplex {
     this.push(buf);
   }
 
-  chunk({ chunkSpec, data, timestamp: [seconds, microseconds] }) {
+  chunks({ chunkSpec, data, timestamp: [seconds, microseconds] }) {
     const codeBuf = Buffer.from([MESSAGE_TYPES.DATA]);
 
     const chunkSpecBuf = encoder.chunkSpec(chunkSpec);
@@ -215,6 +236,8 @@ class PPSPPProtocol extends Duplex {
         const srcChannel = buf.readUInt32BE(index);
         index += 4;
 
+        this._destChannelBuf.writeUInt32BE(srcChannel);
+
         const {
           length: protocolOptionsLength,
           decoded: protocolOptions
@@ -223,8 +246,6 @@ class PPSPPProtocol extends Duplex {
         index += protocolOptionsLength;
 
         this.emit("handshake", { ...decoded, srcChannel, protocolOptions });
-
-        this._protocolOptions = protocolOptions;
 
         break;
       case MESSAGE_TYPES.DATA:
@@ -244,11 +265,15 @@ class PPSPPProtocol extends Duplex {
 
         index += dataTimestampLength;
 
-        const data = buf.slice(index, index + this._protocolOptions.chunkSize);
+        const [start, end] = dataChunkSpec;
 
-        index += this._protocolOptions.chunkSize;
+        const dataSize = (end - start) * this._protocolOptions.chunkSize;
 
-        this.emit("chunk", {
+        const data = buf.slice(index, index + dataSize);
+
+        index += dataSize;
+
+        this.emit("chunks", {
           ...decoded,
           chunkSpec: dataChunkSpec,
           timestamp: dataTimestamp,

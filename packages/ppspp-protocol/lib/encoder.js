@@ -1,11 +1,17 @@
-const { OPTION_CODES } = require("./constants");
+const { OPTION_CODES, VERSION, MIN_PROTOCOL_VERSION } = require("./constants");
 
 module.exports = {
   protocolOptions(obj) {
     const buffers = [];
     let buf;
 
-    Object.keys(obj).forEach(option => {
+    const protocolOptions = {
+      ...obj,
+      version: VERSION,
+      minVersion: MIN_PROTOCOL_VERSION
+    };
+
+    Object.keys(protocolOptions).forEach(option => {
       const code = OPTION_CODES[option];
       const value = obj[option];
 

@@ -12,6 +12,9 @@
     "ci-coverage": "nyc --reporter=text-lcov yarn test > coverage.lcov && codecov"
   },
   "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
     "codecov": "^3.0.2",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
