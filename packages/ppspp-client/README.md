@@ -1,4 +1,4 @@
-# ppspp-tv
+# ppspp-client
 
 [![Travis](https://img.shields.io/travis/hugomarisco/ppspp-tv.svg)](https://travis-ci.org/hugomarisco/ppspp-protocol)
 [![Codecov](https://img.shields.io/codecov/c/github/hugomarisco/ppspp-tv.svg)](https://codecov.io/gh/hugomarisco/ppspp-protocol)

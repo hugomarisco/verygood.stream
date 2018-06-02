@@ -1,5 +1,5 @@
 {
-  "name": "ppspp-tv",
+  "name": "ppspp-client",
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "ci-coverage": "nyc --reporter=text-lcov yarn test > coverage.lcov && codecov"
   },
-  "repository": "git@github.com:hugomarisco/ppspp-tv.git",
+  "repository": "git@github.com:hugomarisco/ppspp-client.git",
   "author": "hugomarisco <hello@hugomarisco.in>",
   "license": "MIT",
   "devDependencies": {
@@ -16,8 +16,14 @@
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-prettier": "^2.6.0",
+    "memory-chunk-store": "^1.3.0",
     "mocha": "^5.2.0",
     "nyc": "^11.8.0",
-    "prettier": "^1.13.3"
+    "prettier": "^1.13.3",
+    "sinon": "^5.0.10"
+  },
+  "dependencies": {
+    "async": "^2.6.1",
+    "bitset": "^5.0.3"
   }
 }
