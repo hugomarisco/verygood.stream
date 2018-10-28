@@ -1,5 +1,5 @@
 {
-  "name": "ppspp-client",
+  "name": "@verygood.stream/ppspp-client",
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
@@ -8,8 +8,8 @@
     "lint": "eslint .",
     "ci-coverage": "nyc --reporter=text-lcov yarn test > coverage.lcov && codecov"
   },
-  "repository": "git@github.com:hugomarisco/ppspp-client.git",
-  "author": "hugomarisco <hello@hugomarisco.in>",
+  "repository": "github:hugomarisco/verygood.stream",
+  "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "MIT",
   "devDependencies": {
     "codecov": "^3.0.2",
