@@ -1,5 +1,5 @@
 const async = require("async");
-const PPSPProtocol = require("../../ppspp-protocol");
+const PPSPProtocol = require("@verygood.stream/ppspp-protocol");
 const BitSet = require("bitset");
 const EventEmitter = require("events");
 

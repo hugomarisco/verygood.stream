@@ -6,22 +6,11 @@
   "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "MIT",
   "scripts": {
-    "test": "mocha --recursive",
-    "coverage": "nyc yarn test",
-    "lint": "eslint .",
-    "ci-coverage": "nyc --reporter=text-lcov yarn test > coverage.lcov && codecov"
+    "test": "mocha --watch --recursive",
+    "test:ci": "mocha --recursive",
+    "lint": "eslint ."
   },
   "devDependencies": {
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1",
-    "codecov": "^3.0.2",
-    "eslint": "^4.19.1",
-    "eslint-config-prettier": "^2.9.0",
-    "eslint-plugin-prettier": "^2.6.0",
-    "mocha": "^5.2.0",
-    "nyc": "^11.8.0",
-    "prettier": "^1.13.2"
   },
   "dependencies": {
     "buffer": "^5.1.0",

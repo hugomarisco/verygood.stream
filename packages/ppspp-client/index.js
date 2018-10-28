@@ -33,7 +33,7 @@ class Client extends EventEmitter {
 
     swarm.on("chunk", this._onChunk.bind(this, swarmId));
 
-    const peers = this.trackers.forEach(async tracker => {
+    this.trackers.forEach(async tracker => {
       const peersMetadata = await tracker.getPeers(swarmId);
 
       peersMetadata.forEach(peerMetadata => {

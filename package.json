@@ -1,8 +1,25 @@
 {
   "name": "root",
   "private": true,
+  "scripts": {
+    "lerna": "lerna",
+    "bootstrap": "lerna bootstrap",
+    "test": "lerna run test --stream",
+    "test:ci": "mkdir -p coverage && nyc --reporter=text-lcov lerna run test:ci > ./coverage/coverage.lcov && codecov",
+    "lint": "lerna run lint",
+    "clean": "lerna clean"
+  },
   "devDependencies": {
     "lerna": "^3.4.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "codecov": "^3.1.0",
+    "eslint": "^5.8.0",
+    "eslint-config-prettier": "^3.1.0",
+    "eslint-plugin-prettier": "^3.0.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
+    "prettier": "^1.14.3",
+    "sinon": "^7.1.0"
+  }
 }

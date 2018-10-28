@@ -1,6 +1,6 @@
 const EventEmitter = require("events");
 const BitSet = require("bitset");
-const PPSPProtocol = require("../../ppspp-protocol");
+const PPSPProtocol = require("@verygood.stream/ppspp-protocol");
 
 class Peer extends EventEmitter {
   constructor(channelId, socket, protocolOpts) {
