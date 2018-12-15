@@ -1,7 +1,7 @@
-const async = require("async");
-const PPSPProtocol = require("@verygood.stream/ppspp-protocol");
-const BitSet = require("bitset");
-const EventEmitter = require("events");
+import PPSPProtocol from "@verygood.stream/ppspp-protocol";
+import async from "async";
+import BitSet from "bitset";
+import EventEmitter from "events";
 
 class Swarm extends EventEmitter {
   constructor(swarmId, protocolOpts, { ChunkStore }) {
@@ -11,14 +11,14 @@ class Swarm extends EventEmitter {
 
     this.protocolOpts = protocolOpts;
 
-    this.store = new ChunkStore(this.protocolOpts.chunkSize);
+    this.chunks = [];
 
     this.peers = [];
 
     this.availability = new BitSet();
   }
 
-  addPeer(peer) {
+  public addPeer(peer) {
     this.peers.push(peer);
 
     peer.on("chunk", this.chunk.bind(this));
@@ -26,13 +26,10 @@ class Swarm extends EventEmitter {
     peer.handshake();
   }
 
-  chunk({ data, index }) {
+  public chunk({ data, index }) {
     if (index > this.availability.lsb()) {
-      this.store.put(index, data, err => {
-        this.availability.set(index);
-
-        this.emit("chunk", { data, index });
-      });
+      this.chunks[index] = data;
+      this.availability.set(index);
     }
   }
 }

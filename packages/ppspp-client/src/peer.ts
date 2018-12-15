@@ -1,6 +1,6 @@
-const EventEmitter = require("events");
-const BitSet = require("bitset");
-const PPSPProtocol = require("@verygood.stream/ppspp-protocol");
+import { LiveSignatureAlgorithmCode } from "@verygood.stream/ppspp-protocol";
+import BitSet from "bitset";
+import EventEmitter from "events";
 
 class Peer extends EventEmitter {
   constructor(channelId, socket, protocolOpts) {
@@ -15,29 +15,29 @@ class Peer extends EventEmitter {
 
     socket.pipe(this.protocol).pipe(socket);
 
-    this.protocol.on("handshake", this.onHandshake.bind(this));
-    this.protocol.on("chunks", this.onChunks.bind(this));
-    this.protocol.on("have", this.onHave.bind(this));
-    this.protocol.on("request", this.onRequest.bind(this));
+    this.protocol.on("handshake", this._onHandshake.bind(this));
+    this.protocol.on("chunks", this._onChunks.bind(this));
+    this.protocol.on("have", this._onHave.bind(this));
+    this.protocol.on("request", this._onRequest.bind(this));
   }
 
-  handshake(destChannel = 0) {
+  public handshake(destChannel = 0) {
     this.protocol.handshake({
       srcChannel: this.channelId,
       protocolOpts: this.protocolOpts
     });
   }
 
-  have({ chunkSpec }) {
+  public have({ chunkSpec }) {
     this.protocol.have({ chunkSpec });
   }
 
-  request({ chunkSpec }) {
+  public request({ chunkSpec }) {
     this.protocol.request({ chunkSpec });
   }
 
-  _onHandshake({ destChannel, srcChannel, protocolOpts }) {
-    if (destChannel !== 0) return;
+  public _onHandshake({ destChannel, srcChannel, protocolOpts }) {
+    if (destChannel !== 0) { return; }
 
     const areValidOpts = [
       "version",
@@ -47,18 +47,18 @@ class Peer extends EventEmitter {
       "chunkSize"
     ].every(option => protocolOpts[option] === this.protocolOpts[option]);
 
-    if (!areValidOpts) return;
+    if (!areValidOpts) { return; }
 
     this.handshake(srcChannel);
   }
 
-  _onChunks({
+  public _onChunks({
     destChannel,
     chunkSpec,
     data,
     timestamp: [seconds, microseconds]
   }) {
-    if (destChannel !== this.channelId) return;
+    if (destChannel !== this.channelId) { return; }
 
     const delay = process.hrtime([seconds, microseconds * 1000]);
 
@@ -78,8 +78,8 @@ class Peer extends EventEmitter {
     }
   }
 
-  _onHave({ destChannel, chunkSpec }) {
-    if (destChannel !== this.channelId) return;
+  public _onHave({ destChannel, chunkSpec }) {
+    if (destChannel !== this.channelId) { return; }
 
     const [start, end] = chunkSpec;
 
@@ -90,7 +90,7 @@ class Peer extends EventEmitter {
     this.emit("have", { chunkSpec });
   }
 
-  _onRequest({ chunkSpec }) {
+  public _onRequest({ chunkSpec }) {
     this.on("request", { chunkSpec });
   }
 }

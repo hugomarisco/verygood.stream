@@ -1,20 +1,16 @@
-const Swarm = require("./src/swarm");
-const EventEmitter = require("events");
+import EventEmitter from "events";
+import Swarm from "./swarm";
 
 class Client extends EventEmitter {
-  constructor({ ChunkStore, trackers = [] }) {
+  constructor() {
     super();
-
-    this.ChunkStore = ChunkStore;
-
-    this.trackers = trackers;
 
     this.swarms = {};
 
     this.channelIds = [];
   }
 
-  _generateChannelId() {
+  public _generateChannelId() {
     let randomId;
 
     do {
@@ -24,10 +20,8 @@ class Client extends EventEmitter {
     return randomId;
   }
 
-  addSwarm(swarmId, protocolOpts) {
-    const swarm = new Swarm(swarmId, protocolOpts, {
-      ChunkStore: this.ChunkStore
-    });
+  public addSwarm(swarmId: Buffer, protocolOpts) {
+    const swarm = new Swarm(swarmId, protocolOpts);
 
     this.swarms[swarmId] = swarm;
 
@@ -50,7 +44,7 @@ class Client extends EventEmitter {
     return swarm;
   }
 
-  removeSwarm(swarmId) {
+  public removeSwarm(swarmId) {
     const swarm = this.swarms[swarmId];
 
     swarm.destroy();
@@ -58,7 +52,7 @@ class Client extends EventEmitter {
     delete this.swarms[swarmId];
   }
 
-  _onChunk(swarmId, data) {
+  public _onChunk(swarmId, data) {
     this.emit("chunk", { swarmId, data });
   }
 }

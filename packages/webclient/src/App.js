@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
-import Stream from "./Pages/Stream";
+import Stream from "./pages/Stream";
 
 const GlobalStyle = createGlobalStyle`
   html {
