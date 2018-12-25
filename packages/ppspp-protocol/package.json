@@ -1,16 +1,16 @@
 {
   "name": "@verygood.stream/ppspp-protocol",
   "version": "0.1.0",
-  "main": "./dist/index.js",
+  "main": "./lib/index.js",
   "types": "./dist/index.d.ts",
   "repository": "github:hugomarisco/verygood.stream",
   "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "MIT",
   "scripts": {
+    "build": "tsc",
     "test": "mocha --watch --recursive",
     "test:ci": "mocha --recursive",
-    "lint": "eslint .",
-    "tsc": "tsc"
+    "lint": "eslint ."
   },
   "devDependencies": {
   },
