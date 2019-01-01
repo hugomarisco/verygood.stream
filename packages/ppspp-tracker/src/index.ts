@@ -45,8 +45,8 @@ wss.on("connection", (ws, req) => {
       const { type, swarmId, ...message } = JSON.parse(rawMessage as string);
 
       switch (type) {
-        case "join":
-        case "offers":
+        case "JOIN":
+        case "OFFERS":
           offers = [
             ...offers,
             message.offers.map(
@@ -55,17 +55,17 @@ wss.on("connection", (ws, req) => {
           ];
 
           break;
-        case "find":
+        case "FIND":
           const { limit } = message;
 
           const offersFound = offers
             .filter(offer => offer.swarmId === swarmId)
             .slice(0, Math.min(limit, MAX_FIND_OFFERS));
 
-          ws.send(JSON.stringify({ offers: offersFound }));
+          ws.send(JSON.stringify({ type: 'OFFERS', offers: offersFound }));
 
           break;
-        case "leave":
+        case "LEAVE":
           offers = offers.filter(offer => offer.swarmId !== swarmId);
 
           break;

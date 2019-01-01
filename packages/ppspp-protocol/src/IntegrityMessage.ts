@@ -2,8 +2,8 @@ import { ChunkSpec } from "./ChunkSpec";
 import { Message, MessageCode } from "./Message";
 
 export class IntegrityMessage extends Message {
-  private chunkSpec: ChunkSpec;
-  private hash: Buffer;
+  public chunkSpec: ChunkSpec;
+  public hash: Buffer;
 
   constructor(
     destinationChannel: number,

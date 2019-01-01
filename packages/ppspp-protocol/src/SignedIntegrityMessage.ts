@@ -3,9 +3,9 @@ import { Message, MessageCode } from "./Message";
 import { PreciseTimestamp } from "./PreciseTimestamp";
 
 export class SignedIntegrityMessage extends Message {
-  private chunkSpec: ChunkSpec;
-  private timestamp: PreciseTimestamp;
-  private signature: Buffer;
+  public chunkSpec: ChunkSpec;
+  public timestamp: PreciseTimestamp;
+  public signature: Buffer;
 
   constructor(
     destinationChannel: number,

@@ -1,8 +1,8 @@
 import { Message, MessageCode } from "./Message";
 
 export class PexResV4Message extends Message {
-  private ip: number;
-  private port: number;
+  public ip: number;
+  public port: number;
 
   constructor(destinationChannel: number, ip: number, port: number) {
     super(destinationChannel);

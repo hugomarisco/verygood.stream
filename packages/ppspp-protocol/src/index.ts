@@ -1,3 +1,5 @@
+import { Duplex } from "stream";
+
 export { Decoder } from "./Decoder";
 
 export {
@@ -12,7 +14,8 @@ export {
 export { ChunkSpec } from "./ChunkSpec";
 export { PreciseTimestamp } from "./PreciseTimestamp";
 
-export { Message, MessageCode } from "./Message";
+import { Message, MessageCode } from "./Message";
+export { Message, MessageCode}
 
 export { AckMessage } from "./AckMessage";
 export { CancelMessage } from "./CancelMessage";

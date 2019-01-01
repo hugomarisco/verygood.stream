@@ -2,7 +2,7 @@
   "name": "@verygood.stream/ppspp-protocol",
   "version": "0.1.0",
   "main": "./lib/index.js",
-  "types": "./dist/index.d.ts",
+  "types": "./lib/index.d.ts",
   "repository": "github:hugomarisco/verygood.stream",
   "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "MIT",

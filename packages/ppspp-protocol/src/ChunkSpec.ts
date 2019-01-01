@@ -1,5 +1,5 @@
 export class ChunkSpec {
-  private spec: number | [number, number];
+  public spec: number | [number, number];
 
   constructor(spec: number | [number, number]) {
     this.spec = spec;

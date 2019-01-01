@@ -2,7 +2,7 @@ import { ChunkSpec } from "./ChunkSpec";
 import { Message, MessageCode } from "./Message";
 
 export class HaveMessage extends Message {
-  private chunkSpec: ChunkSpec;
+  public chunkSpec: ChunkSpec;
 
   constructor(destinationChannel: number, chunkSpec: ChunkSpec) {
     super(destinationChannel);

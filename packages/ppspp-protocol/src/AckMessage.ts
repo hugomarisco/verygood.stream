@@ -3,8 +3,8 @@ import { Message, MessageCode } from "./Message";
 import { PreciseTimestamp } from "./PreciseTimestamp";
 
 export class AckMessage extends Message {
-  private chunkSpec: ChunkSpec;
-  private delay: PreciseTimestamp;
+  public chunkSpec: ChunkSpec;
+  public delay: PreciseTimestamp;
 
   constructor(
     destinationChannel: number,

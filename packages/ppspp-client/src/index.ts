@@ -1,60 +1,76 @@
-import EventEmitter from "events";
-import Swarm from "./swarm";
+import { MessageCode, ProtocolOptions } from "@verygood.stream/ppspp-protocol";
+import { Duplex } from "stream";
+import { RemotePeer } from "./RemotePeer";
+import { SwarmMetadata } from "./SwarmMetadata";
+import { SwarmTrackers } from "./SwarmTrackers";
 
-class Client extends EventEmitter {
-  constructor() {
+export class Client extends Duplex {
+  private static PROTOCOL_VERSION = 1;
+  private static SUPPORTED_MESSAGES = [
+    MessageCode.ACK,
+    MessageCode.CANCEL,
+    MessageCode.CHOKE,
+    MessageCode.DATA,
+    MessageCode.HANDSHAKE,
+    MessageCode.HAVE,
+    MessageCode.INTEGRITY,
+    MessageCode.PEX_REQ,
+    MessageCode.PEX_REScert,
+    MessageCode.PEX_RESv4,
+    MessageCode.PEX_RESv6,
+    MessageCode.REQUEST,
+    MessageCode.SIGNED_INTEGRITY,
+    MessageCode.UNCHOKE
+  ];
+
+  private trackers: SwarmTrackers;
+  private peers: RemotePeer[];
+  private protocolOptions: ProtocolOptions;
+  private chunkStore: Buffer[];
+
+  constructor(swarmMetadata: SwarmMetadata, trackerUrls: string[]) {
     super();
 
-    this.swarms = {};
+    const {
+      swarmId,
+      chunkSize,
+      chunkAddressingMethod,
+      contentIntegrityProtectionMethod,
+      merkleHashFunction,
+      liveSignatureAlgorithm
+    } = swarmMetadata;
 
-    this.channelIds = [];
+    this.protocolOptions = new ProtocolOptions(
+      Client.PROTOCOL_VERSION,
+      contentIntegrityProtectionMethod,
+      chunkAddressingMethod,
+      1,
+      chunkSize,
+      Client.PROTOCOL_VERSION,
+      liveSignatureAlgorithm,
+      merkleHashFunction,
+      swarmId,
+      Client.SUPPORTED_MESSAGES
+    );
+
+    this.chunkStore = [];
+
+    this.trackers = new SwarmTrackers(trackerUrls);
+
+    this.trackers.on("peers", this.handleTrackerPeers.bind(this));
+
+    this.peers = [];
   }
 
-  public _generateChannelId() {
-    let randomId;
-
-    do {
-      randomId = Math.floor(Math.random() * 0xffffffff);
-    } while (this.channelIds.indexOf(randomId) < 0);
-
-    return randomId;
+  public start() {
+    this.trackers.register();
   }
 
-  public addSwarm(swarmId: Buffer, protocolOpts) {
-    const swarm = new Swarm(swarmId, protocolOpts);
-
-    this.swarms[swarmId] = swarm;
-
-    swarm.on("chunk", this._onChunk.bind(this, swarmId));
-
-    this.trackers.forEach(async tracker => {
-      const peersMetadata = await tracker.getPeers(swarmId);
-
-      peersMetadata.forEach(peerMetadata => {
-        const channelId = this._generateChannelId();
-
-        this.channelIds.push(channelId);
-
-        const peer = new Peer(channelId, peerMetadata);
-
-        swarm.addPeer(peer);
-      });
-    });
-
-    return swarm;
-  }
-
-  public removeSwarm(swarmId) {
-    const swarm = this.swarms[swarmId];
-
-    swarm.destroy();
-
-    delete this.swarms[swarmId];
-  }
-
-  public _onChunk(swarmId, data) {
-    this.emit("chunk", { swarmId, data });
+  private handleTrackerPeers(offers: string[]) {
+    offers.forEach(offer =>
+      this.peers.push(
+        new RemotePeer(offer, this.protocolOptions, this.chunkStore)
+      )
+    );
   }
 }
-
-module.exports = Client;

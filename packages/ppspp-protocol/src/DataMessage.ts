@@ -3,9 +3,9 @@ import { Message, MessageCode } from "./Message";
 import { PreciseTimestamp } from "./PreciseTimestamp";
 
 export class DataMessage extends Message {
-  private chunkSpec: ChunkSpec;
-  private timestamp: PreciseTimestamp;
-  private data: Buffer;
+  public chunkSpec: ChunkSpec;
+  public timestamp: PreciseTimestamp;
+  public data: Buffer;
 
   constructor(
     destinationChannel: number,

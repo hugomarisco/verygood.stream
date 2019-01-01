@@ -1,7 +1,7 @@
 import { Message, MessageCode } from "./Message";
 
 export class PexResCertMessage extends Message {
-  private certificate: Buffer;
+  public certificate: Buffer;
 
   constructor(destinationChannel: number, certificate: Buffer) {
     super(destinationChannel);

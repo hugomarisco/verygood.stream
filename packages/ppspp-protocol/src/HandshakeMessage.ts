@@ -2,7 +2,7 @@ import { Message, MessageCode } from "./Message";
 import { ProtocolOptions } from "./ProtocolOptions";
 
 export class HandshakeMessage extends Message {
-  private sourceChannel: number;
+  public sourceChannel: number;
   private protocolOptions: ProtocolOptions;
 
   constructor(
