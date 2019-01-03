@@ -1,18 +1,27 @@
 {
   "name": "@verygood.stream/ppspp-client",
   "version": "0.1.0",
-  "main": "lib/index.js",
+  "description": "PPSPP implementation in JavaScript",
+  "author": "Hugo Mendes <hello@hugomarisco.in>",
+  "license": "GNU GPLv3",
+  "homepage": "https://github.com/hugomarisco/verygood.stream#readme",
+  "bugs": {
+    "url": "https://github.com/hugomarisco/verygood.stream/issues"
+  },
+  "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hugomarisco/verygood.stream.git"
+  },
   "scripts": {
     "build": "tsc",
-    "test": "mocha --watch --recursive",
-    "test:ci": "mocha --recursive",
-    "lint": "eslint ."
+    "build-watch": "tsc -w",
+    "test": "jest",
+    "test-watch": "jest --watch"
   },
-  "repository": "github:hugomarisco/verygood.stream",
-  "author": "Hugo Mendes <hello@hugomarisco.in>",
-  "license": "MIT",
   "devDependencies": {
+    "@types/lodash": "^4.14.119",
     "@types/randombytes": "^2.0.0",
     "@types/simple-peer": "^6.1.5",
     "@types/ws": "^6.0.1",
@@ -22,6 +31,7 @@
     "@verygood.stream/ppspp-protocol": "^0.1.0",
     "async": "^2.6.1",
     "bitset": "^5.0.5",
+    "lodash": "^4.17.11",
     "node-fetch": "^2.2.0",
     "randombytes": "^2.0.6",
     "simple-peer": "^9.2.0",

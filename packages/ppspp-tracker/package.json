@@ -1,11 +1,14 @@
 {
   "name": "@verygood.stream/ppspp-tracker",
-  "version": "1.0.0",
-  "description": "> TODO: description",
+  "version": "0.1.0",
+  "description": "PPSPP implementation in JavaScript",
   "author": "Hugo Mendes <hello@hugomarisco.in>",
+  "license": "GNU GPLv3",
   "homepage": "https://github.com/hugomarisco/verygood.stream#readme",
-  "license": "ISC",
-  "main": "./lib/ppspp-tracker.js",
+  "bugs": {
+    "url": "https://github.com/hugomarisco/verygood.stream/issues"
+  },
+  "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "repository": {
     "type": "git",
@@ -13,10 +16,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: run tests from root\" && exit 1"
-  },
-  "bugs": {
-    "url": "https://github.com/hugomarisco/verygood.stream/issues"
+    "build-watch": "tsc -w",
+    "test": "jest",
+    "test-watch": "jest --watch"
   },
   "dependencies": {
     "lodash": "^4.17.11",
