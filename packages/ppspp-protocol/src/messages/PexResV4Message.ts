@@ -1,6 +1,8 @@
-import { Message, MessageCode } from "./Message";
+import { Message } from "./Message";
 
 export class PexResV4Message extends Message {
+  public static CODE = 0x05;
+
   public ip: number;
   public port: number;
 
@@ -12,14 +14,14 @@ export class PexResV4Message extends Message {
   }
 
   public encode() {
-    const ipBuf = Buffer.alloc(2);
+    const ipBuf = Buffer.alloc(4);
     ipBuf.writeUInt32BE(this.ip, 0);
 
     const portBuf = Buffer.alloc(2);
     portBuf.writeUInt16BE(this.port, 0);
 
     return super.encode(
-      Buffer.concat([Buffer.from([MessageCode.PEX_RESv4, ipBuf, portBuf])])
+      Buffer.concat([Buffer.from([PexResV4Message.CODE]), ipBuf, portBuf])
     );
   }
 }

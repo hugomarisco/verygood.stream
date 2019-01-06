@@ -2,7 +2,7 @@ import {
   AckMessage,
   CancelMessage,
   ChokeMessage,
-  ChunkAddressingMethodCode,
+  ChunkAddressingMethod,
   ChunkSpec,
   DataMessage,
   Decoder,
@@ -139,7 +139,7 @@ export class RemotePeer extends EventEmitter {
 
   private handleHaveMessage(message: HaveMessage) {
     switch (this.protocolOptions.chunkAddressingMethod) {
-      case ChunkAddressingMethodCode["32ChunkRanges"]:
+      case ChunkAddressingMethod["32ChunkRanges"]:
         const [begin, end] = message.chunkSpec.spec as [number, number];
 
         this.availability.setRange(begin, end, 1);
@@ -162,7 +162,7 @@ export class RemotePeer extends EventEmitter {
 
   private handleDataMessage(message: DataMessage) {
     switch (this.protocolOptions.chunkAddressingMethod) {
-      case ChunkAddressingMethodCode["32ChunkRanges"]:
+      case ChunkAddressingMethod["32ChunkRanges"]:
         const [begin, end] = message.chunkSpec.spec as [number, number];
 
         const chunks: Buffer[] = [];
@@ -189,7 +189,7 @@ export class RemotePeer extends EventEmitter {
 
   private handleAckMessage(message: AckMessage) {
     switch (this.protocolOptions.chunkAddressingMethod) {
-      case ChunkAddressingMethodCode["32ChunkRanges"]:
+      case ChunkAddressingMethod["32ChunkRanges"]:
         const [begin, end] = message.chunkSpec.spec as [number, number];
 
         this.availability.setRange(begin, end, 1);
@@ -212,7 +212,7 @@ export class RemotePeer extends EventEmitter {
 
   private handleRequestMessage(message: RequestMessage) {
     switch (this.protocolOptions.chunkAddressingMethod) {
-      case ChunkAddressingMethodCode["32ChunkRanges"]:
+      case ChunkAddressingMethod["32ChunkRanges"]:
         const [begin, end] = message.chunkSpec.spec as [number, number];
 
         range(begin, end).forEach(chunkIndex => {

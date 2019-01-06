@@ -1,29 +1,29 @@
-import { AckMessage } from "./AckMessage";
-import { CancelMessage } from "./CancelMessage";
-import { ChokeMessage } from "./ChokeMessage";
-import { ChunkSpec } from "./ChunkSpec";
-import { DataMessage } from "./DataMessage";
-import { HandshakeMessage } from "./HandshakeMessage";
-import { HaveMessage } from "./HaveMessage";
-import { IntegrityMessage } from "./IntegrityMessage";
-import { KeepAliveMessage } from "./KeepAliveMessage";
-import { Message, MessageCode } from "./Message";
-import { PexReqMessage } from "./PexReqMessage";
-import { PexResCertMessage } from "./PexResCertMessage";
-import { PexResV4Message } from "./PexResV4Message";
-import { PexResV6Message } from "./PexResV6Message";
-import { PreciseTimestamp } from "./PreciseTimestamp";
+import { ChunkSpec } from "./fields/ChunkSpec";
+import { PreciseTimestamp } from "./fields/PreciseTimestamp";
 import {
-  ChunkAddressingMethodCode,
-  ContentIntegrityProtectionMethodCode,
-  LiveSignatureAlgorithmCode,
-  MerkleHashFunctionCode,
+  ChunkAddressingMethod,
+  ContentIntegrityProtectionMethod,
+  LiveSignatureAlgorithm,
+  MerkleHashFunction,
   ProtocolOptionCode,
   ProtocolOptions
-} from "./ProtocolOptions";
-import { RequestMessage } from "./RequestMessage";
-import { SignedIntegrityMessage } from "./SignedIntegrityMessage";
-import { UnchokeMessage } from "./UnchokeMessage";
+} from "./fields/ProtocolOptions";
+import { AckMessage } from "./messages/AckMessage";
+import { CancelMessage } from "./messages/CancelMessage";
+import { ChokeMessage } from "./messages/ChokeMessage";
+import { DataMessage } from "./messages/DataMessage";
+import { HandshakeMessage } from "./messages/HandshakeMessage";
+import { HaveMessage } from "./messages/HaveMessage";
+import { IntegrityMessage } from "./messages/IntegrityMessage";
+import { KeepAliveMessage } from "./messages/KeepAliveMessage";
+import { Message } from "./messages/Message";
+import { PexReqMessage } from "./messages/PexReqMessage";
+import { PexResCertMessage } from "./messages/PexResCertMessage";
+import { PexResV4Message } from "./messages/PexResV4Message";
+import { PexResV6Message } from "./messages/PexResV6Message";
+import { RequestMessage } from "./messages/RequestMessage";
+import { SignedIntegrityMessage } from "./messages/SignedIntegrityMessage";
+import { UnchokeMessage } from "./messages/UnchokeMessage";
 
 export class Decoder {
   public static decode(
@@ -48,13 +48,13 @@ export class Decoder {
       let chunkSpec!: ChunkSpec;
 
       if (
-        messageCode === MessageCode.DATA ||
-        messageCode === MessageCode.HAVE ||
-        messageCode === MessageCode.ACK ||
-        messageCode === MessageCode.INTEGRITY ||
-        messageCode === MessageCode.SIGNED_INTEGRITY ||
-        messageCode === MessageCode.REQUEST ||
-        messageCode === MessageCode.CANCEL
+        messageCode === DataMessage.CODE ||
+        messageCode === HaveMessage.CODE ||
+        messageCode === AckMessage.CODE ||
+        messageCode === IntegrityMessage.CODE ||
+        messageCode === SignedIntegrityMessage.CODE ||
+        messageCode === RequestMessage.CODE ||
+        messageCode === CancelMessage.CODE
       ) {
         if (!protocolOptions) {
           throw new Error("Protocol options are not available");
@@ -69,21 +69,21 @@ export class Decoder {
       }
 
       switch (messageCode) {
-        case MessageCode.HANDSHAKE:
+        case HandshakeMessage.CODE:
           const srcChannel = buffer.readUInt32BE(index);
           index += 4;
 
           let code: number;
           let version: number | undefined;
           let integrityProtectionMethod:
-            | ContentIntegrityProtectionMethodCode
+            | ContentIntegrityProtectionMethod
             | undefined;
-          let chunkAddressingMethod: ChunkAddressingMethodCode | undefined;
+          let chunkAddressingMethod: ChunkAddressingMethod | undefined;
           let liveDiscardWindow: number | undefined;
           let chunkSize: number | undefined;
           let minVersion: number | undefined;
-          let liveSignatureAlgorithm: LiveSignatureAlgorithmCode | undefined;
-          let merkleHashFunction: MerkleHashFunctionCode | undefined;
+          let liveSignatureAlgorithm: LiveSignatureAlgorithm | undefined;
+          let merkleHashFunction: MerkleHashFunction | undefined;
           let swarmId: Buffer | undefined;
 
           do {
@@ -161,6 +161,7 @@ export class Decoder {
             chunkAddressingMethod,
             liveDiscardWindow,
             chunkSize,
+            [],
             minVersion,
             liveSignatureAlgorithm,
             merkleHashFunction,
@@ -176,7 +177,7 @@ export class Decoder {
           );
 
           break;
-        case MessageCode.DATA:
+        case DataMessage.CODE:
           const timestamp = new PreciseTimestamp(
             buffer.readUInt32BE(0),
             buffer.readUInt32BE(4)
@@ -195,7 +196,7 @@ export class Decoder {
           );
 
           break;
-        case MessageCode.ACK:
+        case AckMessage.CODE:
           const delay = new PreciseTimestamp(
             buffer.readUInt32BE(0),
             buffer.readUInt32BE(4)
@@ -205,11 +206,11 @@ export class Decoder {
           messages.push(new AckMessage(destinationChannel, chunkSpec, delay));
 
           break;
-        case MessageCode.HAVE:
+        case HaveMessage.CODE:
           messages.push(new HaveMessage(destinationChannel, chunkSpec));
 
           break;
-        case MessageCode.INTEGRITY:
+        case IntegrityMessage.CODE:
           if (!protocolOptions || !protocolOptions.merkleHashFunction) {
             throw new Error("Merkle hash function is not available");
           }
@@ -225,7 +226,7 @@ export class Decoder {
           );
 
           break;
-        case MessageCode.PEX_RESv4:
+        case PexResV4Message.CODE:
           const pexResV4Ip = buffer.readUInt32BE(index);
           index += 4;
 
@@ -236,10 +237,10 @@ export class Decoder {
             new PexResV4Message(destinationChannel, pexResV4Ip, pexResV4Port)
           );
           break;
-        case MessageCode.PEX_REQ:
+        case PexReqMessage.CODE:
           messages.push(new PexReqMessage(destinationChannel));
           break;
-        case MessageCode.SIGNED_INTEGRITY:
+        case SignedIntegrityMessage.CODE:
           const liveSignatureTimestamp = new PreciseTimestamp(
             buffer.readUInt32BE(0),
             buffer.readUInt32BE(4)
@@ -253,8 +254,8 @@ export class Decoder {
           }
 
           switch (protocolOptions.liveSignatureAlgorithm) {
-            case LiveSignatureAlgorithmCode.RSASHA1:
-            case LiveSignatureAlgorithmCode.RSASHA256:
+            case LiveSignatureAlgorithm.RSASHA1:
+            case LiveSignatureAlgorithm.RSASHA256:
               liveSignatureByteLength = protocolOptions.swarmId.readUInt8(
                 index
               );
@@ -265,10 +266,10 @@ export class Decoder {
                 );
               }
               break;
-            case LiveSignatureAlgorithmCode.ECDSAP256SHA256:
+            case LiveSignatureAlgorithm.ECDSAP256SHA256:
               liveSignatureByteLength = 64;
               break;
-            case LiveSignatureAlgorithmCode.ECDSAP384SHA384:
+            case LiveSignatureAlgorithm.ECDSAP384SHA384:
               liveSignatureByteLength = 96;
               break;
             default:
@@ -291,21 +292,21 @@ export class Decoder {
           );
 
           break;
-        case MessageCode.REQUEST:
+        case RequestMessage.CODE:
           messages.push(new RequestMessage(destinationChannel, chunkSpec));
 
           break;
-        case MessageCode.CANCEL:
+        case CancelMessage.CODE:
           messages.push(new CancelMessage(destinationChannel, chunkSpec));
 
           break;
-        case MessageCode.CHOKE:
+        case ChokeMessage.CODE:
           messages.push(new ChokeMessage(destinationChannel));
           break;
-        case MessageCode.UNCHOKE:
+        case UnchokeMessage.CODE:
           messages.push(new UnchokeMessage(destinationChannel));
           break;
-        case MessageCode.PEX_RESv6:
+        case PexResV6Message.CODE:
           const pexResV6Ip = buffer.slice(index, index + 16);
           index += 16;
 
@@ -317,7 +318,7 @@ export class Decoder {
           );
 
           break;
-        case MessageCode.PEX_REScert:
+        case PexResCertMessage.CODE:
           const certLength = buffer.readUInt16BE(index);
           index += 2;
 
@@ -337,15 +338,15 @@ export class Decoder {
 
   private static chunkSpec(
     buffer: Buffer,
-    chunkAddressingMethod: ChunkAddressingMethodCode
+    chunkAddressingMethod: ChunkAddressingMethod
   ): ChunkSpec {
     let chunkSpec: ChunkSpec;
 
     switch (chunkAddressingMethod) {
-      case ChunkAddressingMethodCode["32BINs"]:
+      /*case ChunkAddressingMethod["32BINs"]:
         chunkSpec = new ChunkSpec(buffer.readUInt32BE(0));
-        break;
-      case ChunkAddressingMethodCode["32ChunkRanges"]:
+        break;*/
+      case ChunkAddressingMethod["32ChunkRanges"]:
         chunkSpec = new ChunkSpec([
           buffer.readUInt32BE(0),
           buffer.readUInt32BE(4)
@@ -360,24 +361,24 @@ export class Decoder {
 
   private static integrityHash(
     buffer: Buffer,
-    merkleHashFunction: MerkleHashFunctionCode
+    merkleHashFunction: MerkleHashFunction
   ): Buffer {
     let bytes;
 
     switch (merkleHashFunction) {
-      case MerkleHashFunctionCode.SHA1:
+      case MerkleHashFunction.SHA1:
         bytes = 20;
         break;
-      case MerkleHashFunctionCode.SHA224:
+      case MerkleHashFunction.SHA224:
         bytes = 28;
         break;
-      case MerkleHashFunctionCode.SHA256:
+      case MerkleHashFunction.SHA256:
         bytes = 32;
         break;
-      case MerkleHashFunctionCode.SHA384:
+      case MerkleHashFunction.SHA384:
         bytes = 48;
         break;
-      case MerkleHashFunctionCode.SHA512:
+      case MerkleHashFunction.SHA512:
         bytes = 64;
         break;
       default:

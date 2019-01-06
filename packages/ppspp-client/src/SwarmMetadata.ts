@@ -1,34 +1,34 @@
 import {
-  ChunkAddressingMethodCode,
-  ContentIntegrityProtectionMethodCode,
-  MerkleHashFunctionCode,
-  LiveSignatureAlgorithmCode
+  ChunkAddressingMethod,
+  ContentIntegrityProtectionMethod,
+  LiveSignatureAlgorithm,
+  MerkleHashFunction
 } from "@verygood.stream/ppspp-protocol";
 
 export class SwarmMetadata {
   public swarmId: Buffer;
   public chunkSize: number;
-  public chunkAddressingMethod: ChunkAddressingMethodCode;
-  public contentIntegrityProtectionMethod: ContentIntegrityProtectionMethodCode;
-  public merkleHashFunction?: MerkleHashFunctionCode;
-  public liveSignatureAlgorithm?: LiveSignatureAlgorithmCode;
+  public chunkAddressingMethod: ChunkAddressingMethod;
+  public contentIntegrityProtectionMethod: ContentIntegrityProtectionMethod;
+  public merkleHashFunction?: MerkleHashFunction;
+  public liveSignatureAlgorithm?: LiveSignatureAlgorithm;
 
   constructor(
     swarmId: Buffer,
     chunkSize: number,
-    chunkAddressingMethod: ChunkAddressingMethodCode,
-    contentIntegrityProtectionMethod: ContentIntegrityProtectionMethodCode,
-    merkleHashFunction?: MerkleHashFunctionCode,
-    liveSignatureAlgorithm?: LiveSignatureAlgorithmCode
+    chunkAddressingMethod: ChunkAddressingMethod,
+    contentIntegrityProtectionMethod: ContentIntegrityProtectionMethod,
+    merkleHashFunction?: MerkleHashFunction,
+    liveSignatureAlgorithm?: LiveSignatureAlgorithm
   ) {
     this.swarmId = swarmId;
     this.chunkSize = chunkSize;
     this.chunkAddressingMethod = chunkAddressingMethod;
     this.contentIntegrityProtectionMethod = contentIntegrityProtectionMethod;
 
-    switch (contentIntegrityProtectionMethod) {
-      case ContentIntegrityProtectionMethodCode.MERKLE_HASH_TREE:
-      case ContentIntegrityProtectionMethodCode.UNIFIED_MERKLE_TREE:
+    /*switch (contentIntegrityProtectionMethod) {
+      case ContentIntegrityProtectionMethod.MERKLE_HASH_TREE:
+      case ContentIntegrityProtectionMethod.UNIFIED_MERKLE_TREE:
         if (!merkleHashFunction) {
           throw new Error(
             "The merkle hash function is required when content integrity protection method is merkle tree"
@@ -37,7 +37,7 @@ export class SwarmMetadata {
 
         this.merkleHashFunction = merkleHashFunction;
         break;
-      case ContentIntegrityProtectionMethodCode.SIGN_ALL:
+      case ContentIntegrityProtectionMethod.SIGN_ALL:
         if (!liveSignatureAlgorithm) {
           throw new Error(
             "The live signature algorithm is required when content integrity protection method is sign-all"
@@ -46,6 +46,6 @@ export class SwarmMetadata {
 
         this.liveSignatureAlgorithm = liveSignatureAlgorithm;
         break;
-    }
+    }*/
   }
 }

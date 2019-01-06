@@ -1,34 +1,28 @@
-import { Duplex } from "stream";
-
 export { Decoder } from "./Decoder";
 
 export {
-  ChunkAddressingMethodCode,
-  ContentIntegrityProtectionMethodCode,
-  LiveSignatureAlgorithmCode,
-  MerkleHashFunctionCode,
-  ProtocolOptionCode,
-  ProtocolOptions
-} from "./ProtocolOptions";
+  ProtocolOptions,
+  ChunkAddressingMethod,
+  ContentIntegrityProtectionMethod,
+  MerkleHashFunction,
+  LiveSignatureAlgorithm
+} from "./fields/ProtocolOptions";
+export { ChunkSpec } from "./fields/ChunkSpec";
+export { PreciseTimestamp } from "./fields/PreciseTimestamp";
 
-export { ChunkSpec } from "./ChunkSpec";
-export { PreciseTimestamp } from "./PreciseTimestamp";
-
-import { Message, MessageCode } from "./Message";
-export { Message, MessageCode}
-
-export { AckMessage } from "./AckMessage";
-export { CancelMessage } from "./CancelMessage";
-export { ChokeMessage } from "./ChokeMessage";
-export { DataMessage } from "./DataMessage";
-export { HandshakeMessage } from "./HandshakeMessage";
-export { HaveMessage } from "./HaveMessage";
-export { IntegrityMessage } from "./IntegrityMessage";
-export { KeepAliveMessage } from "./KeepAliveMessage";
-export { PexReqMessage } from "./PexReqMessage";
-export { PexResCertMessage } from "./PexResCertMessage";
-export { PexResV4Message } from "./PexResV4Message";
-export { PexResV6Message } from "./PexResV6Message";
-export { RequestMessage } from "./RequestMessage";
-export { SignedIntegrityMessage } from "./SignedIntegrityMessage";
-export { UnchokeMessage } from "./UnchokeMessage";
+export { AckMessage } from "./messages/AckMessage";
+export { CancelMessage } from "./messages/CancelMessage";
+export { ChokeMessage } from "./messages/ChokeMessage";
+export { DataMessage } from "./messages/DataMessage";
+export { HandshakeMessage } from "./messages/HandshakeMessage";
+export { HaveMessage } from "./messages/HaveMessage";
+export { IntegrityMessage } from "./messages/IntegrityMessage";
+export { KeepAliveMessage } from "./messages/KeepAliveMessage";
+export { PexReqMessage } from "./messages/PexReqMessage";
+export { PexResCertMessage } from "./messages/PexResCertMessage";
+export { PexResV4Message } from "./messages/PexResV4Message";
+export { PexResV6Message } from "./messages/PexResV6Message";
+export { RequestMessage } from "./messages/RequestMessage";
+export { SignedIntegrityMessage } from "./messages/SignedIntegrityMessage";
+export { UnchokeMessage } from "./messages/UnchokeMessage";
+export { Message } from "./messages/Message";

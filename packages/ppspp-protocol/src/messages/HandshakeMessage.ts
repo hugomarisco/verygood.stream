@@ -1,7 +1,9 @@
-import { Message, MessageCode } from "./Message";
-import { ProtocolOptions } from "./ProtocolOptions";
+import { ProtocolOptions } from "../fields/ProtocolOptions";
+import { Message } from "./Message";
 
 export class HandshakeMessage extends Message {
+  public static CODE = 0x00;
+
   public sourceChannel: number;
   private protocolOptions: ProtocolOptions;
 
@@ -22,7 +24,7 @@ export class HandshakeMessage extends Message {
 
     return super.encode(
       Buffer.concat([
-        Buffer.from([MessageCode.HANDSHAKE]),
+        Buffer.from([HandshakeMessage.CODE]),
         srcChannelBuf,
         this.protocolOptions.encode()
       ])

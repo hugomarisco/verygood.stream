@@ -4,9 +4,10 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
-    "build-watch": "lerna run build-watch --stream",
-    "test": "mkdir -p coverage && nyc --reporter=text-lcov lerna run test > ./coverage/coverage.lcov && codecov",
-    "test-watch": "lerna run test-watch --stream",
+    "build:watch": "lerna run build:watch --stream",
+    "test": "lerna run test",
+    "test:watch": "lerna run test:watch --stream",
+    "test:ci": "lerna run test:ci && codecov",
     "clean": "lerna clean"
   },
   "devDependencies": {

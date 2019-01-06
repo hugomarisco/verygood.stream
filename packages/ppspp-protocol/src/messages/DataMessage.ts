@@ -1,8 +1,10 @@
-import { ChunkSpec } from "./ChunkSpec";
-import { Message, MessageCode } from "./Message";
-import { PreciseTimestamp } from "./PreciseTimestamp";
+import { ChunkSpec } from "../fields/ChunkSpec";
+import { PreciseTimestamp } from "../fields/PreciseTimestamp";
+import { Message } from "./Message";
 
 export class DataMessage extends Message {
+  public static CODE = 0x01;
+
   public chunkSpec: ChunkSpec;
   public timestamp: PreciseTimestamp;
   public data: Buffer;
@@ -23,7 +25,7 @@ export class DataMessage extends Message {
   public encode() {
     return super.encode(
       Buffer.concat([
-        Buffer.from([MessageCode.DATA]),
+        Buffer.from([DataMessage.CODE]),
         this.chunkSpec.encode(),
         this.timestamp.encode(),
         this.data

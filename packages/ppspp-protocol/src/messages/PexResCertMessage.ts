@@ -1,6 +1,8 @@
-import { Message, MessageCode } from "./Message";
+import { Message } from "./Message";
 
 export class PexResCertMessage extends Message {
+  public static CODE = 0x0d;
+
   public certificate: Buffer;
 
   constructor(destinationChannel: number, certificate: Buffer) {
@@ -16,7 +18,9 @@ export class PexResCertMessage extends Message {
 
     return super.encode(
       Buffer.concat([
-        Buffer.from([MessageCode.PEX_REScert, certLengthBuf, this.certificate])
+        Buffer.from([PexResCertMessage.CODE]),
+        certLengthBuf,
+        this.certificate
       ])
     );
   }

@@ -2,5 +2,5 @@ const baseConfig = require("../../jest.config");
 
 module.exports = {
   ...baseConfig,
-  roots: ["./src"]
+  roots: ["<rootDir>/src"]
 };

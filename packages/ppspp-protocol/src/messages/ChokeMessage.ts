@@ -1,11 +1,13 @@
-import { Message, MessageCode } from "./Message";
+import { Message } from "./Message";
 
 export class ChokeMessage extends Message {
+  public static CODE = 0x0a;
+
   constructor(destinationChannel: number) {
     super(destinationChannel);
   }
 
   public encode() {
-    return super.encode(Buffer.concat([Buffer.from([MessageCode.CHOKE])]));
+    return super.encode(Buffer.concat([Buffer.from([ChokeMessage.CODE])]));
   }
 }

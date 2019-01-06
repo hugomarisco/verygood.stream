@@ -3,5 +3,4 @@ install:
   - npm install
   - npm run bootstrap
 script:
-  - npm run lint
   - npm run test:ci
