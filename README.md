@@ -1,5 +1,5 @@
-[![Travis](https://img.shields.io/travis/hugomarisco/verygood.stream.svg)](https://travis-ci.org/hugomarisco/ppspp-client)
-[![Codecov](https://img.shields.io/codecov/c/github/hugomarisco/verygood.stream.svg)](https://codecov.io/gh/hugomarisco/ppspp-client)
+[![Travis](https://img.shields.io/travis/hugomarisco/verygood.stream.svg)](https://travis-ci.org/hugomarisco/verygood.stream)
+[![Codecov](https://img.shields.io/codecov/c/github/hugomarisco/verygood.stream.svg)](https://codecov.io/gh/hugomarisco/verygood.stream)
 
 **Under active development**
 
@@ -7,6 +7,7 @@
 
 - Clone the project
 - `npm run bootstrap`
+- `npm run build`
 
 ## Test the project
 
@@ -14,4 +15,4 @@
 
 ## License
 
-MIT. Copyright (c) 2018 Hugo Mendes
+GPL-3.0. Copyright (c) 2019 Hugo Mendes

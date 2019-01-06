@@ -1,3 +1,9 @@
-# ppspp-client
+# `ppspp-client`
 
-A PPSPP client implemented in Javascript
+> TODO: description
+
+## Usage
+
+```
+// TODO: DEMONSTRATE API
+```
