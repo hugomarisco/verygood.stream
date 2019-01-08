@@ -1,5 +1,4 @@
-import { AckMessage } from "../messages/AckMessage";
-import { CancelMessage } from "../messages/CancelMessage";
+import { dropWhile, fill } from "lodash";
 
 export enum ProtocolOptionCode {
   CHUNK_ADDRESSING = 6,
@@ -15,11 +14,6 @@ export enum ProtocolOptionCode {
   VERSION = 0
 }
 
-enum MessageCode {
-  ACK = AckMessage.CODE,
-  CANCEL = CancelMessage.CODE,
-}
-
 export enum ChunkAddressingMethod {
   // "32BINs" = 0,
   // "64ByteRanges" = 1,
@@ -28,7 +22,7 @@ export enum ChunkAddressingMethod {
   // "64ChunkRanges" = 4
 }
 
-export enum MerkleHashFunction {
+/*export enum MerkleHashFunction {
   SHA1 = 0,
   SHA224 = 1,
   SHA256 = 2,
@@ -41,7 +35,7 @@ export enum LiveSignatureAlgorithm {
   ECDSAP384SHA384 = 14,
   RSASHA1 = 5,
   RSASHA256 = 8
-}
+}*/
 
 export enum ContentIntegrityProtectionMethod {
   NONE = 0
@@ -56,11 +50,11 @@ export class ProtocolOptions {
   public liveDiscardWindow: number;
   public chunkAddressingMethod: ChunkAddressingMethod;
   public chunkSize: number;
-  public supportedMessages: MessageCode[];
+  public supportedMessages: number[];
   public minVersion?: number;
-  public liveSignatureAlgorithm?: LiveSignatureAlgorithm;
-  public merkleHashFunction?: MerkleHashFunction;
   public swarmId?: Buffer;
+  /*public liveSignatureAlgorithm?: LiveSignatureAlgorithm;
+  public merkleHashFunction?: MerkleHashFunction;*/
 
   constructor(
     version: number,
@@ -68,22 +62,22 @@ export class ProtocolOptions {
     chunkAddressingMethod: ChunkAddressingMethod,
     liveDiscardWindow: number,
     chunkSize: number,
-    supportedMessages: MessageCode[],
+    supportedMessages: number[],
     minVersion?: number,
-    liveSignatureAlgorithm?: LiveSignatureAlgorithm,
-    merkleHashFunction?: MerkleHashFunction,
     swarmId?: Buffer
+    /*liveSignatureAlgorithm?: LiveSignatureAlgorithm,
+    merkleHashFunction?: MerkleHashFunction,*/
   ) {
     this.version = version;
     this.minVersion = minVersion;
     this.integrityProtectionMethod = integrityProtectionMethod;
-    this.liveSignatureAlgorithm = liveSignatureAlgorithm;
     this.liveDiscardWindow = liveDiscardWindow;
     this.chunkAddressingMethod = chunkAddressingMethod;
     this.chunkSize = chunkSize;
-    this.merkleHashFunction = merkleHashFunction;
     this.swarmId = swarmId;
     this.supportedMessages = supportedMessages;
+    /*this.liveSignatureAlgorithm = liveSignatureAlgorithm;
+    this.merkleHashFunction = merkleHashFunction;*/
   }
 
   public encode() {
@@ -102,11 +96,15 @@ export class ProtocolOptions {
 
     // Swarm ID
     if (this.swarmId) {
-      buffers.push(Buffer.from([ProtocolOptionCode.SWARM_ID]));
+      tempBuffer = Buffer.alloc(2);
 
-      Buffer.alloc(2).writeUInt16BE(this.swarmId.length, 0);
+      tempBuffer.writeUInt16BE(this.swarmId.length, 0);
 
-      buffers.push(this.swarmId);
+      buffers.push(
+        Buffer.from([ProtocolOptionCode.SWARM_ID]),
+        tempBuffer,
+        this.swarmId
+      );
     }
 
     // Integrity protection method
@@ -159,27 +157,39 @@ export class ProtocolOptions {
     tempBuffer.writeUInt32BE(this.liveDiscardWindow, 0);
 
     buffers.push(
-      Buffer.from([ProtocolOptionCode.LIVE_DISCARD_WINDOW, tempBuffer])
+      Buffer.from([ProtocolOptionCode.LIVE_DISCARD_WINDOW]),
+      tempBuffer
     );
 
     // Supported Messages
-    const supportedMessages = this.supportedMessages.reduce(
-      (messageCode, sum) => messageCode + sum,
-      0
+    const supportedMessagesBytes = this.supportedMessages
+      .reduce((bytes, messageCode) => {
+        const byteIndex = Math.floor(messageCode / 8);
+
+        const relativeBitIndex = messageCode - byteIndex * 8;
+
+        bytes[byteIndex] =
+          (bytes[byteIndex] || 0) + Math.pow(2, relativeBitIndex);
+
+        return bytes;
+      }, fill(new Array(32), 0))
+      .reverse();
+
+    tempBuffer = Buffer.from(
+      dropWhile(supportedMessagesBytes, byte => byte === 0)
     );
 
-    tempBuffer = Buffer.alloc(4);
-
-    tempBuffer.writeUInt32BE(supportedMessages, 1);
-
-    buffers.push(Buffer.from([4, tempBuffer]));
+    buffers.push(
+      Buffer.from([ProtocolOptionCode.SUPPORTED_MESSAGES, tempBuffer.length]),
+      tempBuffer
+    );
 
     // Chunk Size
     tempBuffer = Buffer.alloc(4);
 
     tempBuffer.writeUInt32BE(this.chunkSize, 0);
 
-    buffers.push(Buffer.from([ProtocolOptionCode.CHUNK_SIZE, tempBuffer]));
+    buffers.push(Buffer.from([ProtocolOptionCode.CHUNK_SIZE]), tempBuffer);
 
     // End
     buffers.push(Buffer.from([ProtocolOptionCode.END]));

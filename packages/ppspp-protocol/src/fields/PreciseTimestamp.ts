@@ -2,11 +2,15 @@ export class PreciseTimestamp {
   public seconds: number;
   public microseconds: number;
 
-  constructor(seconds?: number, microseconds?: number) {
+  constructor(timestamp?: [number, number]) {
     const millisecondsTimestamp = Date.now();
 
-    this.seconds = seconds || Math.floor(millisecondsTimestamp / 1000);
-    this.microseconds = microseconds || (millisecondsTimestamp % 1000) * 1000;
+    this.seconds = timestamp
+      ? timestamp[0]
+      : Math.floor(millisecondsTimestamp / 1000);
+    this.microseconds = timestamp
+      ? timestamp[1]
+      : (millisecondsTimestamp % 1000) * 1000;
   }
 
   public encode() {
@@ -22,11 +26,11 @@ export class PreciseTimestamp {
     const secondsDiff = this.seconds - timestamp.seconds;
     const microsecondsDifference = this.microseconds - timestamp.microseconds;
 
-    return new PreciseTimestamp(
+    return new PreciseTimestamp([
       microsecondsDifference < 0 ? secondsDiff - 1 : secondsDiff,
       microsecondsDifference < 0
-        ? 1000 - microsecondsDifference
+        ? 10000 + microsecondsDifference
         : microsecondsDifference
-    );
+    ]);
   }
 }

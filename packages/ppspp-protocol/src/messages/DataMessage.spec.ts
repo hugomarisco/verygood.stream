@@ -7,7 +7,7 @@ describe("DataMessage", () => {
     const message = new DataMessage(
       1,
       new ChunkSpec([2, 2]),
-      new PreciseTimestamp(3, 4),
+      new PreciseTimestamp([3, 4]),
       Buffer.from([0x0a, 0x0b, 0x0c, 0x0d])
     );
 

@@ -8,11 +8,11 @@ export class HandshakeMessage extends Message {
   private protocolOptions: ProtocolOptions;
 
   constructor(
-    destinationChannel: number = 0,
     sourceChannel: number,
-    protocolOptions: ProtocolOptions
+    protocolOptions: ProtocolOptions,
+    destinationChannel?: number,
   ) {
-    super(destinationChannel);
+    super(destinationChannel || 0);
 
     this.sourceChannel = sourceChannel;
     this.protocolOptions = protocolOptions;

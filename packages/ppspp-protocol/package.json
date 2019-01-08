@@ -17,14 +17,16 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w",
-    "test": "jest",
+    "test": "jest --coverage",
     "test:watch": "jest --watch",
     "test:ci": "jest --coverage"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.119"
   },
   "dependencies": {
     "buffer": "^5.1.0",
+    "lodash": "^4.17.11",
     "safe-buffer": "^5.1.2"
   }
 }

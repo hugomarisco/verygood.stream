@@ -7,7 +7,7 @@ describe("AckMessage", () => {
     const message = new AckMessage(
       1,
       new ChunkSpec([2, 2]),
-      new PreciseTimestamp(3, 4)
+      new PreciseTimestamp([3, 4])
     );
 
     const expected = Buffer.from([

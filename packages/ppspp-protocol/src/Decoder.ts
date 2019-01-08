@@ -3,8 +3,6 @@ import { PreciseTimestamp } from "./fields/PreciseTimestamp";
 import {
   ChunkAddressingMethod,
   ContentIntegrityProtectionMethod,
-  LiveSignatureAlgorithm,
-  MerkleHashFunction,
   ProtocolOptionCode,
   ProtocolOptions
 } from "./fields/ProtocolOptions";
@@ -82,8 +80,8 @@ export class Decoder {
           let liveDiscardWindow: number | undefined;
           let chunkSize: number | undefined;
           let minVersion: number | undefined;
-          let liveSignatureAlgorithm: LiveSignatureAlgorithm | undefined;
-          let merkleHashFunction: MerkleHashFunction | undefined;
+          /*let liveSignatureAlgorithm: LiveSignatureAlgorithm | undefined;
+          let merkleHashFunction: MerkleHashFunction | undefined;*/
           let swarmId: Buffer | undefined;
 
           do {
@@ -111,14 +109,14 @@ export class Decoder {
                 integrityProtectionMethod = buffer.readUInt8(index);
                 index += 1;
                 break;
-              case ProtocolOptionCode.MERKLE_FUNCTION:
+              /*case ProtocolOptionCode.MERKLE_FUNCTION:
                 merkleHashFunction = buffer.readUInt8(index);
                 index += 1;
                 break;
               case ProtocolOptionCode.LIVE_SIGNATURE_ALGORITHM:
                 liveSignatureAlgorithm = buffer.readUInt8(index);
                 index += 1;
-                break;
+                break;*/
               case ProtocolOptionCode.CHUNK_ADDRESSING:
                 chunkAddressingMethod = buffer.readUInt8(index);
                 index += 1;
@@ -146,11 +144,11 @@ export class Decoder {
           } while (code !== ProtocolOptionCode.END);
 
           if (
-            !version ||
-            !integrityProtectionMethod ||
-            !chunkAddressingMethod ||
-            !liveDiscardWindow ||
-            !chunkSize
+            version === undefined ||
+            chunkAddressingMethod === undefined ||
+            chunkSize === undefined ||
+            integrityProtectionMethod === undefined ||
+            liveDiscardWindow === undefined
           ) {
             throw new Error("Unable to find all the required protocol options");
           }
@@ -163,33 +161,29 @@ export class Decoder {
             chunkSize,
             [],
             minVersion,
-            liveSignatureAlgorithm,
-            merkleHashFunction,
             swarmId
+            /*liveSignatureAlgorithm,
+            merkleHashFunction,*/
           );
 
           messages.push(
             new HandshakeMessage(
-              destinationChannel,
               srcChannel,
-              protocolOptions
+              protocolOptions,
+              destinationChannel
             )
           );
 
           break;
         case DataMessage.CODE:
-          const timestamp = new PreciseTimestamp(
-            buffer.readUInt32BE(0),
-            buffer.readUInt32BE(4)
-          );
+          const timestamp = new PreciseTimestamp([
+            buffer.readUInt32BE(index),
+            buffer.readUInt32BE(index + 4)
+          ]);
           index += 8;
 
-          if (!protocolOptions) {
-            throw new Error("Protocol options are not available");
-          }
-
-          const data = buffer.slice(index, index + protocolOptions.chunkSize);
-          index += protocolOptions.chunkSize;
+          const data = buffer.slice(index, index + protocolOptions!.chunkSize);
+          index += protocolOptions!.chunkSize;
 
           messages.push(
             new DataMessage(destinationChannel, chunkSpec, timestamp, data)
@@ -197,10 +191,10 @@ export class Decoder {
 
           break;
         case AckMessage.CODE:
-          const delay = new PreciseTimestamp(
-            buffer.readUInt32BE(0),
-            buffer.readUInt32BE(4)
-          );
+          const delay = new PreciseTimestamp([
+            buffer.readUInt32BE(index),
+            buffer.readUInt32BE(index + 4)
+          ]);
           index += 8;
 
           messages.push(new AckMessage(destinationChannel, chunkSpec, delay));
@@ -210,7 +204,7 @@ export class Decoder {
           messages.push(new HaveMessage(destinationChannel, chunkSpec));
 
           break;
-        case IntegrityMessage.CODE:
+        /*case IntegrityMessage.CODE:
           if (!protocolOptions || !protocolOptions.merkleHashFunction) {
             throw new Error("Merkle hash function is not available");
           }
@@ -225,7 +219,7 @@ export class Decoder {
             new IntegrityMessage(destinationChannel, chunkSpec, hash)
           );
 
-          break;
+          break;*/
         case PexResV4Message.CODE:
           const pexResV4Ip = buffer.readUInt32BE(index);
           index += 4;
@@ -240,10 +234,10 @@ export class Decoder {
         case PexReqMessage.CODE:
           messages.push(new PexReqMessage(destinationChannel));
           break;
-        case SignedIntegrityMessage.CODE:
+        /*case SignedIntegrityMessage.CODE:
           const liveSignatureTimestamp = new PreciseTimestamp(
-            buffer.readUInt32BE(0),
-            buffer.readUInt32BE(4)
+            buffer.readUInt32BE(index),
+            buffer.readUInt32BE(index + 4)
           );
           index += 8;
 
@@ -291,7 +285,7 @@ export class Decoder {
             )
           );
 
-          break;
+          break;*/
         case RequestMessage.CODE:
           messages.push(new RequestMessage(destinationChannel, chunkSpec));
 
@@ -329,7 +323,6 @@ export class Decoder {
 
           break;
         default:
-          messages.push(new KeepAliveMessage(destinationChannel));
       }
     }
 
@@ -359,7 +352,7 @@ export class Decoder {
     return chunkSpec;
   }
 
-  private static integrityHash(
+  /*private static integrityHash(
     buffer: Buffer,
     merkleHashFunction: MerkleHashFunction
   ): Buffer {
@@ -386,5 +379,5 @@ export class Decoder {
     }
 
     return buffer.slice(0, bytes);
-  }
+  }*/
 }

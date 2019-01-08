@@ -4,11 +4,13 @@ export {
   ProtocolOptions,
   ChunkAddressingMethod,
   ContentIntegrityProtectionMethod,
-  MerkleHashFunction,
-  LiveSignatureAlgorithm
+  /*MerkleHashFunction,
+  LiveSignatureAlgorithm*/
 } from "./fields/ProtocolOptions";
 export { ChunkSpec } from "./fields/ChunkSpec";
 export { PreciseTimestamp } from "./fields/PreciseTimestamp";
+
+export { Message } from "./messages/Message";
 
 export { AckMessage } from "./messages/AckMessage";
 export { CancelMessage } from "./messages/CancelMessage";
@@ -25,4 +27,3 @@ export { PexResV6Message } from "./messages/PexResV6Message";
 export { RequestMessage } from "./messages/RequestMessage";
 export { SignedIntegrityMessage } from "./messages/SignedIntegrityMessage";
 export { UnchokeMessage } from "./messages/UnchokeMessage";
-export { Message } from "./messages/Message";

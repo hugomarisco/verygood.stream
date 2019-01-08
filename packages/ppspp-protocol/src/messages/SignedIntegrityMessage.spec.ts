@@ -9,7 +9,7 @@ describe("SignedIntegrityMessage", () => {
     const message = new SignedIntegrityMessage(
       1,
       new ChunkSpec([2, 2]),
-      new PreciseTimestamp(3, 4),
+      new PreciseTimestamp([3, 4]),
       signature
     );
 
