@@ -10,13 +10,9 @@ export class SwarmTrackers extends EventEmitter {
     this.trackerClients = trackerUrls.map(trackerUrl => {
       const tracker = new TrackerClient(trackerUrl);
 
-      tracker.on("peers", this.emit);
+      tracker.on("peerSocket", this.emit.bind(null, "peerSocket"));
 
       return tracker;
     });
-  }
-
-  public register() {
-    this.trackerClients.forEach(trackerClient => trackerClient.register());
   }
 }

@@ -1,8 +1,8 @@
 import {
   ChunkAddressingMethod,
   ContentIntegrityProtectionMethod,
-  LiveSignatureAlgorithm,
-  MerkleHashFunction
+  /*LiveSignatureAlgorithm,
+  MerkleHashFunction*/
 } from "@verygood.stream/ppspp-protocol";
 
 export class SwarmMetadata {
@@ -10,16 +10,16 @@ export class SwarmMetadata {
   public chunkSize: number;
   public chunkAddressingMethod: ChunkAddressingMethod;
   public contentIntegrityProtectionMethod: ContentIntegrityProtectionMethod;
-  public merkleHashFunction?: MerkleHashFunction;
-  public liveSignatureAlgorithm?: LiveSignatureAlgorithm;
+  /*public merkleHashFunction?: MerkleHashFunction;
+  public liveSignatureAlgorithm?: LiveSignatureAlgorithm;*/
 
   constructor(
     swarmId: Buffer,
     chunkSize: number,
     chunkAddressingMethod: ChunkAddressingMethod,
     contentIntegrityProtectionMethod: ContentIntegrityProtectionMethod,
-    merkleHashFunction?: MerkleHashFunction,
-    liveSignatureAlgorithm?: LiveSignatureAlgorithm
+    /*merkleHashFunction?: MerkleHashFunction,
+    liveSignatureAlgorithm?: LiveSignatureAlgorithm*/
   ) {
     this.swarmId = swarmId;
     this.chunkSize = chunkSize;

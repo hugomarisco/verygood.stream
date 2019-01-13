@@ -24,18 +24,18 @@ import { BitSet } from "bitset";
 import { EventEmitter } from "events";
 import { range } from "lodash";
 import randomBytes from "randombytes";
-import WebRTCSocket from "simple-peer";
+import { WebRTCSocket } from "./WebRTCSocket";
 
 export class RemotePeer extends EventEmitter {
-  private peerId: number;
-  private socket: WebRTCSocket.Instance;
-  private protocolOptions: ProtocolOptions;
-  private chunkStore: Buffer[];
-  private availability: BitSet;
-  private isChoking: boolean;
+  public peerId: number;
+  public socket: WebRTCSocket;
+  public protocolOptions: ProtocolOptions;
+  public chunkStore: Buffer[];
+  public availability: BitSet;
+  public isChoking: boolean;
 
   constructor(
-    offer: string,
+    socket: WebRTCSocket,
     protocolOptions: ProtocolOptions,
     chunkStore: Buffer[]
   ) {
@@ -50,18 +50,19 @@ export class RemotePeer extends EventEmitter {
     this.chunkStore = chunkStore;
 
     this.protocolOptions = protocolOptions;
-    this.socket = new WebRTCSocket({ initiator: true });
 
-    this.socket.signal(offer);
+    if (this.protocolOptions.chunkSize !== 0xffffffff) {
+      throw new Error("Fixed chunk sizes are not supported");
+    }
 
-    this.socket.on("connect", this.handshake.bind(this));
+    this.socket = socket;
 
     this.socket.on("data", this.handleData.bind(this));
   }
 
   public handshake(sourceChannel: number = 0) {
     this.socket.push(
-      new HandshakeMessage(sourceChannel, this.peerId, this.protocolOptions)
+      new HandshakeMessage(sourceChannel, this.protocolOptions, this.peerId)
     );
   }
 
@@ -142,19 +143,11 @@ export class RemotePeer extends EventEmitter {
       case ChunkAddressingMethod["32ChunkRanges"]:
         const [begin, end] = message.chunkSpec.spec as [number, number];
 
-        this.availability.setRange(begin, end, 1);
+        this.availability.set(begin, 1);
 
-        let requestStart = begin;
-
-        range(begin, end).forEach((chunkNumber, index, arr) => {
-          if (!this.chunkStore[chunkNumber]) {
-            this.request(new ChunkSpec([requestStart, chunkNumber - 1]));
-
-            requestStart = chunkNumber + 1;
-          } else if (arr.length === index + 1) {
-            this.request(new ChunkSpec([requestStart, chunkNumber]));
-          }
-        });
+        if (!this.chunkStore[begin]) {
+          this.request(message.chunkSpec);
+        }
 
         break;
     }
@@ -163,20 +156,7 @@ export class RemotePeer extends EventEmitter {
   private handleDataMessage(message: DataMessage) {
     switch (this.protocolOptions.chunkAddressingMethod) {
       case ChunkAddressingMethod["32ChunkRanges"]:
-        const [begin, end] = message.chunkSpec.spec as [number, number];
-
-        const chunks: Buffer[] = [];
-
-        for (let index = begin; index < end; index++) {
-          chunks.push(
-            message.data.slice(
-              index * this.protocolOptions.chunkSize,
-              (index + 1) * this.protocolOptions.chunkSize
-            )
-          );
-        }
-
-        this.chunkStore.splice.apply(null, [begin, 0, ...chunks]);
+        this.emit('dataMessage', message);
 
         this.ack(
           message.chunkSpec,
@@ -192,7 +172,7 @@ export class RemotePeer extends EventEmitter {
       case ChunkAddressingMethod["32ChunkRanges"]:
         const [begin, end] = message.chunkSpec.spec as [number, number];
 
-        this.availability.setRange(begin, end, 1);
+        this.availability.set(begin, 1);
 
         break;
     }
@@ -215,11 +195,9 @@ export class RemotePeer extends EventEmitter {
       case ChunkAddressingMethod["32ChunkRanges"]:
         const [begin, end] = message.chunkSpec.spec as [number, number];
 
-        range(begin, end).forEach(chunkIndex => {
-          if (this.chunkStore[chunkIndex]) {
-            this.data(new ChunkSpec(chunkIndex), this.chunkStore[chunkIndex]);
-          }
-        });
+        if (this.chunkStore[begin]) {
+          this.data(new ChunkSpec([begin, begin]), this.chunkStore[begin]);
+        }
 
         break;
     }

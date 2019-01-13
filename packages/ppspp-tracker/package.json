@@ -15,6 +15,7 @@
     "url": "git+https://github.com/hugomarisco/verygood.stream.git"
   },
   "scripts": {
+    "start": "ts-node src/index.ts",
     "build": "tsc",
     "build:watch": "tsc -w",
     "test": "jest --coverage",

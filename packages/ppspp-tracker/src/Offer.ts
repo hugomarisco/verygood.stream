@@ -1,11 +1,9 @@
 export class Offer {
-  public swarmId: string;
-  public peerId: string;
-  public offer: string;
+  public socketId: string;
+  public offer: object;
 
-  constructor(swarmId: string, peerId: string, offer: string) {
-    this.swarmId = swarmId;
-    this.peerId = peerId;
+  constructor(socketId: string, offer: object) {
+    this.socketId = socketId;
     this.offer = offer;
   }
 }

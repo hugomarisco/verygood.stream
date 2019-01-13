@@ -1,18 +1,16 @@
-import UUID from "uuid";
 import winston from "winston";
 import WebSocket from "ws";
-import { Offer } from "./Offer";
+import { Peer } from "./Peer";
 
 const logger = winston.createLogger({
   transports: [new winston.transports.Console()]
 });
 
-const MAX_FIND_OFFERS = 10;
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
 
 const wss = new WebSocket.Server({ port });
 
-let offers: Offer[] = [];
+let peers: Peer[] = [];
 
 wss.on("listening", () => logger.info("Listening for connections", { port }));
 
@@ -21,52 +19,52 @@ wss.on("close", () => logger.info("Gracefully shutting down"));
 wss.on("error", error => logger.error("Server error", { error }));
 
 wss.on("connection", (ws, req) => {
-  const peerId = UUID.v4();
+  const connectedPeer = new Peer(ws);
+
+  peers.push(connectedPeer);
 
   logger.info(`New peer connection`, {
-    ...req.connection,
-    peerId
+    peerId: connectedPeer.peerId
   });
 
   ws.on("error", error => {
-    logger.error(`Client error`, { error, peerId });
+    logger.error(`Client error`, { error, peerId: connectedPeer.peerId });
 
-    offers = offers.filter(offer => offer.peerId !== peerId);
+    peers = peers.filter(peer => peer.peerId !== connectedPeer.peerId);
   });
 
   ws.on("close", () => {
-    logger.info(`Peer closed the connection`, { peerId });
+    logger.info(`Peer closed the connection`, { peerId: connectedPeer.peerId });
 
-    offers = offers.filter(offer => offer.peerId !== peerId);
+    peers = peers.filter(peer => peer.peerId !== connectedPeer.peerId);
   });
 
   ws.on("message", rawMessage => {
     try {
-      const { type, swarmId, ...message } = JSON.parse(rawMessage as string);
+      const { type, swarmId, payload } = JSON.parse(rawMessage as string);
 
       switch (type) {
-        case "JOIN":
-        case "OFFERS":
-          offers = [
-            ...offers,
-            message.offers.map(
-              (offer: string) => new Offer(swarmId, peerId, offer)
+        case "find":
+          peers
+            .filter(
+              peer =>
+                peer.peerId !== connectedPeer.peerId &&
+                peer.swarmId === swarmId &&
+                peer.hasOffers()
             )
-          ];
+            .forEach(peer =>
+              ws.send(
+                JSON.stringify({ type: "offer", payload: peer.getOffer() })
+              )
+            );
 
           break;
-        case "FIND":
-          const { limit } = message;
-
-          const offersFound = offers
-            .filter(offer => offer.swarmId === swarmId)
-            .slice(0, Math.min(limit, MAX_FIND_OFFERS));
-
-          ws.send(JSON.stringify({ type: 'OFFERS', offers: offersFound }));
+        case "offer":
+          connectedPeer.addOffer(swarmId, payload.socketId, payload.offer);
 
           break;
-        case "LEAVE":
-          offers = offers.filter(offer => offer.swarmId !== swarmId);
+        case "answer":
+          peers.forEach(peer => peer.answer(payload.socketId, payload.answer));
 
           break;
       }
