@@ -28,9 +28,9 @@ export class TrackerClient extends EventEmitter {
   private send(type: string, payload: object) {
     this.trackerSocket.send(
       JSON.stringify({
-        type,
+        payload,
         swarmId: this.swarmId,
-        payload
+        type
       })
     );
   }
@@ -61,11 +61,15 @@ export class TrackerClient extends EventEmitter {
     this.send("find", {});
   }
 
-  private onMessage(data: string) {
+  private onMessage(event: {
+    data: WebSocket.Data;
+    type: string;
+    target: WebSocket;
+  }) {
     try {
       let peerSocket: WebRTCSocket;
 
-      const message = JSON.parse(data.data ? data.data : data);
+      const message = JSON.parse(event.data.toString());
 
       switch (message.type) {
         case "offer":
@@ -76,7 +80,6 @@ export class TrackerClient extends EventEmitter {
             this.answer.bind(this, message.payload.socketId)
           );
           peerSocket.on("connect", () => {
-            debugger;
             this.emit("peerSocket", peerSocket);
           });
 
@@ -87,7 +90,6 @@ export class TrackerClient extends EventEmitter {
           peerSocket = this.peerSockets[message.payload.socketId];
 
           if (peerSocket) {
-            //delete this.peerSockets[message.payload.socketId];
             peerSocket.signal(message.payload.answer);
           }
 
