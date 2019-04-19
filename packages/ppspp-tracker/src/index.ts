@@ -41,7 +41,11 @@ wss.on("connection", (ws, req) => {
 
   ws.on("message", rawMessage => {
     try {
-      const { type, swarmId, payload } = JSON.parse(rawMessage as string);
+      const { type, swarmId: rawSwarmId, payload } = JSON.parse(
+        rawMessage as string
+      );
+
+      const swarmId = Buffer.from(rawSwarmId.data).toString("utf8");
 
       switch (type) {
         case "find":

@@ -1,7 +1,7 @@
 {
-  "name": "@verygood.stream/ppspp-tracker",
-  "version": "0.1.0",
-  "description": "PPSPP implementation in JavaScript",
+  "name": "@verygood.stream/broadcaster",
+  "version": "1.0.0",
+  "description": "> TODO: description",
   "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "GNU GPLv3",
   "homepage": "https://github.com/hugomarisco/verygood.stream#readme",
@@ -15,7 +15,6 @@
     "url": "git+https://github.com/hugomarisco/verygood.stream.git"
   },
   "scripts": {
-    "start": "ts-node src/index.ts",
     "build": "tsc",
     "build:watch": "tsc -w",
     "test": "jest --coverage --passWithNoTests",
@@ -23,15 +22,7 @@
     "test:ci": "jest --coverage"
   },
   "dependencies": {
-    "lodash": "^4.17.11",
-    "uuid": "^3.3.2",
-    "winston": "^3.1.0",
-    "ws": "^6.1.2"
-  },
-  "devDependencies": {
-    "@types/debug": "0.0.31",
-    "@types/lodash": "^4.14.119",
-    "@types/uuid": "^3.4.4",
-    "@types/ws": "^6.0.1"
+    "@verygood.stream/ppspp-protocol": "^0.1.0",
+    "@verygood.stream/ppspp-client": "^0.1.0"
   }
 }

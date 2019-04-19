@@ -22,7 +22,6 @@ import {
 } from "@verygood.stream/ppspp-protocol";
 import { BitSet } from "bitset";
 import { EventEmitter } from "events";
-import { range } from "lodash";
 import randomBytes from "randombytes";
 import { WebRTCSocket } from "./WebRTCSocket";
 
@@ -62,21 +61,39 @@ export class RemotePeer extends EventEmitter {
 
   public handshake(sourceChannel: number = 0) {
     this.socket.push(
-      new HandshakeMessage(sourceChannel, this.protocolOptions, this.peerId)
+      new HandshakeMessage(
+        sourceChannel,
+        this.protocolOptions,
+        this.peerId
+      ).encode()
+    );
+  }
+
+  public have(chunkIndex: number) {
+    this.socket.push(
+      new HaveMessage(
+        this.peerId,
+        new ChunkSpec([chunkIndex, chunkIndex])
+      ).encode()
     );
   }
 
   public request(chunkSpec: ChunkSpec) {
-    this.socket.push(new RequestMessage(this.peerId, chunkSpec));
+    this.socket.push(new RequestMessage(this.peerId, chunkSpec).encode());
   }
 
   public ack(chunkSpec: ChunkSpec, delay: PreciseTimestamp) {
-    this.socket.push(new AckMessage(this.peerId, chunkSpec, delay));
+    this.socket.push(new AckMessage(this.peerId, chunkSpec, delay).encode());
   }
 
   public data(chunkSpec: ChunkSpec, data: Buffer) {
     this.socket.push(
-      new DataMessage(this.peerId, chunkSpec, new PreciseTimestamp(), data)
+      new DataMessage(
+        this.peerId,
+        chunkSpec,
+        new PreciseTimestamp(),
+        data
+      ).encode()
     );
   }
 
@@ -156,7 +173,7 @@ export class RemotePeer extends EventEmitter {
   private handleDataMessage(message: DataMessage) {
     switch (this.protocolOptions.chunkAddressingMethod) {
       case ChunkAddressingMethod["32ChunkRanges"]:
-        this.emit('dataMessage', message);
+        this.emit("dataMessage", message);
 
         this.ack(
           message.chunkSpec,

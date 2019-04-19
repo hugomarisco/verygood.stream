@@ -3,6 +3,10 @@ import wrtc from "wrtc";
 
 export class WebRTCSocket extends SimplePeer {
   constructor(opts?: Options) {
-    super({ wrtc, ...opts });
+    if (SimplePeer.WEBRTC_SUPPORT) {
+      super(opts);
+    } else {
+      super({ wrtc, ...opts });
+    }
   }
 }

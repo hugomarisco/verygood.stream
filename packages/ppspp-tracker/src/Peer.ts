@@ -38,10 +38,8 @@ export class Peer {
   }
 
   public answer(socketId: string, answer: object) {
-    if (this.offers[socketId]) {
-      this.ws.send(
-        JSON.stringify({ type: "answer", payload: { socketId, answer } })
-      );
-    }
+    this.ws.send(
+      JSON.stringify({ type: "answer", payload: { socketId, answer } })
+    );
   }
 }
