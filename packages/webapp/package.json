@@ -19,6 +19,7 @@
     "build": "react-scripts build",
     "test": "CI=true react-scripts test",
     "test:watch": "react-scripts test --watch",
+    "test:ci": "CI=true react-scripts test --coverage",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

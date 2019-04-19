@@ -20,7 +20,7 @@
     "build:watch": "tsc -w",
     "test": "jest --coverage --passWithNoTests",
     "test:watch": "jest --watch --passWithNoTests",
-    "test:ci": "jest --coverage"
+    "test:ci": "jest --coverage --passWithNoTests"
   },
   "dependencies": {
     "lodash": "^4.17.11",

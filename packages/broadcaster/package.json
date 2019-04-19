@@ -19,7 +19,7 @@
     "build:watch": "tsc -w",
     "test": "jest --coverage --passWithNoTests",
     "test:watch": "jest --watch --passWithNoTests",
-    "test:ci": "jest --coverage"
+    "test:ci": "jest --coverage --passWithNoTests"
   },
   "dependencies": {
     "@verygood.stream/ppspp-protocol": "^0.1.0",
