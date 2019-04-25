@@ -31,7 +31,10 @@
       "runtimeArgs": ["-r", "ts-node/register"],
       "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std",
-      "preLaunchTask": "npm: bootstrap"
+      "preLaunchTask": "npm: bootstrap",
+      "env": {
+        "TS_NODE_FILES": true
+      }
     }
   ]
 }

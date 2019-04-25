@@ -1,9 +1,33 @@
 # `ppspp-tracker`
 
-> TODO: description
+A simple WebSocket tracker for PPSPP.
 
 ## Usage
 
+- Connect
+
+`ws(s)://<host>/<swarmId>`
+
+- Find peers
+
+```json
+{ "type": "find" }
 ```
-// TODO: DEMONSTRATE API
+
+- Offer
+
+```json
+{
+  "type": "offer",
+  "payload": { "offer": "<wrtcOffer>" }
+}
+```
+
+- Answer
+
+```json
+{
+  "type": "answer",
+  "payload": { "peerId": "<peerId>", "answer": "<wrtcOffer>" }
+}
 ```

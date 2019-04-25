@@ -1,79 +1,20 @@
-import winston from "winston";
-import WebSocket from "ws";
-import { Peer } from "./Peer";
+import { Logger } from "./Logger";
+import Tracker from "./Tracker";
 
-const logger = winston.createLogger({
-  transports: [new winston.transports.Console()]
-});
+const port = process.env.PPSPP_TRACKER_PORT
+  ? parseInt(process.env.PPSPP_TRACKER_PORT, 10)
+  : 8080;
 
-const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
+const tracker = new Tracker(port);
 
-const wss = new WebSocket.Server({ port });
+tracker.on("listening", () =>
+  Logger.info("Listening for connections", { port })
+);
 
-let peers: Peer[] = [];
+tracker.on("close", () => Logger.info("Gracefully shutting down"));
 
-wss.on("listening", () => logger.info("Listening for connections", { port }));
+tracker.on("error", (error: Error) => {
+  Logger.error("Server error", { error });
 
-wss.on("close", () => logger.info("Gracefully shutting down"));
-
-wss.on("error", error => logger.error("Server error", { error }));
-
-wss.on("connection", (ws, req) => {
-  const connectedPeer = new Peer(ws);
-
-  peers.push(connectedPeer);
-
-  logger.info(`New peer connection`, {
-    peerId: connectedPeer.peerId
-  });
-
-  ws.on("error", error => {
-    logger.error(`Client error`, { error, peerId: connectedPeer.peerId });
-
-    peers = peers.filter(peer => peer.peerId !== connectedPeer.peerId);
-  });
-
-  ws.on("close", () => {
-    logger.info(`Peer closed the connection`, { peerId: connectedPeer.peerId });
-
-    peers = peers.filter(peer => peer.peerId !== connectedPeer.peerId);
-  });
-
-  ws.on("message", rawMessage => {
-    try {
-      const { type, swarmId: rawSwarmId, payload } = JSON.parse(
-        rawMessage as string
-      );
-
-      const swarmId = Buffer.from(rawSwarmId.data).toString("utf8");
-
-      switch (type) {
-        case "find":
-          peers
-            .filter(
-              peer =>
-                peer.peerId !== connectedPeer.peerId &&
-                peer.swarmId === swarmId &&
-                peer.hasOffers()
-            )
-            .forEach(peer =>
-              ws.send(
-                JSON.stringify({ type: "offer", payload: peer.getOffer() })
-              )
-            );
-
-          break;
-        case "offer":
-          connectedPeer.addOffer(swarmId, payload.socketId, payload.offer);
-
-          break;
-        case "answer":
-          peers.forEach(peer => peer.answer(payload.socketId, payload.answer));
-
-          break;
-      }
-    } catch (error) {
-      logger.error("Error processing message", { error, message: rawMessage });
-    }
-  });
+  throw error;
 });

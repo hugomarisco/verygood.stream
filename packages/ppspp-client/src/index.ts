@@ -1,29 +1,29 @@
 import {
   AckMessage,
+  ChunkAddressingMethod,
+  ContentIntegrityProtectionMethod,
   DataMessage,
   ProtocolOptions
 } from "@verygood.stream/ppspp-protocol";
 import { Duplex } from "stream";
 import { RemotePeer } from "./RemotePeer";
 import { SwarmMetadata } from "./SwarmMetadata";
-import { SwarmTrackers } from "./SwarmTrackers";
+import { TrackerClient } from "./TrackerClient";
 import { WebRTCSocket } from "./WebRTCSocket";
-
-export const ClientSwarmMetadata = SwarmMetadata;
 
 export class PPSPPClient extends Duplex {
   private static PROTOCOL_VERSION = 1;
   private static SUPPORTED_MESSAGES = [AckMessage.CODE];
 
-  private trackers: SwarmTrackers;
+  private tracker: TrackerClient;
   private peers: { [peerId: string]: RemotePeer };
   private protocolOptions: ProtocolOptions;
   private chunkStore: Buffer[];
 
   constructor(
-    swarmMetadata: SwarmMetadata,
-    { liveDiscardWindow = 10 },
-    trackerUrls: string[]
+    metadata: SwarmMetadata,
+    { liveDiscardWindow = 10 }: { liveDiscardWindow?: number },
+    trackerUrl: string
   ) {
     super();
 
@@ -34,7 +34,11 @@ export class PPSPPClient extends Duplex {
       contentIntegrityProtectionMethod
       /*merkleHashFunction,
       liveSignatureAlgorithm*/
-    } = swarmMetadata;
+    } = metadata;
+
+    if (chunkSize !== 0xffffffff) {
+      throw new Error("Fixed chunk sizes are not supported");
+    }
 
     this.protocolOptions = new ProtocolOptions(
       PPSPPClient.PROTOCOL_VERSION,
@@ -51,11 +55,12 @@ export class PPSPPClient extends Duplex {
 
     this.chunkStore = [];
 
-    this.trackers = new SwarmTrackers(trackerUrls, swarmId);
-
-    this.trackers.on("peerSocket", this.onPeerSocket.bind(this));
-
     this.peers = {};
+
+    this.tracker = new TrackerClient(trackerUrl, swarmId);
+
+    this.tracker.on("peerSocket", this.onPeerSocket.bind(this));
+    this.tracker.on("error", this.emit.bind(this, "error"));
   }
 
   public pushChunk(chunkId: number, data: Buffer) {
@@ -75,6 +80,8 @@ export class PPSPPClient extends Duplex {
 
     remotePeer.handshake();
 
+    remotePeer.on("error", this.emit.bind(this, "error"));
+
     remotePeer.on("dataMessage", (message: DataMessage) => {
       const [chunkIndex] = message.chunkSpec.spec as [number, number];
 
@@ -85,3 +92,14 @@ export class PPSPPClient extends Duplex {
     });
   }
 }
+
+const swarmMetadata = new SwarmMetadata(
+  Buffer.from("aaa", "utf-8"),
+  0xffffffff,
+  ChunkAddressingMethod["32ChunkRanges"],
+  ContentIntegrityProtectionMethod.NONE
+);
+
+const client = new PPSPPClient(swarmMetadata, {}, "ws://localhost:8080/abc");
+
+client.on("error", console.log);

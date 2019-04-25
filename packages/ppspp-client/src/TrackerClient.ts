@@ -6,21 +6,19 @@ import { WebRTCSocket } from "./WebRTCSocket";
 
 export class TrackerClient extends EventEmitter {
   private trackerSocket: WebSocket;
-  private swarmId: Buffer;
   private peerSockets: { [peerId: string]: WebRTCSocket };
 
-  constructor(url: string, swarmId: Buffer) {
+  constructor(url: string) {
     super();
-
-    this.swarmId = swarmId;
 
     this.trackerSocket =
       typeof window !== "undefined"
         ? new window.WebSocket(url)
         : new WebSocket(url);
 
-    this.trackerSocket.onopen = this.onOpen.bind(this);
-    this.trackerSocket.onmessage = this.onMessage.bind(this);
+    this.trackerSocket.on("open", this.onOpen.bind(this));
+    this.trackerSocket.on("meesage", this.onMessage.bind(this));
+    this.trackerSocket.on("error", this.emit.bind(this, "error"));
 
     this.peerSockets = {};
   }
@@ -29,7 +27,6 @@ export class TrackerClient extends EventEmitter {
     this.trackerSocket.send(
       JSON.stringify({
         payload,
-        swarmId: this.swarmId,
         type
       })
     );
@@ -61,15 +58,11 @@ export class TrackerClient extends EventEmitter {
     this.send("find", {});
   }
 
-  private onMessage(event: {
-    data: WebSocket.Data;
-    type: string;
-    target: WebSocket;
-  }) {
+  private onMessage(data: string) {
     try {
       let peerSocket: WebRTCSocket;
 
-      const message = JSON.parse(event.data.toString());
+      const message = JSON.parse(data);
 
       switch (message.type) {
         case "offer":
@@ -77,8 +70,13 @@ export class TrackerClient extends EventEmitter {
 
           peerSocket.on(
             "signal",
-            this.answer.bind(this, message.payload.socketId)
+            this.answer.bind(
+              this,
+              message.payload.peerId,
+              message.payload.offerId
+            )
           );
+
           peerSocket.on("connect", () => {
             this.emit("peerSocket", peerSocket);
           });
@@ -87,7 +85,7 @@ export class TrackerClient extends EventEmitter {
 
           break;
         case "answer":
-          peerSocket = this.peerSockets[message.payload.socketId];
+          peerSocket = this.peerSockets[message.payload.offerId];
 
           if (peerSocket) {
             peerSocket.signal(message.payload.answer);

@@ -23,7 +23,12 @@ import {
 import { BitSet } from "bitset";
 import { EventEmitter } from "events";
 import randomBytes from "randombytes";
+import winston from "winston";
 import { WebRTCSocket } from "./WebRTCSocket";
+
+const logger = winston.createLogger({
+  transports: [new winston.transports.Console()]
+});
 
 export class RemotePeer extends EventEmitter {
   public peerId: number;
@@ -50,13 +55,10 @@ export class RemotePeer extends EventEmitter {
 
     this.protocolOptions = protocolOptions;
 
-    if (this.protocolOptions.chunkSize !== 0xffffffff) {
-      throw new Error("Fixed chunk sizes are not supported");
-    }
-
     this.socket = socket;
 
-    this.socket.on("data", this.handleData.bind(this));
+    this.socket.on("data", this.handleMessage.bind(this));
+    this.socket.on("error", this.emit.bind(this, "error"));
   }
 
   public handshake(sourceChannel: number = 0) {
@@ -97,7 +99,7 @@ export class RemotePeer extends EventEmitter {
     );
   }
 
-  private handleData(data: Buffer) {
+  private handleMessage(data: Buffer) {
     const messages = Decoder.decode(data, this.protocolOptions);
 
     messages.forEach(message => {
@@ -152,6 +154,8 @@ export class RemotePeer extends EventEmitter {
   }
 
   private handleHandshakeMessage(message: HandshakeMessage) {
+    logger.info("Handshake message received", { peerId: this.peerId });
+
     this.handshake(message.sourceChannel);
   }
 

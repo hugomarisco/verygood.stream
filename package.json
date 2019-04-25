@@ -27,6 +27,6 @@
     "typescript": "^3.4.4"
   },
   "dependencies": {
-    "wrtc": "^0.3.7"
+    "winston": "^3.2.1"
   }
 }
