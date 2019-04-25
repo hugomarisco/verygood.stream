@@ -1,7 +1,5 @@
 import {
   AckMessage,
-  ChunkAddressingMethod,
-  ContentIntegrityProtectionMethod,
   DataMessage,
   ProtocolOptions
 } from "@verygood.stream/ppspp-protocol";
@@ -57,7 +55,7 @@ export class PPSPPClient extends Duplex {
 
     this.peers = {};
 
-    this.tracker = new TrackerClient(trackerUrl, swarmId);
+    this.tracker = new TrackerClient(trackerUrl);
 
     this.tracker.on("peerSocket", this.onPeerSocket.bind(this));
     this.tracker.on("error", this.emit.bind(this, "error"));
@@ -92,14 +90,3 @@ export class PPSPPClient extends Duplex {
     });
   }
 }
-
-const swarmMetadata = new SwarmMetadata(
-  Buffer.from("aaa", "utf-8"),
-  0xffffffff,
-  ChunkAddressingMethod["32ChunkRanges"],
-  ContentIntegrityProtectionMethod.NONE
-);
-
-const client = new PPSPPClient(swarmMetadata, {}, "ws://localhost:8080/abc");
-
-client.on("error", console.log);

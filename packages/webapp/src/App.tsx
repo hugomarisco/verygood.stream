@@ -1,7 +1,4 @@
-import {
-  ClientSwarmMetadata,
-  PPSPPClient
-} from "@verygood.stream/ppspp-client";
+import { PPSPPClient } from "@verygood.stream/ppspp-client";
 import {
   ChunkAddressingMethod,
   ContentIntegrityProtectionMethod
@@ -10,18 +7,17 @@ import React, { Component } from "react";
 
 const chunkSize = 10;
 
-const swarmMetadata = new ClientSwarmMetadata(
-  Buffer.from("abc", "utf8"),
-  chunkSize,
-  ChunkAddressingMethod["32ChunkRanges"],
-  ContentIntegrityProtectionMethod.NONE
-);
+// const swarmMetadata = new ClientSwarmMetadata(
+//   Buffer.from("abc", "utf8"),
+//   chunkSize,
+//   ChunkAddressingMethod["32ChunkRanges"],
+//   ContentIntegrityProtectionMethod.NONE
+// );
 
 class App extends Component {
   public componentDidMount() {
-    const client = new PPSPPClient(swarmMetadata, {}, ["ws://localhost:8080"]);
-
-    client.on("chunk", console.log);
+    // const client = new PPSPPClient(swarmMetadata, {}, "ws://localhost:8080");
+    // client.on("chunk", console.log);
   }
 
   public render() {
