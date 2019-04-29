@@ -6,7 +6,7 @@ import { WebRTCSocket } from "./WebRTCSocket";
 
 export class TrackerClient extends EventEmitter {
   private trackerSocket: WebSocket;
-  private peerSockets: { [peerId: string]: WebRTCSocket };
+  private peerSockets: { [socketId: string]: WebRTCSocket };
 
   constructor(url: string) {
     super();
@@ -17,7 +17,7 @@ export class TrackerClient extends EventEmitter {
         : new WebSocket(url);
 
     this.trackerSocket.on("open", this.onOpen.bind(this));
-    this.trackerSocket.on("meesage", this.onMessage.bind(this));
+    this.trackerSocket.on("message", this.onMessage.bind(this));
     this.trackerSocket.on("error", this.emit.bind(this, "error"));
 
     this.peerSockets = {};
@@ -32,16 +32,16 @@ export class TrackerClient extends EventEmitter {
     );
   }
 
-  private offer(socketId: string, offer: SignalData) {
-    this.send("offer", { socketId, offer });
+  private offer(socketId: string, signalData: SignalData) {
+    this.send("offer", { socketId, signalData });
   }
 
-  private answer(socketId: string, answer: SignalData) {
-    this.send("answer", { socketId, answer });
+  private answer(peerId: string, socketId: string, signalData: SignalData) {
+    this.send("answer", { peerId, socketId, signalData });
   }
 
   private onOpen() {
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 10; i++) {
       const socketId = UUIDv4();
 
       const peerSocket = new WebRTCSocket({ initiator: true });
@@ -49,7 +49,7 @@ export class TrackerClient extends EventEmitter {
       peerSocket.once("signal", this.offer.bind(this, socketId));
       peerSocket.once(
         "connect",
-        this.emit.bind(null, "peerSocket", peerSocket)
+        this.emit.bind(this, "peerSocket", peerSocket, false)
       );
 
       this.peerSockets[socketId] = peerSocket;
@@ -68,27 +68,27 @@ export class TrackerClient extends EventEmitter {
         case "offer":
           peerSocket = new WebRTCSocket();
 
-          peerSocket.on(
+          peerSocket.once(
             "signal",
             this.answer.bind(
               this,
               message.payload.peerId,
-              message.payload.offerId
+              message.payload.socketId
             )
           );
 
-          peerSocket.on("connect", () => {
-            this.emit("peerSocket", peerSocket);
+          peerSocket.once("connect", () => {
+            this.emit("peerSocket", peerSocket, false);
           });
 
-          peerSocket.signal(message.payload.offer);
+          peerSocket.signal(message.payload.signalData);
 
           break;
         case "answer":
-          peerSocket = this.peerSockets[message.payload.offerId];
+          peerSocket = this.peerSockets[message.payload.socketId];
 
           if (peerSocket) {
-            peerSocket.signal(message.payload.answer);
+            peerSocket.signal(message.payload.signalData);
           }
 
           break;

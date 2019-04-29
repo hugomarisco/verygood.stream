@@ -23,24 +23,35 @@ export class Swarm {
   private onPeerError(peer: Peer, error: Error) {
     delete this.peers[peer.peerId];
 
-    Logger.error(error.message, { peerId: peer.peerId });
+    Logger.error("Peer error", {
+      error,
+      peerId: peer.peerId,
+      swarmId: this.swarmId
+    });
   }
 
   private onPeerClose(peer: Peer) {
     delete this.peers[peer.peerId];
 
     Logger.debug("Peer closed connection", {
-      peerId: peer.peerId
+      peerId: peer.peerId,
+      swarmId: this.swarmId
     });
   }
 
-  private onPeerAnswer(peer: Peer, originPeerId: string, answer: string) {
+  private onPeerAnswer(
+    peer: Peer,
+    originPeerId: string,
+    socketId: string,
+    signalData: string
+  ) {
     const originPeer = this.peers[originPeerId];
 
     if (!originPeer) {
       Logger.warn("Answer received to unknown peer", {
         originPeerId,
-        peerId: peer.peerId
+        peerId: peer.peerId,
+        swarmId: this.swarmId
       });
 
       return;
@@ -48,21 +59,27 @@ export class Swarm {
 
     Logger.debug("Answer sent", {
       originPeerId,
-      peerId: peer.peerId
+      peerId: peer.peerId,
+      swarmId: this.swarmId
     });
 
-    originPeer.sendAnswer(answer);
+    originPeer.sendAnswer(peer.peerId, socketId, signalData);
   }
 
   private onPeerFind(peer: Peer) {
-    Object.keys(this.peers).forEach(availablePeerId => {
-      const availablePeer = this.peers[availablePeerId];
+    Object.keys(this.peers)
+      .filter(peerId => peerId !== peer.peerId)
+      .forEach(peerId => {
+        const offer = this.peers[peerId].getOffer();
 
-      const offer = availablePeer.getOffer();
+        if (offer) {
+          peer.sendOffer(peerId, offer);
 
-      if (offer) {
-        peer.sendPeer({ peerId: availablePeerId, offer });
-      }
-    });
+          Logger.debug("Offer sent to Peer", {
+            peerId,
+            swarmId: this.swarmId
+          });
+        }
+      });
   }
 }

@@ -2,41 +2,58 @@ import { EventEmitter } from "events";
 import { v4 as UUIDv4 } from "uuid";
 import WebSocket from "ws";
 import { Logger } from "./Logger";
+import { Offer } from "./Offer";
 
 export class Peer extends EventEmitter {
   public peerId: string;
   private ws: WebSocket;
-  private offers: string[];
+  private offers: { [wrtcSocketId: string]: Offer };
 
   constructor(ws: WebSocket) {
     super();
 
     this.peerId = UUIDv4();
     this.ws = ws;
-    this.offers = [];
+    this.offers = {};
 
     ws.on("error", this.emit.bind(this, "error"));
     ws.on("close", this.emit.bind(this, "error"));
     ws.on("message", this.onMessage.bind(this));
   }
 
-  public getOffer(): string | undefined {
-    return this.offers.pop();
+  public getOffer(): Offer | null {
+    const wrtcSocketIds = Object.keys(this.offers);
+
+    if (wrtcSocketIds.length === 0) {
+      return null;
+    }
+
+    const wrtcSocketId = wrtcSocketIds[0];
+
+    const offer = this.offers[wrtcSocketId];
+
+    delete this.offers[wrtcSocketId];
+
+    return offer;
   }
 
-  public sendAnswer(answer: string) {
+  public sendAnswer(peerId: string, socketId: string, signalData: string) {
     const message: object = {
-      payload: { answer },
+      payload: { peerId, socketId, signalData },
       type: "answer"
     };
 
     this.ws.send(JSON.stringify(message));
   }
 
-  public sendPeer(peer: object) {
+  public sendOffer(peerId: string, offer: Offer) {
     const message: object = {
-      payload: { peer },
-      type: "peer"
+      payload: {
+        peerId,
+        signalData: offer.signalData,
+        socketId: offer.wrtcSocketId
+      },
+      type: "offer"
     };
 
     this.ws.send(JSON.stringify(message));
@@ -66,9 +83,10 @@ export class Peer extends EventEmitter {
             peerId: this.peerId
           });
 
-          const { offer }: { offer: string } = payload;
-
-          this.offers.push(offer);
+          this.offers[payload.socketId] = new Offer(
+            payload.socketId,
+            payload.signalData
+          );
 
           break;
         case "answer":
@@ -76,12 +94,12 @@ export class Peer extends EventEmitter {
             peerId: this.peerId
           });
 
-          const {
-            peerId,
-            answer
-          }: { peerId: string; answer: string } = payload;
-
-          this.emit("answer", peerId, answer);
+          this.emit(
+            "answer",
+            payload.peerId,
+            payload.socketId,
+            payload.signalData
+          );
 
           break;
         default:

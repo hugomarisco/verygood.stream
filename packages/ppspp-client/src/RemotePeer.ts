@@ -23,12 +23,8 @@ import {
 import { BitSet } from "bitset";
 import { EventEmitter } from "events";
 import randomBytes from "randombytes";
-import winston from "winston";
+import { Logger } from "./Logger";
 import { WebRTCSocket } from "./WebRTCSocket";
-
-const logger = winston.createLogger({
-  transports: [new winston.transports.Console()]
-});
 
 export class RemotePeer extends EventEmitter {
   public peerId: number;
@@ -62,17 +58,19 @@ export class RemotePeer extends EventEmitter {
   }
 
   public handshake(sourceChannel: number = 0) {
-    this.socket.push(
+    this.socket.send(
       new HandshakeMessage(
         sourceChannel,
         this.protocolOptions,
         this.peerId
       ).encode()
     );
+
+    Logger.debug("Handshake sent", { sourceChannel, peerId: this.peerId });
   }
 
   public have(chunkIndex: number) {
-    this.socket.push(
+    this.socket.send(
       new HaveMessage(
         this.peerId,
         new ChunkSpec([chunkIndex, chunkIndex])
@@ -81,15 +79,15 @@ export class RemotePeer extends EventEmitter {
   }
 
   public request(chunkSpec: ChunkSpec) {
-    this.socket.push(new RequestMessage(this.peerId, chunkSpec).encode());
+    this.socket.send(new RequestMessage(this.peerId, chunkSpec).encode());
   }
 
   public ack(chunkSpec: ChunkSpec, delay: PreciseTimestamp) {
-    this.socket.push(new AckMessage(this.peerId, chunkSpec, delay).encode());
+    this.socket.send(new AckMessage(this.peerId, chunkSpec, delay).encode());
   }
 
   public data(chunkSpec: ChunkSpec, data: Buffer) {
-    this.socket.push(
+    this.socket.send(
       new DataMessage(
         this.peerId,
         chunkSpec,
@@ -154,12 +152,16 @@ export class RemotePeer extends EventEmitter {
   }
 
   private handleHandshakeMessage(message: HandshakeMessage) {
-    logger.info("Handshake message received", { peerId: this.peerId });
+    Logger.info("Handshake message received", { peerId: this.peerId });
 
     this.handshake(message.sourceChannel);
   }
 
   private handleHaveMessage(message: HaveMessage) {
+    Logger.info("Have message received", {
+      peerId: this.peerId
+    });
+
     switch (this.protocolOptions.chunkAddressingMethod) {
       case ChunkAddressingMethod["32ChunkRanges"]:
         const [begin, end] = message.chunkSpec.spec as [number, number];
@@ -175,13 +177,17 @@ export class RemotePeer extends EventEmitter {
   }
 
   private handleDataMessage(message: DataMessage) {
+    Logger.info("Data message received", {
+      peerId: this.peerId
+    });
+
     switch (this.protocolOptions.chunkAddressingMethod) {
       case ChunkAddressingMethod["32ChunkRanges"]:
         this.emit("dataMessage", message);
 
         this.ack(
           message.chunkSpec,
-          message.timestamp.minus(new PreciseTimestamp())
+          new PreciseTimestamp().minus(message.timestamp)
         );
 
         break;
@@ -189,6 +195,10 @@ export class RemotePeer extends EventEmitter {
   }
 
   private handleAckMessage(message: AckMessage) {
+    Logger.info("Ack message received", {
+      peerId: this.peerId
+    });
+
     switch (this.protocolOptions.chunkAddressingMethod) {
       case ChunkAddressingMethod["32ChunkRanges"]:
         const [begin, end] = message.chunkSpec.spec as [number, number];
@@ -212,6 +222,10 @@ export class RemotePeer extends EventEmitter {
   }
 
   private handleRequestMessage(message: RequestMessage) {
+    Logger.info("Request message received", {
+      peerId: this.peerId
+    });
+
     switch (this.protocolOptions.chunkAddressingMethod) {
       case ChunkAddressingMethod["32ChunkRanges"]:
         const [begin, end] = message.chunkSpec.spec as [number, number];
