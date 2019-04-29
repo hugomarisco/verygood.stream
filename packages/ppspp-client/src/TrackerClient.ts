@@ -16,9 +16,9 @@ export class TrackerClient extends EventEmitter {
         ? new window.WebSocket(url)
         : new WebSocket(url);
 
-    this.trackerSocket.on("open", this.onOpen.bind(this));
-    this.trackerSocket.on("message", this.onMessage.bind(this));
-    this.trackerSocket.on("error", this.emit.bind(this, "error"));
+    this.trackerSocket.onopen = this.onOpen.bind(this);
+    this.trackerSocket.onmessage = this.onMessage.bind(this);
+    this.trackerSocket.onerror = this.emit.bind(this, "error");
 
     this.peerSockets = {};
   }
@@ -58,11 +58,11 @@ export class TrackerClient extends EventEmitter {
     this.send("find", {});
   }
 
-  private onMessage(data: string) {
+  private onMessage(event: { data: WebSocket.Data }) {
     try {
       let peerSocket: WebRTCSocket;
 
-      const message = JSON.parse(data);
+      const message = JSON.parse(event.data as string);
 
       switch (message.type) {
         case "offer":

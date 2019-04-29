@@ -65,7 +65,15 @@ export class PPSPPClient extends Duplex {
   public pushChunk(chunkId: number, data: Buffer) {
     this.chunkStore[chunkId] = data;
 
+    this.deleteOldChunks();
+
     Object.keys(this.peers).forEach(peerId => this.peers[peerId].have(chunkId));
+  }
+
+  private deleteOldChunks() {
+    const { liveDiscardWindow } = this.protocolOptions;
+
+    // this.chunkStore = this.chunkStore.slice(liveDiscardWindow * -1);
   }
 
   private onPeerSocket(peerSocket: WebRTCSocket, isInitiator: boolean) {
@@ -86,6 +94,9 @@ export class PPSPPClient extends Duplex {
 
       if (!this.chunkStore[chunkIndex]) {
         this.chunkStore[chunkIndex] = message.data;
+
+        this.deleteOldChunks();
+
         this.emit("chunk", message.data);
       }
     });

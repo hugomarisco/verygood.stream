@@ -9,5 +9,5 @@ const swarmMetadata = new SwarmMetadata(
 
 const client = new PPSPPClient(swarmMetadata, {}, "ws://localhost:8080");
 
-// client.on("chunk", console.log);
+client.on("chunk", chunk => console.log(chunk.length));
 // client.on("error", console.error);

@@ -4,6 +4,7 @@ import {
   ContentIntegrityProtectionMethod
 } from "@verygood.stream/ppspp-protocol";
 import { randomBytes } from "crypto";
+import { UDPServer } from "./UDPServer";
 
 const swarmMetadata = new SwarmMetadata(
   Buffer.from("abc", "utf8"),
@@ -14,12 +15,6 @@ const swarmMetadata = new SwarmMetadata(
 
 const client = new PPSPPClient(swarmMetadata, {}, "ws://localhost:8080");
 
-// client.on("chunk", console.log);
-// client.on("error", console.error);
+const udpServer = new UDPServer("localhost", 3333);
 
-let i = 0;
-
-setInterval(() => {
-  client.pushChunk(i, randomBytes(1));
-  i += 1;
-}, 500);
+udpServer.on("chunk", client.pushChunk.bind(client));

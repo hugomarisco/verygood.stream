@@ -20,8 +20,8 @@ import {
   SignedIntegrityMessage,
   UnchokeMessage
 } from "@verygood.stream/ppspp-protocol";
-import { BitSet } from "bitset";
 import { EventEmitter } from "events";
+import BitSet from "fast-bitset";
 import randomBytes from "randombytes";
 import { Logger } from "./Logger";
 import { WebRTCSocket } from "./WebRTCSocket";
@@ -45,7 +45,7 @@ export class RemotePeer extends EventEmitter {
 
     this.isChoking = false;
 
-    this.availability = new BitSet();
+    this.availability = new BitSet(1000);
 
     this.chunkStore = chunkStore;
 
@@ -166,7 +166,7 @@ export class RemotePeer extends EventEmitter {
       case ChunkAddressingMethod["32ChunkRanges"]:
         const [begin, end] = message.chunkSpec.spec as [number, number];
 
-        this.availability.set(begin, 1);
+        this.availability.setRange(begin, end);
 
         if (!this.chunkStore[begin]) {
           this.request(message.chunkSpec);
@@ -203,7 +203,7 @@ export class RemotePeer extends EventEmitter {
       case ChunkAddressingMethod["32ChunkRanges"]:
         const [begin, end] = message.chunkSpec.spec as [number, number];
 
-        this.availability.set(begin, 1);
+        this.availability.setRange(begin, end);
 
         break;
     }
@@ -228,10 +228,13 @@ export class RemotePeer extends EventEmitter {
 
     switch (this.protocolOptions.chunkAddressingMethod) {
       case ChunkAddressingMethod["32ChunkRanges"]:
-        const [begin, end] = message.chunkSpec.spec as [number, number];
+        const [chunkIndex] = message.chunkSpec.spec as [number, number];
 
-        if (this.chunkStore[begin]) {
-          this.data(new ChunkSpec([begin, begin]), this.chunkStore[begin]);
+        if (this.chunkStore[chunkIndex]) {
+          this.data(
+            new ChunkSpec([chunkIndex, chunkIndex]),
+            this.chunkStore[chunkIndex]
+          );
         }
 
         break;

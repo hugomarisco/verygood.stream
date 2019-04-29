@@ -182,8 +182,8 @@ export class Decoder {
           ]);
           index += 8;
 
-          const data = buffer.slice(index, index + protocolOptions!.chunkSize);
-          index += protocolOptions!.chunkSize;
+          const data = buffer.slice(index);
+          index += data.length;
 
           messages.push(
             new DataMessage(destinationChannel, chunkSpec, timestamp, data)
