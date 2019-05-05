@@ -1,9 +1,11 @@
 import {
   AckMessage,
+  ChunkSpec,
   DataMessage,
   ProtocolOptions
 } from "@verygood.stream/ppspp-protocol";
 import { Duplex } from "stream";
+import { ChunkStore } from "./ChunkStore";
 import { Logger } from "./Logger";
 import { RemotePeer } from "./RemotePeer";
 import { SwarmMetadata } from "./SwarmMetadata";
@@ -17,7 +19,7 @@ export class PPSPPClient extends Duplex {
   private tracker: TrackerClient;
   private peers: { [peerId: string]: RemotePeer };
   private protocolOptions: ProtocolOptions;
-  private chunkStore: Buffer[];
+  private chunkStore: ChunkStore;
 
   constructor(
     metadata: SwarmMetadata,
@@ -52,7 +54,7 @@ export class PPSPPClient extends Duplex {
       merkleHashFunction,*/
     );
 
-    this.chunkStore = [];
+    this.chunkStore = new ChunkStore(liveDiscardWindow);
 
     this.peers = {};
 
@@ -63,17 +65,21 @@ export class PPSPPClient extends Duplex {
   }
 
   public pushChunk(chunkId: number, data: Buffer) {
-    this.chunkStore[chunkId] = data;
+    this.chunkStore.setChunk(chunkId, data);
 
-    this.deleteOldChunks();
+    this.chunkStore.discardOldChunks();
 
     Object.keys(this.peers).forEach(peerId => this.peers[peerId].have(chunkId));
   }
 
-  private deleteOldChunks() {
-    const { liveDiscardWindow } = this.protocolOptions;
+  public requestChunk(chunkId: number) {
+    Object.keys(this.peers).forEach(peerId =>
+      this.peers[peerId].request(new ChunkSpec([chunkId, chunkId]))
+    );
+  }
 
-    // this.chunkStore = this.chunkStore.slice(liveDiscardWindow * -1);
+  public clearChunkStore() {
+    this.chunkStore = new ChunkStore(this.protocolOptions.liveDiscardWindow);
   }
 
   private onPeerSocket(peerSocket: WebRTCSocket, isInitiator: boolean) {
@@ -85,6 +91,8 @@ export class PPSPPClient extends Duplex {
 
     this.peers[remotePeer.peerId] = remotePeer;
 
+    this.emit("peer");
+
     remotePeer.on("error", this.onPeerClose.bind(this, remotePeer.peerId));
 
     remotePeer.on("close", this.onPeerClose.bind(this, remotePeer.peerId));
@@ -92,12 +100,12 @@ export class PPSPPClient extends Duplex {
     remotePeer.on("dataMessage", (message: DataMessage) => {
       const [chunkIndex] = message.chunkSpec.spec as [number, number];
 
-      if (!this.chunkStore[chunkIndex]) {
-        this.chunkStore[chunkIndex] = message.data;
+      if (!this.chunkStore.getChunk(chunkIndex)) {
+        this.chunkStore.setChunk(chunkIndex, message.data);
 
-        this.deleteOldChunks();
+        this.chunkStore.discardOldChunks();
 
-        this.emit("chunk", message.data);
+        this.emit("chunk", chunkIndex, message.data);
       }
     });
 

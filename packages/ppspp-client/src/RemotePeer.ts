@@ -23,6 +23,7 @@ import {
 import { EventEmitter } from "events";
 import BitSet from "fast-bitset";
 import randomBytes from "randombytes";
+import { ChunkStore } from "./ChunkStore";
 import { Logger } from "./Logger";
 import { WebRTCSocket } from "./WebRTCSocket";
 
@@ -30,14 +31,14 @@ export class RemotePeer extends EventEmitter {
   public peerId: number;
   public socket: WebRTCSocket;
   public protocolOptions: ProtocolOptions;
-  public chunkStore: Buffer[];
+  public chunkStore: ChunkStore;
   public availability: BitSet;
   public isChoking: boolean;
 
   constructor(
     socket: WebRTCSocket,
     protocolOptions: ProtocolOptions,
-    chunkStore: Buffer[]
+    chunkStore: ChunkStore
   ) {
     super();
 
@@ -66,7 +67,10 @@ export class RemotePeer extends EventEmitter {
       ).encode()
     );
 
-    Logger.debug("Handshake sent", { sourceChannel, peerId: this.peerId });
+    Logger.debug("Handshake sent", {
+      peerId: this.peerId,
+      sourceChannel
+    });
   }
 
   public have(chunkIndex: number) {
@@ -152,7 +156,9 @@ export class RemotePeer extends EventEmitter {
   }
 
   private handleHandshakeMessage(message: HandshakeMessage) {
-    Logger.info("Handshake message received", { peerId: this.peerId });
+    Logger.info("Handshake message received", {
+      peerId: this.peerId
+    });
 
     this.handshake(message.sourceChannel);
   }
@@ -168,7 +174,7 @@ export class RemotePeer extends EventEmitter {
 
         this.availability.setRange(begin, end);
 
-        if (!this.chunkStore[begin]) {
+        if (!this.chunkStore.getChunk(begin)) {
           this.request(message.chunkSpec);
         }
 
@@ -185,10 +191,7 @@ export class RemotePeer extends EventEmitter {
       case ChunkAddressingMethod["32ChunkRanges"]:
         this.emit("dataMessage", message);
 
-        this.ack(
-          message.chunkSpec,
-          new PreciseTimestamp().minus(message.timestamp)
-        );
+        this.ack(message.chunkSpec, new PreciseTimestamp([1, 1]));
 
         break;
     }
@@ -230,11 +233,10 @@ export class RemotePeer extends EventEmitter {
       case ChunkAddressingMethod["32ChunkRanges"]:
         const [chunkIndex] = message.chunkSpec.spec as [number, number];
 
-        if (this.chunkStore[chunkIndex]) {
-          this.data(
-            new ChunkSpec([chunkIndex, chunkIndex]),
-            this.chunkStore[chunkIndex]
-          );
+        const chunkData = this.chunkStore.getChunk(chunkIndex);
+
+        if (chunkData) {
+          this.data(new ChunkSpec([chunkIndex, chunkIndex]), chunkData);
         }
 
         break;
