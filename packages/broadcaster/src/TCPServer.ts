@@ -1,6 +1,7 @@
 import { EventEmitter } from "events";
 import { Server, Socket } from "net";
 import { Logger } from "./Logger";
+import { writeFileSync } from "fs";
 
 export class TCPServer extends EventEmitter {
   private server: Server;
@@ -51,6 +52,8 @@ export class TCPServer extends EventEmitter {
           0xffffffff,
           Buffer.concat([...this.initSegment, data])
         );
+
+        writeFileSync("init.mp4", Buffer.concat([...this.initSegment, data]));
 
         break;
       default:
