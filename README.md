@@ -1,5 +1,5 @@
-[![Travis](https://img.shields.io/travis/hugomarisco/verygood.stream.svg)](https://travis-ci.org/hugomarisco/verygood.stream)
-[![Codecov](https://img.shields.io/codecov/c/github/hugomarisco/verygood.stream.svg)](https://codecov.io/gh/hugomarisco/verygood.stream)
+[![Travis](https://img.shields.io/travis/bitstreamy/bitstreamy.svg)](https://travis-ci.org/bitstreamy/bitstreamy)
+[![Codecov](https://img.shields.io/codecov/c/github/bitstreamy/bitstreamy.svg)](https://codecov.io/gh/bitstreamy/bitstreamy)
 
 **Under active development**
 

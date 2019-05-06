@@ -3,7 +3,7 @@ import {
   ChunkSpec,
   DataMessage,
   ProtocolOptions
-} from "@verygood.stream/ppspp-protocol";
+} from "@bitstreamy/ppspp-protocol";
 import { Duplex } from "stream";
 import { ChunkStore } from "./ChunkStore";
 import { Logger } from "./Logger";

@@ -1,11 +1,11 @@
-# `@verygood.stream/broadcaster`
+# `@bitstreamy/broadcaster`
 
 > TODO: description
 
 ## Usage
 
 ```
-const broadcaster = require('@verygood.stream/broadcaster');
+const broadcaster = require('@bitstreamy/broadcaster');
 
 // TODO: DEMONSTRATE API
 ```

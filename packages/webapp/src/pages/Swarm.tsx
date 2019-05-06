@@ -3,7 +3,7 @@ import {
   ContentIntegrityProtectionMethod,
   PPSPPClient,
   SwarmMetadata
-} from "@verygood.stream/ppspp-client";
+} from "@bitstreamy/ppspp-client";
 import MP4Box from "mp4box";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router";

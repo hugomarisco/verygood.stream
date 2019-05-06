@@ -1,18 +1,18 @@
 {
-  "name": "@verygood.stream/broadcaster",
+  "name": "@bitstreamy/broadcaster",
   "version": "1.0.0",
   "description": "> TODO: description",
   "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "GNU GPLv3",
-  "homepage": "https://github.com/hugomarisco/verygood.stream#readme",
+  "homepage": "https://github.com/bitstreamy/bitstreamy#readme",
   "bugs": {
-    "url": "https://github.com/hugomarisco/verygood.stream/issues"
+    "url": "https://github.com/bitstreamy/bitstreamy/issues"
   },
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hugomarisco/verygood.stream.git"
+    "url": "git+https://github.com/bitstreamy/bitstreamy.git"
   },
   "scripts": {
     "start": "ts-node src/index.ts",
@@ -23,8 +23,8 @@
     "test:ci": "jest --coverage --passWithNoTests"
   },
   "dependencies": {
-    "@verygood.stream/ppspp-client": "^0.1.0",
-    "@verygood.stream/ppspp-protocol": "^0.1.0",
+    "@bitstreamy/ppspp-client": "^0.1.0",
+    "@bitstreamy/ppspp-protocol": "^0.1.0",
     "mp4-box-encoding": "^1.3.0"
   }
 }

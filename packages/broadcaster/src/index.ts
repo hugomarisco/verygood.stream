@@ -1,8 +1,8 @@
-import { PPSPPClient, SwarmMetadata } from "@verygood.stream/ppspp-client";
+import { PPSPPClient, SwarmMetadata } from "@bitstreamy/ppspp-client";
 import {
   ChunkAddressingMethod,
   ContentIntegrityProtectionMethod
-} from "@verygood.stream/ppspp-protocol";
+} from "@bitstreamy/ppspp-protocol";
 import { TCPServer } from "./TCPServer";
 
 const swarmMetadata = new SwarmMetadata(

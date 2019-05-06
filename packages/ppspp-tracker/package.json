@@ -1,18 +1,18 @@
 {
-  "name": "@verygood.stream/ppspp-tracker",
+  "name": "@bitstreamy/ppspp-tracker",
   "version": "0.1.0",
   "description": "PPSPP implementation in JavaScript",
   "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "GNU GPLv3",
-  "homepage": "https://github.com/hugomarisco/verygood.stream#readme",
+  "homepage": "https://github.com/bitstreamy/bitstreamy#readme",
   "bugs": {
-    "url": "https://github.com/hugomarisco/verygood.stream/issues"
+    "url": "https://github.com/bitstreamy/bitstreamy/issues"
   },
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hugomarisco/verygood.stream.git"
+    "url": "git+https://github.com/bitstreamy/bitstreamy.git"
   },
   "scripts": {
     "start": "TS_NODE_FILES=true ts-node src/index.ts",

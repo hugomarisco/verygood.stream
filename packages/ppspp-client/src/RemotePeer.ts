@@ -19,7 +19,7 @@ import {
   RequestMessage,
   SignedIntegrityMessage,
   UnchokeMessage
-} from "@verygood.stream/ppspp-protocol";
+} from "@bitstreamy/ppspp-protocol";
 import { EventEmitter } from "events";
 import BitSet from "fast-bitset";
 import randomBytes from "randombytes";

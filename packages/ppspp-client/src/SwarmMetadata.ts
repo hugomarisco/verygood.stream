@@ -1,9 +1,9 @@
 import {
   ChunkAddressingMethod,
-  ContentIntegrityProtectionMethod,
+  ContentIntegrityProtectionMethod
   /*LiveSignatureAlgorithm,
   MerkleHashFunction*/
-} from "@verygood.stream/ppspp-protocol";
+} from "@bitstreamy/ppspp-protocol";
 
 export class SwarmMetadata {
   public swarmId: Buffer;
@@ -17,7 +17,7 @@ export class SwarmMetadata {
     swarmId: Buffer,
     chunkSize: number,
     chunkAddressingMethod: ChunkAddressingMethod,
-    contentIntegrityProtectionMethod: ContentIntegrityProtectionMethod,
+    contentIntegrityProtectionMethod: ContentIntegrityProtectionMethod
     /*merkleHashFunction?: MerkleHashFunction,
     liveSignatureAlgorithm?: LiveSignatureAlgorithm*/
   ) {

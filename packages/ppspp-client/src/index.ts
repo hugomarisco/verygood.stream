@@ -5,6 +5,6 @@ export { SwarmMetadata } from "./SwarmMetadata";
 export {
   ChunkAddressingMethod,
   ContentIntegrityProtectionMethod
-} from "@verygood.stream/ppspp-protocol";
+} from "@bitstreamy/ppspp-protocol";
 
 const a = "a";
