@@ -1,6 +1,6 @@
 {
   "name": "@bitstreamy/ppspp-client",
-  "version": "0.2.0-alpha.41+2eb77d2",
+  "version": "0.1.0",
   "description": "PPSPP implementation in JavaScript",
   "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "GNU GPLv3",
@@ -33,7 +33,7 @@
     "memory-chunk-store": "^1.3.0"
   },
   "dependencies": {
-    "@bitstreamy/ppspp-protocol": "^0.2.0-alpha.41+2eb77d2",
+    "@bitstreamy/ppspp-protocol": "^0.1.0",
     "async": "^2.6.1",
     "fast-bitset": "^1.3.2",
     "lodash": "^4.17.11",

@@ -1,6 +1,6 @@
 {
   "name": "@bitstreamy/ppspp-tracker",
-  "version": "0.2.0-alpha.41+2eb77d2",
+  "version": "0.1.0",
   "description": "PPSPP implementation in JavaScript",
   "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "GNU GPLv3",

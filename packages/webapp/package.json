@@ -1,8 +1,8 @@
 {
   "name": "@bitstreamy/webapp",
-  "version": "0.2.0-alpha.41+2eb77d2",
+  "version": "0.1.0",
   "dependencies": {
-    "@bitstreamy/ppspp-client": "^0.2.0-alpha.41+2eb77d2",
+    "@bitstreamy/ppspp-client": "^0.1.0",
     "@types/jest": "23.3.13",
     "@types/node": "10.12.18",
     "@types/react": "16.7.20",
