@@ -1,6 +1,6 @@
 {
   "name": "@bitstreamy/ppspp-protocol",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "PPSPP implementation in JavaScript",
   "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "GNU GPLv3",

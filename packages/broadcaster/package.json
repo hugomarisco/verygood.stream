@@ -1,6 +1,6 @@
 {
   "name": "@bitstreamy/broadcaster",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "> TODO: description",
   "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "GNU GPLv3",
@@ -23,8 +23,8 @@
     "test:ci": "jest --coverage --passWithNoTests"
   },
   "dependencies": {
-    "@bitstreamy/ppspp-client": "^0.1.0",
-    "@bitstreamy/ppspp-protocol": "^0.1.0",
+    "@bitstreamy/ppspp-client": "^0.2.0",
+    "@bitstreamy/ppspp-protocol": "^0.2.0",
     "mp4-box-encoding": "^1.3.0"
   },
   "gitHead": "ff1466ca635e3725d09a4fefeb724d20580d4918",
