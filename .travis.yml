@@ -5,3 +5,11 @@ install:
   - npm run build
 script:
   - npm run test:ci
+deploy:
+  provider: s3
+  access_key_id: $AWS_KEY
+  secret_access_key: $AWS_SECRET
+  bucket: "bitstreamy-webapp"
+  skip_cleanup: true
+  local_dir: packages/webapp/build
+  acl: public_read
