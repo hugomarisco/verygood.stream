@@ -12,6 +12,4 @@ deploy:
   bucket: bitstreamy-webapp
   skip_cleanup: true
   local_dir: packages/webapp/build
-  acl: public_read
   region: eu-west-1
-  detect_encoding: true
