@@ -27,5 +27,8 @@
     "@bitstreamy/ppspp-protocol": "^0.1.0",
     "mp4-box-encoding": "^1.3.0"
   },
-  "gitHead": "2eb77d24dc318614f470ecd60848e1868d3707ee"
+  "gitHead": "ff1466ca635e3725d09a4fefeb724d20580d4918",
+  "publishConfig": {
+    "access": "public"
+  }
 }

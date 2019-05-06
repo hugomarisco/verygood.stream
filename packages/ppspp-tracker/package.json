@@ -33,5 +33,8 @@
     "@types/uuid": "^3.4.4",
     "@types/ws": "^6.0.1"
   },
-  "gitHead": "2eb77d24dc318614f470ecd60848e1868d3707ee"
+  "gitHead": "ff1466ca635e3725d09a4fefeb724d20580d4918",
+  "publishConfig": {
+    "access": "public"
+  }
 }
