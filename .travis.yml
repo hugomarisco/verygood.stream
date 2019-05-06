@@ -1,4 +1,9 @@
 language: node_js
+env:
+  global:
+    - PATH=$HOME/.local/bin:$PATH
+before_install:
+  - pip install --user awscli
 install:
   - npm install
   - npm run bootstrap
@@ -7,9 +12,12 @@ script:
   - npm run test:ci
 deploy:
   provider: s3
-  access_key_id: $AWS_KEY
-  secret_access_key: $AWS_SECRET
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
   bucket: bitstreamy-webapp
   skip_cleanup: true
   local_dir: packages/webapp/build
   region: eu-west-1
+after_deploy:
+  - aws configure set preview.cloudfront true
+  - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
