@@ -1,8 +1,8 @@
 import { Logger } from "./Logger";
 import Tracker from "./Tracker";
 
-const port = process.env.PPSPP_TRACKER_PORT
-  ? parseInt(process.env.PPSPP_TRACKER_PORT, 10)
+const port = process.env.BITSTREAMY_TRACKER_PORT
+  ? parseInt(process.env.BITSTREAMY_TRACKER_PORT, 10)
   : 8080;
 
 const tracker = new Tracker(port);

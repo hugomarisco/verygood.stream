@@ -1,7 +1,7 @@
 {
-  "name": "@bitstreamy/ppspp-tracker",
+  "name": "@bitstreamy/tracker",
   "version": "0.2.0",
-  "description": "PPSPP implementation in JavaScript",
+  "description": "Bitstreamy tracker",
   "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "GNU GPLv3",
   "homepage": "https://github.com/bitstreamy/bitstreamy#readme",
@@ -20,10 +20,12 @@
     "build:watch": "tsc -w",
     "test": "jest --coverage --passWithNoTests",
     "test:watch": "jest --watch --passWithNoTests",
-    "test:ci": "jest --coverage --passWithNoTests"
+    "test:ci": "jest --coverage --passWithNoTests",
+    "db:migrate": "db-migrate"
   },
   "dependencies": {
     "lodash": "^4.17.11",
+    "mysql2": "^1.6.5",
     "uuid": "^3.3.2",
     "ws": "^6.1.2"
   },
@@ -31,7 +33,9 @@
     "@types/debug": "0.0.31",
     "@types/lodash": "^4.14.119",
     "@types/uuid": "^3.4.4",
-    "@types/ws": "^6.0.1"
+    "@types/ws": "^6.0.1",
+    "db-migrate": "^0.11.5",
+    "db-migrate-mysql": "^1.1.10"
   },
   "gitHead": "ff1466ca635e3725d09a4fefeb724d20580d4918",
   "publishConfig": {
