@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { IncomingMessage } from "http";
+import { createServer, IncomingMessage } from "http";
 import URL from "url";
 import WebSocket from "ws";
 import { Logger } from "./Logger";
@@ -17,17 +17,24 @@ export default class Tracker extends EventEmitter {
 
     this.swarms = {};
 
+    const httpServer = createServer();
+
+    httpServer.on("request", (req, res) => {
+      res.writeHeader(200);
+
+      res.end();
+    });
+
     this.wss = new WebSocket.Server({
-      clientTracking: false,
-      maxPayload: 5 * 1024,
-      port
+      server: httpServer
     });
 
     this.wss.on("listening", this.emit.bind(this, "listening"));
     this.wss.on("close", this.emit.bind(this, "close"));
     this.wss.on("error", this.emit.bind(this, "error"));
-
     this.wss.on("connection", this.onConnection.bind(this));
+
+    httpServer.listen(port);
   }
 
   private onConnection(ws: WebSocket, request: IncomingMessage) {
