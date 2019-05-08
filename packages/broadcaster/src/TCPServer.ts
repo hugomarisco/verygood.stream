@@ -53,8 +53,6 @@ export class TCPServer extends EventEmitter {
           Buffer.concat([...this.initSegment, data])
         );
 
-        writeFileSync("init.mp4", Buffer.concat([...this.initSegment, data]));
-
         break;
       default:
         this.emit("chunk", this.chunkIndex, data);

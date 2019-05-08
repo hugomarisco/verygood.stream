@@ -95,7 +95,7 @@ export class Swarm extends Component<ISwarmProps, ISwarmState> {
     const client = new PPSPPClient(
       swarmMetadata,
       { liveDiscardWindow: 100 },
-      "ws://localhost:8080"
+      "wss://tracker.bitstreamy.com"
     );
 
     client.on("peer", () => {

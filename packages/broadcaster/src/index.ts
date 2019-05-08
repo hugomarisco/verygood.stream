@@ -16,7 +16,7 @@ const swarmMetadata = new SwarmMetadata(
 const client = new PPSPPClient(
   swarmMetadata,
   { liveDiscardWindow: 100 },
-  "ws://localhost:8080"
+  "wss://tracker.bitstreamy.com"
 );
 
 const tcpServer = new TCPServer("localhost", 3333);
