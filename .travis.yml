@@ -11,7 +11,7 @@ install:
 script:
   - npm run test:ci
 before_deploy:
-  - zip -r tracker.zip packages/tracker/*
+  - cd packages/tracker && zip -rq ../../bitstreamy-tracker.zip * && cd ../../
 deploy:
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY_ID
@@ -27,6 +27,7 @@ deploy:
     app: "bitstreamy-tracker"
     env: "bitstreamy-tracker-prod"
     bucket_name: "bitstreamy-tracker-prod"
-    zip_file: "tracker.zip"
+    zip_file: "bitstreamy-tracker.zip"
+    skip_cleanup: true
 # after_deploy:
 #   - npm run db:migrate

@@ -1,8 +1,9 @@
-import { PPSPPClient, SwarmMetadata } from "@bitstreamy/ppspp-client";
 import {
   ChunkAddressingMethod,
-  ContentIntegrityProtectionMethod
-} from "@bitstreamy/ppspp-protocol";
+  ContentIntegrityProtectionMethod,
+  PPSPPClient,
+  SwarmMetadata
+} from "@bitstreamy/ppspp-client";
 import { TCPServer } from "./TCPServer";
 
 const swarmMetadata = new SwarmMetadata(
