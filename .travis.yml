@@ -29,5 +29,6 @@ deploy:
     bucket_name: "bitstreamy-tracker-prod"
     zip_file: "bitstreamy-tracker.zip"
     skip_cleanup: true
-# after_deploy:
-#   - npm run db:migrate
+after_deploy:
+  - aws configure set preview.cloudfront true
+  - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
