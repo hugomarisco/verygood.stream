@@ -4,7 +4,6 @@ export { SwarmMetadata } from "./SwarmMetadata";
 
 export {
   ChunkAddressingMethod,
-  ContentIntegrityProtectionMethod
+  ContentIntegrityProtectionMethod,
+  LiveSignatureAlgorithm
 } from "@bitstreamy/ppspp-protocol";
-
-const a = "a";

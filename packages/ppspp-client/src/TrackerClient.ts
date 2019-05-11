@@ -4,6 +4,8 @@ import { v4 as UUIDv4 } from "uuid";
 import WebSocket from "ws";
 import { WebRTCSocket } from "./WebRTCSocket";
 
+const OFFERS_WATERLINE = 10;
+
 export class TrackerClient extends EventEmitter {
   private trackerSocket: WebSocket;
   private peerSockets: { [socketId: string]: WebRTCSocket };
@@ -23,7 +25,18 @@ export class TrackerClient extends EventEmitter {
     this.peerSockets = {};
   }
 
-  private send(type: string, payload: object) {
+  public announceOffer() {
+    const socketId = UUIDv4();
+
+    const peerSocket = new WebRTCSocket({ initiator: true });
+
+    peerSocket.once("signal", this.offer.bind(this, socketId));
+    peerSocket.once("connect", this.onPeerSocket.bind(this, peerSocket));
+
+    this.peerSockets[socketId] = peerSocket;
+  }
+
+  private send(type: string, payload?: object) {
     this.trackerSocket.send(
       JSON.stringify({
         payload,
@@ -41,21 +54,17 @@ export class TrackerClient extends EventEmitter {
   }
 
   private onOpen() {
-    for (let i = 0; i < 10; i++) {
-      const socketId = UUIDv4();
-
-      const peerSocket = new WebRTCSocket({ initiator: true });
-
-      peerSocket.once("signal", this.offer.bind(this, socketId));
-      peerSocket.once(
-        "connect",
-        this.emit.bind(this, "peerSocket", peerSocket, false)
-      );
-
-      this.peerSockets[socketId] = peerSocket;
+    for (let i = 0; i < OFFERS_WATERLINE; i++) {
+      this.announceOffer();
     }
 
-    this.send("find", {});
+    this.send("find");
+  }
+
+  private onPeerSocket(peerSocket: WebRTCSocket) {
+    this.emit("peerSocket", peerSocket, false);
+
+    this.announceOffer();
   }
 
   private onMessage(event: { data: WebSocket.Data }) {
@@ -77,9 +86,7 @@ export class TrackerClient extends EventEmitter {
             )
           );
 
-          peerSocket.once("connect", () => {
-            this.emit("peerSocket", peerSocket, false);
-          });
+          peerSocket.once("connect", this.onPeerSocket.bind(this, peerSocket));
 
           peerSocket.signal(message.payload.signalData);
 

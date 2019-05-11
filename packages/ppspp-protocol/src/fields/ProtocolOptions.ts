@@ -22,25 +22,25 @@ export enum ChunkAddressingMethod {
   // "64ChunkRanges" = 4
 }
 
-/*export enum MerkleHashFunction {
-  SHA1 = 0,
-  SHA224 = 1,
-  SHA256 = 2,
-  SHA384 = 3,
-  SHA512 = 4
-}
+// export enum MerkleHashFunction {
+//   SHA1 = 0,
+//   SHA224 = 1,
+//   SHA256 = 2,
+//   SHA384 = 3,
+//   SHA512 = 4
+// }
 
 export enum LiveSignatureAlgorithm {
-  ECDSAP256SHA256 = 13,
-  ECDSAP384SHA384 = 14,
+  // ECDSAP256SHA256 = 13,
+  // ECDSAP384SHA384 = 14,
   RSASHA1 = 5,
   RSASHA256 = 8
-}*/
+}
 
 export enum ContentIntegrityProtectionMethod {
-  NONE = 0
+  NONE = 0,
   // MERKLE_HASH_TREE = 1,
-  // SIGN_ALL = 2,
+  SIGN_ALL = 2
   // UNIFIED_MERKLE_TREE = 3
 }
 
@@ -53,8 +53,8 @@ export class ProtocolOptions {
   public supportedMessages: number[];
   public minVersion?: number;
   public swarmId?: Buffer;
-  /*public liveSignatureAlgorithm?: LiveSignatureAlgorithm;
-  public merkleHashFunction?: MerkleHashFunction;*/
+  public liveSignatureAlgorithm?: LiveSignatureAlgorithm;
+  // public merkleHashFunction?: MerkleHashFunction;
 
   constructor(
     version: number,
@@ -64,9 +64,9 @@ export class ProtocolOptions {
     chunkSize: number,
     supportedMessages: number[],
     minVersion?: number,
-    swarmId?: Buffer
-    /*liveSignatureAlgorithm?: LiveSignatureAlgorithm,
-    merkleHashFunction?: MerkleHashFunction,*/
+    swarmId?: Buffer,
+    liveSignatureAlgorithm?: LiveSignatureAlgorithm
+    // merkleHashFunction?: MerkleHashFunction,
   ) {
     this.version = version;
     this.minVersion = minVersion;
@@ -76,8 +76,8 @@ export class ProtocolOptions {
     this.chunkSize = chunkSize;
     this.swarmId = swarmId;
     this.supportedMessages = supportedMessages;
-    /*this.liveSignatureAlgorithm = liveSignatureAlgorithm;
-    this.merkleHashFunction = merkleHashFunction;*/
+    this.liveSignatureAlgorithm = liveSignatureAlgorithm;
+    // this.merkleHashFunction = merkleHashFunction;
   }
 
   public encode() {
@@ -129,11 +129,10 @@ export class ProtocolOptions {
     } */
 
     // Live signature algorithm
-    /* if (
+    if (
+      this.liveSignatureAlgorithm &&
       this.integrityProtectionMethod ===
-        ContentIntegrityProtectionMethod.SIGN_ALL ||
-      this.integrityProtectionMethod ===
-        ContentIntegrityProtectionMethod.UNIFIED_MERKLE_TREE
+        ContentIntegrityProtectionMethod.SIGN_ALL
     ) {
       buffers.push(
         Buffer.from([
@@ -141,7 +140,7 @@ export class ProtocolOptions {
           this.liveSignatureAlgorithm
         ])
       );
-    } */
+    }
 
     // Chunk Addressing Method
     buffers.push(

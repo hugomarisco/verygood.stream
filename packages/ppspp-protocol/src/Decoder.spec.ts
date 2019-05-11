@@ -4,6 +4,7 @@ import { PreciseTimestamp } from "./fields/PreciseTimestamp";
 import {
   ChunkAddressingMethod,
   ContentIntegrityProtectionMethod,
+  LiveSignatureAlgorithm,
   ProtocolOptions
 } from "./fields/ProtocolOptions";
 import { AckMessage } from "./messages/AckMessage";
@@ -18,6 +19,7 @@ import { PexResCertMessage } from "./messages/PexResCertMessage";
 import { PexResV4Message } from "./messages/PexResV4Message";
 import { PexResV6Message } from "./messages/PexResV6Message";
 import { RequestMessage } from "./messages/RequestMessage";
+import { SignedIntegrityMessage } from "./messages/SignedIntegrityMessage";
 import { UnchokeMessage } from "./messages/UnchokeMessage";
 
 describe("Decoder", () => {
@@ -35,7 +37,7 @@ describe("Decoder", () => {
       Buffer.from([0x0a, 0x0b])
     );
   });
-  
+
   test("should decode Handshake messages", () => {
     const handshakeMessage = new HandshakeMessage(1, protocolOptions, 3);
 
@@ -236,5 +238,41 @@ describe("Decoder", () => {
     );
 
     expect(decodedMessage).toEqual(unchokeMessage);
+  });
+
+  describe("Signed Integrity messages", () => {
+    test("should decode Signed Integrity messages", () => {
+      const signature =
+        "L+vAxDy4vOsmmgFFLQuIwZvX/WQSKNY2lZK9PNZK4v4u6+vHsW2/WEx8Qq+spy7o0l0JqROO8C+QeJPeibaCbPXX0aW11Lgm1yYXal+71UqiMmxjSzcejwc12jrryjEy5r1/wjYFpdKojiYq7XH3V3YzRCl537++ScNNy9yKG2Y=";
+
+      const swarmId =
+        "CAMBAAGVotXaE3Bibmpl2D7TTw2OybFWo4VgrKErsdx+ZHCAm1Ret4auAlFjrADefFlQra088Ztd4nXLU8phCGCOsnnhVYMapWRJ2LLXA3cRkJFj4otlm4dni2GkllV2xaF47sDasgEZaEfvjgRN+ri2vnLIzIZowE0915tjIQngQU6liQ==";
+
+      protocolOptions = new ProtocolOptions(
+        1,
+        ContentIntegrityProtectionMethod.SIGN_ALL,
+        ChunkAddressingMethod["32ChunkRanges"],
+        2,
+        3,
+        [],
+        1,
+        Buffer.from(swarmId, "base64"),
+        LiveSignatureAlgorithm.RSASHA256
+      );
+
+      const signedIntegrityMessage = new SignedIntegrityMessage(
+        1,
+        new ChunkSpec([1, 1]),
+        new PreciseTimestamp([2, 2]),
+        Buffer.from(signature, "base64")
+      );
+
+      const [decodedMessage] = Decoder.decode(
+        signedIntegrityMessage.encode(),
+        protocolOptions
+      );
+
+      expect(decodedMessage).toEqual(signedIntegrityMessage);
+    });
   });
 });

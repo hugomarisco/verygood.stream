@@ -1,6 +1,7 @@
 import {
   AckMessage,
   ChunkSpec,
+  ContentIntegrityProtectionMethod,
   DataMessage,
   ProtocolOptions
 } from "@bitstreamy/ppspp-protocol";
@@ -20,10 +21,14 @@ export class PPSPPClient extends Duplex {
   private peers: { [peerId: string]: RemotePeer };
   private protocolOptions: ProtocolOptions;
   private chunkStore: ChunkStore;
+  private privateKey?: any;
 
   constructor(
     metadata: SwarmMetadata,
-    { liveDiscardWindow = 10 }: { liveDiscardWindow?: number },
+    {
+      liveDiscardWindow = 10,
+      privateKey
+    }: { liveDiscardWindow?: number; privateKey?: any },
     trackerUrl: string
   ) {
     super();
@@ -32,13 +37,21 @@ export class PPSPPClient extends Duplex {
       swarmId,
       chunkSize,
       chunkAddressingMethod,
-      contentIntegrityProtectionMethod
-      /*merkleHashFunction,
-      liveSignatureAlgorithm*/
+      contentIntegrityProtectionMethod,
+      // merkleHashFunction,
+      liveSignatureAlgorithm
     } = metadata;
 
     if (chunkSize !== 0xffffffff) {
       throw new Error("Fixed chunk sizes are not supported");
+    }
+
+    if (
+      contentIntegrityProtectionMethod ===
+        ContentIntegrityProtectionMethod.SIGN_ALL &&
+      !privateKey
+    ) {
+      throw new Error("Private Key is not set");
     }
 
     this.protocolOptions = new ProtocolOptions(
@@ -49,10 +62,12 @@ export class PPSPPClient extends Duplex {
       chunkSize,
       PPSPPClient.SUPPORTED_MESSAGES,
       PPSPPClient.PROTOCOL_VERSION,
-      swarmId
-      /*liveSignatureAlgorithm,
-      merkleHashFunction,*/
+      swarmId,
+      liveSignatureAlgorithm
+      // merkleHashFunction,
     );
+
+    this.privateKey = privateKey;
 
     this.chunkStore = new ChunkStore(liveDiscardWindow);
 
@@ -86,7 +101,8 @@ export class PPSPPClient extends Duplex {
     const remotePeer = new RemotePeer(
       peerSocket,
       this.protocolOptions,
-      this.chunkStore
+      this.chunkStore,
+      this.privateKey
     );
 
     this.peers[remotePeer.peerId] = remotePeer;

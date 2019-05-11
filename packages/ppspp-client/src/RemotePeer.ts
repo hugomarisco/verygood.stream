@@ -4,12 +4,14 @@ import {
   ChokeMessage,
   ChunkAddressingMethod,
   ChunkSpec,
+  ContentIntegrityProtectionMethod,
   DataMessage,
   Decoder,
   HandshakeMessage,
   HaveMessage,
   IntegrityMessage,
   KeepAliveMessage,
+  LiveSignatureAlgorithm,
   PexReqMessage,
   PexResCertMessage,
   PexResV4Message,
@@ -22,6 +24,7 @@ import {
 } from "@bitstreamy/ppspp-protocol";
 import { EventEmitter } from "events";
 import BitSet from "fast-bitset";
+import { md, util } from "node-forge";
 import randomBytes from "randombytes";
 import { ChunkStore } from "./ChunkStore";
 import { Logger } from "./Logger";
@@ -34,11 +37,14 @@ export class RemotePeer extends EventEmitter {
   public chunkStore: ChunkStore;
   public availability: BitSet;
   public isChoking: boolean;
+  private privateKey?: any;
+  private lastSignedIntegrityMessage?: SignedIntegrityMessage;
 
   constructor(
     socket: WebRTCSocket,
     protocolOptions: ProtocolOptions,
-    chunkStore: ChunkStore
+    chunkStore: ChunkStore,
+    privateKey?: any
   ) {
     super();
 
@@ -53,6 +59,8 @@ export class RemotePeer extends EventEmitter {
     this.protocolOptions = protocolOptions;
 
     this.socket = socket;
+
+    this.privateKey = privateKey;
 
     this.socket.on("data", this.handleMessage.bind(this));
     this.socket.on("error", this.emit.bind(this, "error"));
@@ -91,7 +99,54 @@ export class RemotePeer extends EventEmitter {
   }
 
   public data(chunkSpec: ChunkSpec, data: Buffer) {
-    this.socket.send(
+    const buffers: Buffer[] = [];
+    const timestamp: PreciseTimestamp = new PreciseTimestamp();
+
+    if (
+      this.protocolOptions.integrityProtectionMethod ===
+      ContentIntegrityProtectionMethod.SIGN_ALL
+    ) {
+      if (!this.privateKey) {
+        this.emit("error", new Error("Private Key is not set"));
+        return;
+      }
+
+      let messageDigest: any;
+
+      switch (this.protocolOptions.liveSignatureAlgorithm) {
+        case LiveSignatureAlgorithm.RSASHA1:
+          messageDigest = md.sha1.create();
+
+          break;
+        case LiveSignatureAlgorithm.RSASHA256:
+          messageDigest = md.sha256.create();
+
+          break;
+        default:
+          this.emit("error", new Error("Invalid Live Signature Algorithm"));
+
+          return;
+      }
+
+      messageDigest.update(
+        Buffer.concat([chunkSpec.encode(), timestamp.encode(), data])
+      );
+
+      const signature = Buffer.from(
+        util.binary.raw.decode(this.privateKey.sign(md))
+      );
+
+      buffers.push(
+        new SignedIntegrityMessage(
+          this.peerId,
+          chunkSpec,
+          timestamp,
+          signature
+        ).encode()
+      );
+    }
+
+    buffers.push(
       new DataMessage(
         this.peerId,
         chunkSpec,
@@ -99,6 +154,8 @@ export class RemotePeer extends EventEmitter {
         data
       ).encode()
     );
+
+    this.socket.send(Buffer.concat(buffers));
   }
 
   private handleMessage(data: Buffer) {
@@ -131,10 +188,10 @@ export class RemotePeer extends EventEmitter {
           this.handlePexResV6Message(message as PexResV6Message);
           break;
         case ChokeMessage:
-          this.handleChokeMessage(message as ChokeMessage);
+          this.handleChokeMessage();
           break;
         case UnchokeMessage:
-          this.handleUnchokeMessage(message as UnchokeMessage);
+          this.handleUnchokeMessage();
           break;
         case IntegrityMessage:
           this.handleIntegrityMessage(message as IntegrityMessage);
@@ -189,6 +246,59 @@ export class RemotePeer extends EventEmitter {
 
     switch (this.protocolOptions.chunkAddressingMethod) {
       case ChunkAddressingMethod["32ChunkRanges"]:
+        if (
+          this.protocolOptions.integrityProtectionMethod ===
+          ContentIntegrityProtectionMethod.SIGN_ALL
+        ) {
+          if (this.lastSignedIntegrityMessage) {
+            let messageDigest: any;
+
+            switch (this.protocolOptions.liveSignatureAlgorithm) {
+              case LiveSignatureAlgorithm.RSASHA1:
+                messageDigest = md.sha1.create();
+
+                break;
+              case LiveSignatureAlgorithm.RSASHA256:
+                messageDigest = md.sha256.create();
+
+                break;
+              default:
+                this.emit(
+                  "error",
+                  new Error("Invalid Live Signature Algorithm")
+                );
+
+                return;
+            }
+
+            messageDigest.update(
+              Buffer.concat([
+                message.chunkSpec.encode(),
+                message.timestamp.encode(),
+                message.data
+              ])
+            );
+
+            if (
+              !this.privateKey.verify(
+                messageDigest.digest().bytes(),
+                this.lastSignedIntegrityMessage.signature
+              )
+            ) {
+              this.emit("error", new Error("Invalid signature found"));
+
+              return;
+            }
+          } else {
+            this.emit(
+              "error",
+              new Error("Couldn't find the last Signed Integrity message")
+            );
+
+            return;
+          }
+        }
+
         this.emit("dataMessage", message);
 
         this.ack(message.chunkSpec, new PreciseTimestamp([1, 1]));
@@ -216,11 +326,11 @@ export class RemotePeer extends EventEmitter {
     // TODO
   }
 
-  private handleChokeMessage(message: ChokeMessage) {
+  private handleChokeMessage() {
     this.isChoking = true;
   }
 
-  private handleUnchokeMessage(message: UnchokeMessage) {
+  private handleUnchokeMessage() {
     this.isChoking = false;
   }
 
@@ -244,7 +354,7 @@ export class RemotePeer extends EventEmitter {
   }
 
   private handleSignedIntegrityMessage(message: SignedIntegrityMessage) {
-    // TODO
+    this.lastSignedIntegrityMessage = message;
   }
 
   private handleIntegrityMessage(message: IntegrityMessage) {

@@ -3,6 +3,7 @@ import { PreciseTimestamp } from "./fields/PreciseTimestamp";
 import {
   ChunkAddressingMethod,
   ContentIntegrityProtectionMethod,
+  LiveSignatureAlgorithm,
   ProtocolOptionCode,
   ProtocolOptions
 } from "./fields/ProtocolOptions";
@@ -80,8 +81,8 @@ export class Decoder {
           let liveDiscardWindow: number | undefined;
           let chunkSize: number | undefined;
           let minVersion: number | undefined;
-          /*let liveSignatureAlgorithm: LiveSignatureAlgorithm | undefined;
-          let merkleHashFunction: MerkleHashFunction | undefined;*/
+          let liveSignatureAlgorithm: LiveSignatureAlgorithm | undefined;
+          // let merkleHashFunction: MerkleHashFunction | undefined;
           let swarmId: Buffer | undefined;
 
           do {
@@ -109,14 +110,14 @@ export class Decoder {
                 integrityProtectionMethod = buffer.readUInt8(index);
                 index += 1;
                 break;
-              /*case ProtocolOptionCode.MERKLE_FUNCTION:
-                merkleHashFunction = buffer.readUInt8(index);
-                index += 1;
-                break;
+              // case ProtocolOptionCode.MERKLE_FUNCTION:
+              //   merkleHashFunction = buffer.readUInt8(index);
+              //   index += 1;
+              //   break;
               case ProtocolOptionCode.LIVE_SIGNATURE_ALGORITHM:
                 liveSignatureAlgorithm = buffer.readUInt8(index);
                 index += 1;
-                break;*/
+                break;
               case ProtocolOptionCode.CHUNK_ADDRESSING:
                 chunkAddressingMethod = buffer.readUInt8(index);
                 index += 1;
@@ -161,9 +162,9 @@ export class Decoder {
             chunkSize,
             [],
             minVersion,
-            swarmId
-            /*liveSignatureAlgorithm,
-            merkleHashFunction,*/
+            swarmId,
+            liveSignatureAlgorithm
+            // merkleHashFunction,
           );
 
           messages.push(
@@ -234,14 +235,15 @@ export class Decoder {
         case PexReqMessage.CODE:
           messages.push(new PexReqMessage(destinationChannel));
           break;
-        /*case SignedIntegrityMessage.CODE:
-          const liveSignatureTimestamp = new PreciseTimestamp(
+        case SignedIntegrityMessage.CODE:
+          const liveSignatureTimestamp = new PreciseTimestamp([
             buffer.readUInt32BE(index),
             buffer.readUInt32BE(index + 4)
-          );
+          ]);
           index += 8;
 
-          let liveSignatureByteLength: number;
+          let liveSignatureExponentLength: number;
+          let modulusLength: number;
 
           if (!protocolOptions || !protocolOptions.swarmId) {
             throw new Error("Swarm ID is not available");
@@ -250,42 +252,50 @@ export class Decoder {
           switch (protocolOptions.liveSignatureAlgorithm) {
             case LiveSignatureAlgorithm.RSASHA1:
             case LiveSignatureAlgorithm.RSASHA256:
-              liveSignatureByteLength = protocolOptions.swarmId.readUInt8(
-                index
+              let swarmIdIndex = 1;
+
+              liveSignatureExponentLength = protocolOptions.swarmId.readUInt8(
+                swarmIdIndex
               );
 
-              if (liveSignatureByteLength === 0) {
-                liveSignatureByteLength = protocolOptions.swarmId.readUInt32BE(
+              swarmIdIndex += 1;
+
+              if (liveSignatureExponentLength === 0) {
+                liveSignatureExponentLength = protocolOptions.swarmId.readUInt16BE(
                   2
                 );
+
+                swarmIdIndex += 2;
               }
+
+              modulusLength =
+                protocolOptions.swarmId.length -
+                swarmIdIndex -
+                liveSignatureExponentLength;
               break;
-            case LiveSignatureAlgorithm.ECDSAP256SHA256:
-              liveSignatureByteLength = 64;
-              break;
-            case LiveSignatureAlgorithm.ECDSAP384SHA384:
-              liveSignatureByteLength = 96;
-              break;
+            // case LiveSignatureAlgorithm.ECDSAP256SHA256:
+            //   liveSignatureByteLength = 64;
+            //   break;
+            // case LiveSignatureAlgorithm.ECDSAP384SHA384:
+            //   liveSignatureByteLength = 96;
+            //   break;
             default:
               throw new Error("Invalid Live Signature Algorithm");
           }
 
-          const liveSignature = buffer.slice(
-            index,
-            index + liveSignatureByteLength
-          );
-          index += liveSignatureByteLength;
+          const signature = buffer.slice(index, index + modulusLength);
+          index += modulusLength;
 
           messages.push(
             new SignedIntegrityMessage(
               destinationChannel,
               chunkSpec,
               liveSignatureTimestamp,
-              liveSignature
+              signature
             )
           );
 
-          break;*/
+          break;
         case RequestMessage.CODE:
           messages.push(new RequestMessage(destinationChannel, chunkSpec));
 

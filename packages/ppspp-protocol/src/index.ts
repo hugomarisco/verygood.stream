@@ -4,8 +4,8 @@ export {
   ProtocolOptions,
   ChunkAddressingMethod,
   ContentIntegrityProtectionMethod,
-  /*MerkleHashFunction,
-  LiveSignatureAlgorithm*/
+  // MerkleHashFunction,
+  LiveSignatureAlgorithm
 } from "./fields/ProtocolOptions";
 export { ChunkSpec } from "./fields/ChunkSpec";
 export { PreciseTimestamp } from "./fields/PreciseTimestamp";
