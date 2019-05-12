@@ -5,7 +5,7 @@ import {
   PPSPPClient,
   SwarmMetadata
 } from "@bitstreamy/ppspp-client";
-import { pki, md, util } from "node-forge";
+import { pki } from "node-forge";
 import { Logger } from "./Logger";
 import { TCPServer } from "./TCPServer";
 
@@ -31,17 +31,8 @@ if (e.length <= 255) {
 
 const swarmId = Buffer.concat([liveSignatureAlgorithmBuf, eLength, e, n]);
 
-const d = md.sha256.create();
-
-d.update("a");
-
-const signature = Buffer.from(
-  util.binary.raw.decode(keypair.privateKey.sign(d))
-);
-
 Logger.info("Swarm ID generated", {
-  swarmId: swarmId.toString("base64"),
-  signature: signature.toString("base64")
+  swarmId: swarmId.toString("base64")
 });
 
 const swarmMetadata = new SwarmMetadata(
