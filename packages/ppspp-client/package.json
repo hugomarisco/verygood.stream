@@ -18,8 +18,8 @@
     "start": "TS_NODE_FILES=true ts-node src/index.ts",
     "build": "tsc",
     "build:watch": "tsc -w",
-    "test": "jest --coverage --passWithNoTests",
-    "test:watch": "jest --watch --passWithNoTests",
+    "test": "jest --coverage --passWithNoTests --colors",
+    "test:watch": "jest --watch --passWithNoTests --colors",
     "test:ci": "jest --coverage --passWithNoTests"
   },
   "devDependencies": {

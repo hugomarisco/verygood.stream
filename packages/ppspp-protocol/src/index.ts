@@ -8,6 +8,7 @@ export {
   LiveSignatureAlgorithm
 } from "./fields/ProtocolOptions";
 export { ChunkSpec } from "./fields/ChunkSpec";
+export { SwarmId } from "./fields/SwarmId";
 export { PreciseTimestamp } from "./fields/PreciseTimestamp";
 
 export { Message } from "./messages/Message";

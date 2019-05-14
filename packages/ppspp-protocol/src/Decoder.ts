@@ -242,46 +242,18 @@ export class Decoder {
           ]);
           index += 8;
 
-          let liveSignatureExponentLength: number;
-          let modulusLength: number;
-
           if (!protocolOptions || !protocolOptions.swarmId) {
             throw new Error("Swarm ID is not available");
           }
 
-          switch (protocolOptions.liveSignatureAlgorithm) {
-            case LiveSignatureAlgorithm.RSASHA1:
-            case LiveSignatureAlgorithm.RSASHA256:
-              let swarmIdIndex = 1;
-
-              liveSignatureExponentLength = protocolOptions.swarmId.readUInt8(
-                swarmIdIndex
-              );
-
-              swarmIdIndex += 1;
-
-              if (liveSignatureExponentLength === 0) {
-                liveSignatureExponentLength = protocolOptions.swarmId.readUInt16BE(
-                  2
-                );
-
-                swarmIdIndex += 2;
-              }
-
-              modulusLength =
-                protocolOptions.swarmId.length -
-                swarmIdIndex -
-                liveSignatureExponentLength;
-              break;
-            // case LiveSignatureAlgorithm.ECDSAP256SHA256:
-            //   liveSignatureByteLength = 64;
-            //   break;
-            // case LiveSignatureAlgorithm.ECDSAP384SHA384:
-            //   liveSignatureByteLength = 96;
-            //   break;
-            default:
-              throw new Error("Invalid Live Signature Algorithm");
+          if (
+            !protocolOptions.swarmId.exponent ||
+            !protocolOptions.swarmId.modulus
+          ) {
+            throw new Error("Swarm ID is not a valid public key");
           }
+
+          const modulusLength = protocolOptions.swarmId.modulus.length;
 
           const signature = buffer.slice(index, index + modulusLength);
           index += modulusLength;

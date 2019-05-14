@@ -46,14 +46,6 @@ export class PPSPPClient extends Duplex {
       throw new Error("Fixed chunk sizes are not supported");
     }
 
-    if (
-      contentIntegrityProtectionMethod ===
-        ContentIntegrityProtectionMethod.SIGN_ALL &&
-      !privateKey
-    ) {
-      throw new Error("Private Key is not set");
-    }
-
     this.protocolOptions = new ProtocolOptions(
       PPSPPClient.PROTOCOL_VERSION,
       contentIntegrityProtectionMethod,

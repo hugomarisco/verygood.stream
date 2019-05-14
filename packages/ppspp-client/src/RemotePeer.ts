@@ -1,6 +1,5 @@
 import {
   AckMessage,
-  CancelMessage,
   ChokeMessage,
   ChunkAddressingMethod,
   ChunkSpec,
@@ -9,13 +8,7 @@ import {
   Decoder,
   HandshakeMessage,
   HaveMessage,
-  IntegrityMessage,
-  KeepAliveMessage,
   LiveSignatureAlgorithm,
-  PexReqMessage,
-  PexResCertMessage,
-  PexResV4Message,
-  PexResV6Message,
   PreciseTimestamp,
   ProtocolOptions,
   RequestMessage,
@@ -24,7 +17,7 @@ import {
 } from "@bitstreamy/ppspp-protocol";
 import { EventEmitter } from "events";
 import BitSet from "fast-bitset";
-import { md, util } from "node-forge";
+import { jsbn, md, pki, util } from "node-forge";
 import randomBytes from "randombytes";
 import { ChunkStore } from "./ChunkStore";
 import { Logger } from "./Logger";
@@ -32,13 +25,14 @@ import { WebRTCSocket } from "./WebRTCSocket";
 
 export class RemotePeer extends EventEmitter {
   public peerId: number;
-  public socket: WebRTCSocket;
-  public protocolOptions: ProtocolOptions;
-  public chunkStore: ChunkStore;
-  public availability: BitSet;
   public isChoking: boolean;
+  public availability: BitSet;
+  private socket: WebRTCSocket;
+  private protocolOptions: ProtocolOptions;
+  private chunkStore: ChunkStore;
   private privateKey?: any;
   private lastSignedIntegrityMessage?: SignedIntegrityMessage;
+  private publicKey?: any;
 
   constructor(
     socket: WebRTCSocket,
@@ -58,12 +52,45 @@ export class RemotePeer extends EventEmitter {
 
     this.protocolOptions = protocolOptions;
 
+    if (
+      this.protocolOptions.integrityProtectionMethod ===
+      ContentIntegrityProtectionMethod.SIGN_ALL
+    ) {
+      if (
+        !this.protocolOptions.swarmId ||
+        !this.protocolOptions.swarmId.exponent ||
+        !this.protocolOptions.swarmId.modulus
+      ) {
+        throw new Error("Invalid Swarm ID");
+      }
+
+      this.publicKey = pki.rsa.setPublicKey(
+        new jsbn.BigInteger(
+          this.protocolOptions.swarmId.modulus.toString("hex"),
+          16
+        ),
+        new jsbn.BigInteger(
+          this.protocolOptions.swarmId.exponent.toString("hex"),
+          16
+        )
+      );
+    }
+
     this.socket = socket;
 
     this.privateKey = privateKey;
 
     this.socket.on("data", this.handleMessage.bind(this));
     this.socket.on("error", this.emit.bind(this, "error"));
+  }
+
+  get messageDigest() {
+    switch (this.protocolOptions.liveSignatureAlgorithm) {
+      case LiveSignatureAlgorithm.RSASHA1:
+        return md.sha1.create();
+      case LiveSignatureAlgorithm.RSASHA256:
+        return md.sha256.create();
+    }
   }
 
   public handshake(sourceChannel: number = 0) {
@@ -94,46 +121,28 @@ export class RemotePeer extends EventEmitter {
     this.socket.send(new RequestMessage(this.peerId, chunkSpec).encode());
   }
 
-  public ack(chunkSpec: ChunkSpec, delay: PreciseTimestamp) {
+  private ack(chunkSpec: ChunkSpec, delay: PreciseTimestamp) {
     this.socket.send(new AckMessage(this.peerId, chunkSpec, delay).encode());
   }
 
-  public data(chunkSpec: ChunkSpec, data: Buffer) {
+  private data(chunkSpec: ChunkSpec, data: Buffer) {
     const buffers: Buffer[] = [];
     const timestamp: PreciseTimestamp = new PreciseTimestamp();
 
     if (
       this.protocolOptions.integrityProtectionMethod ===
-      ContentIntegrityProtectionMethod.SIGN_ALL
+        ContentIntegrityProtectionMethod.SIGN_ALL &&
+      this.privateKey
     ) {
-      if (!this.privateKey) {
-        this.emit("error", new Error("Private Key is not set"));
-        return;
-      }
-
-      let messageDigest: any;
-
-      switch (this.protocolOptions.liveSignatureAlgorithm) {
-        case LiveSignatureAlgorithm.RSASHA1:
-          messageDigest = md.sha1.create();
-
-          break;
-        case LiveSignatureAlgorithm.RSASHA256:
-          messageDigest = md.sha256.create();
-
-          break;
-        default:
-          this.emit("error", new Error("Invalid Live Signature Algorithm"));
-
-          return;
-      }
-
-      messageDigest.update(
-        Buffer.concat([chunkSpec.encode(), timestamp.encode(), data])
-      );
-
       const signature = Buffer.from(
-        util.binary.raw.decode(this.privateKey.sign(md))
+        util.encode64(
+          this.privateKey.sign(
+            this.messageDigest.update(
+              Buffer.concat([chunkSpec.encode(), timestamp.encode(), data])
+            )
+          )
+        ),
+        "base64"
       );
 
       buffers.push(
@@ -147,12 +156,7 @@ export class RemotePeer extends EventEmitter {
     }
 
     buffers.push(
-      new DataMessage(
-        this.peerId,
-        chunkSpec,
-        new PreciseTimestamp(),
-        data
-      ).encode()
+      new DataMessage(this.peerId, chunkSpec, timestamp, data).encode()
     );
 
     this.socket.send(Buffer.concat(buffers));
@@ -175,39 +179,39 @@ export class RemotePeer extends EventEmitter {
         case AckMessage:
           this.handleAckMessage(message as AckMessage);
           break;
-        case KeepAliveMessage:
-          this.handleKeepAliveMessage(message as KeepAliveMessage);
-          break;
-        case PexReqMessage:
-          this.handlePexReqMessage(message as PexReqMessage);
-          break;
-        case PexResV4Message:
-          this.handlePexResV4Message(message as PexResV4Message);
-          break;
-        case PexResV6Message:
-          this.handlePexResV6Message(message as PexResV6Message);
-          break;
+        // case KeepAliveMessage:
+        //   this.handleKeepAliveMessage(message as KeepAliveMessage);
+        //   break;
+        // case PexReqMessage:
+        //   this.handlePexReqMessage(message as PexReqMessage);
+        //   break;
+        // case PexResV4Message:
+        //   this.handlePexResV4Message(message as PexResV4Message);
+        //   break;
+        // case PexResV6Message:
+        //   this.handlePexResV6Message(message as PexResV6Message);
+        //   break;
         case ChokeMessage:
           this.handleChokeMessage();
           break;
         case UnchokeMessage:
           this.handleUnchokeMessage();
           break;
-        case IntegrityMessage:
-          this.handleIntegrityMessage(message as IntegrityMessage);
-          break;
+        // case IntegrityMessage:
+        //   this.handleIntegrityMessage(message as IntegrityMessage);
+        //   break;
         case SignedIntegrityMessage:
           this.handleSignedIntegrityMessage(message as SignedIntegrityMessage);
           break;
         case RequestMessage:
           this.handleRequestMessage(message as RequestMessage);
           break;
-        case CancelMessage:
-          this.handleCancelMessage(message as CancelMessage);
-          break;
-        case PexResCertMessage:
-          this.handlePexResCertMessage(message as PexResCertMessage);
-          break;
+        // case CancelMessage:
+        //   this.handleCancelMessage(message as CancelMessage);
+        //   break;
+        // case PexResCertMessage:
+        //   this.handlePexResCertMessage(message as PexResCertMessage);
+        //   break;
       }
     });
   }
@@ -251,40 +255,31 @@ export class RemotePeer extends EventEmitter {
           ContentIntegrityProtectionMethod.SIGN_ALL
         ) {
           if (this.lastSignedIntegrityMessage) {
-            let messageDigest: any;
-
-            switch (this.protocolOptions.liveSignatureAlgorithm) {
-              case LiveSignatureAlgorithm.RSASHA1:
-                messageDigest = md.sha1.create();
-
-                break;
-              case LiveSignatureAlgorithm.RSASHA256:
-                messageDigest = md.sha256.create();
-
-                break;
-              default:
-                this.emit(
-                  "error",
-                  new Error("Invalid Live Signature Algorithm")
-                );
+            try {
+              if (
+                !this.publicKey.verify(
+                  this.messageDigest
+                    .update(
+                      Buffer.concat([
+                        message.chunkSpec.encode(),
+                        message.timestamp.encode(),
+                        message.data
+                      ])
+                    )
+                    .digest()
+                    .bytes(),
+                  util.decode64(
+                    this.lastSignedIntegrityMessage.signature.toString("base64")
+                  )
+                )
+              ) {
+                this.emit("error", new Error("Invalid signature found"));
 
                 return;
-            }
+              }
+            } catch (err) {
+              Logger.error(err);
 
-            messageDigest.update(
-              Buffer.concat([
-                message.chunkSpec.encode(),
-                message.timestamp.encode(),
-                message.data
-              ])
-            );
-
-            if (
-              !this.privateKey.verify(
-                messageDigest.digest().bytes(),
-                this.lastSignedIntegrityMessage.signature
-              )
-            ) {
               this.emit("error", new Error("Invalid signature found"));
 
               return;
@@ -299,9 +294,12 @@ export class RemotePeer extends EventEmitter {
           }
         }
 
-        this.emit("dataMessage", message);
+        this.ack(
+          message.chunkSpec,
+          new PreciseTimestamp().minus(message.timestamp)
+        );
 
-        this.ack(message.chunkSpec, new PreciseTimestamp([1, 1]));
+        this.emit("dataMessage", message);
 
         break;
     }
@@ -322,9 +320,9 @@ export class RemotePeer extends EventEmitter {
     }
   }
 
-  private handleCancelMessage(message: CancelMessage) {
-    // TODO
-  }
+  // private handleCancelMessage(message: CancelMessage) {
+  //   // TODO
+  // }
 
   private handleChokeMessage() {
     this.isChoking = true;
@@ -357,27 +355,27 @@ export class RemotePeer extends EventEmitter {
     this.lastSignedIntegrityMessage = message;
   }
 
-  private handleIntegrityMessage(message: IntegrityMessage) {
-    // TODO
-  }
+  // private handleIntegrityMessage(message: IntegrityMessage) {
+  //   // TODO
+  // }
 
-  private handleKeepAliveMessage(message: KeepAliveMessage) {
-    // TODO
-  }
+  // private handleKeepAliveMessage(message: KeepAliveMessage) {
+  //   // TODO
+  // }
 
-  private handlePexReqMessage(message: PexReqMessage) {
-    // TODO
-  }
+  // private handlePexReqMessage(message: PexReqMessage) {
+  //   // TODO
+  // }
 
-  private handlePexResV4Message(message: PexResV4Message) {
-    // TODO
-  }
+  // private handlePexResV4Message(message: PexResV4Message) {
+  //   // TODO
+  // }
 
-  private handlePexResV6Message(message: PexResV6Message) {
-    // TODO
-  }
+  // private handlePexResV6Message(message: PexResV6Message) {
+  //   // TODO
+  // }
 
-  private handlePexResCertMessage(message: PexResCertMessage) {
-    // TODO
-  }
+  // private handlePexResCertMessage(message: PexResCertMessage) {
+  //   // TODO
+  // }
 }

@@ -1,4 +1,5 @@
 import { dropWhile, fill } from "lodash";
+import { SwarmId } from "./SwarmId";
 
 export enum ProtocolOptionCode {
   CHUNK_ADDRESSING = 6,
@@ -52,7 +53,7 @@ export class ProtocolOptions {
   public chunkSize: number;
   public supportedMessages: number[];
   public minVersion?: number;
-  public swarmId?: Buffer;
+  public swarmId?: SwarmId;
   public liveSignatureAlgorithm?: LiveSignatureAlgorithm;
   // public merkleHashFunction?: MerkleHashFunction;
 
@@ -74,7 +75,9 @@ export class ProtocolOptions {
     this.liveDiscardWindow = liveDiscardWindow;
     this.chunkAddressingMethod = chunkAddressingMethod;
     this.chunkSize = chunkSize;
-    this.swarmId = swarmId;
+    this.swarmId =
+      swarmId &&
+      new SwarmId(swarmId, integrityProtectionMethod, liveSignatureAlgorithm);
     this.supportedMessages = supportedMessages;
     this.liveSignatureAlgorithm = liveSignatureAlgorithm;
     // this.merkleHashFunction = merkleHashFunction;
@@ -98,12 +101,12 @@ export class ProtocolOptions {
     if (this.swarmId) {
       tempBuffer = Buffer.alloc(2);
 
-      tempBuffer.writeUInt16BE(this.swarmId.length, 0);
+      tempBuffer.writeUInt16BE(this.swarmId.data.length, 0);
 
       buffers.push(
         Buffer.from([ProtocolOptionCode.SWARM_ID]),
         tempBuffer,
-        this.swarmId
+        this.swarmId.data
       );
     }
 
