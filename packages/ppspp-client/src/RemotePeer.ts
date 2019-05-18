@@ -64,13 +64,36 @@ export class RemotePeer extends EventEmitter {
         throw new Error("Invalid Swarm ID");
       }
 
+      // this.publicKey = pki.rsa.setPublicKey(
+      //   new jsbn.BigInteger(
+      //     util
+      //       .createBuffer(this.protocolOptions.swarmId.modulus)
+      //       .toHex(),
+      //     16
+      //   ),
+      //   new jsbn.BigInteger(
+      //     util
+      //       .createBuffer(this.protocolOptions.swarmId.exponent)
+      //       .toHex(),
+      //     16
+      //   )
+      // );
+
       this.publicKey = pki.rsa.setPublicKey(
         new jsbn.BigInteger(
-          this.protocolOptions.swarmId.modulus.toString("hex"),
+          new util.createBuffer(
+            util.decode64(
+              this.protocolOptions.swarmId.modulus.toString("base64")
+            )
+          ).toHex(),
           16
         ),
         new jsbn.BigInteger(
-          this.protocolOptions.swarmId.exponent.toString("hex"),
+          new util.createBuffer(
+            util.decode64(
+              this.protocolOptions.swarmId.exponent.toString("base64")
+            )
+          ).toHex(),
           16
         )
       );
@@ -87,9 +110,9 @@ export class RemotePeer extends EventEmitter {
   get messageDigest() {
     switch (this.protocolOptions.liveSignatureAlgorithm) {
       case LiveSignatureAlgorithm.RSASHA1:
-        return md.sha1.create();
+        return md.sha1;
       case LiveSignatureAlgorithm.RSASHA256:
-        return md.sha256.create();
+        return md.sha256;
     }
   }
 
@@ -135,14 +158,17 @@ export class RemotePeer extends EventEmitter {
       this.privateKey
     ) {
       const signature = Buffer.from(
-        util.encode64(
+        util.binary.raw.decode(
           this.privateKey.sign(
-            this.messageDigest.update(
-              Buffer.concat([chunkSpec.encode(), timestamp.encode(), data])
-            )
+            this.messageDigest
+              .create()
+              .update(
+                util.binary.raw.encode(
+                  Buffer.concat([chunkSpec.encode(), timestamp.encode(), data])
+                )
+              )
           )
-        ),
-        "base64"
+        )
       );
 
       buffers.push(
@@ -259,17 +285,20 @@ export class RemotePeer extends EventEmitter {
               if (
                 !this.publicKey.verify(
                   this.messageDigest
+                    .create()
                     .update(
-                      Buffer.concat([
-                        message.chunkSpec.encode(),
-                        message.timestamp.encode(),
-                        message.data
-                      ])
+                      util.binary.raw.encode(
+                        Buffer.concat([
+                          message.chunkSpec.encode(),
+                          message.timestamp.encode(),
+                          message.data
+                        ])
+                      )
                     )
                     .digest()
                     .bytes(),
-                  util.decode64(
-                    this.lastSignedIntegrityMessage.signature.toString("base64")
+                  util.binary.raw.encode(
+                    this.lastSignedIntegrityMessage.signature
                   )
                 )
               ) {

@@ -46,7 +46,7 @@ const swarmId = Buffer.from(
 );
 
 const signature = Buffer.from(
-  "l3vYpS0fhQrWgiNvq6zb67v+0sqKIoSVzTgOBanaCCHSXJqu2zYc6pYcpduetpRX97qXFY7N/Os5tR1P2nqQRl7pfOHLN1b2cTw8tkz/hH90gQefK4vTNinm30ZDfpImvTJuijSqXCajJ5KnPQM2dxBIVSDz5bzFJ9phWDD+2Mw=",
+  "LPrarNY+V+gha6sH/SLaqC++MPPdYIdEi1xa6HP45Y7LHu+Nf6/QzmqLMiWKCm+W9HveIiprAMYAbhZy3RF1tGJSyOUCFkHwlm7DVllrXfSG8LeAc2TBsIozJXP2X7JMgRr5iRfte7yB87ukiPsmTtpkJ1fbV2j7A1wDrZ+a7EQ=",
   "base64"
 );
 

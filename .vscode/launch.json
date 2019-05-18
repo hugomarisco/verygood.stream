@@ -26,7 +26,7 @@
       "request": "launch",
       "name": "Launch current file w/ ts-node",
       "protocol": "inspector",
-      "args": ["${relativeFile}"],
+      "args": ["${relativeFile}", "-K", "/Users/xpto/key"],
       "cwd": "${workspaceRoot}",
       "runtimeArgs": ["-r", "ts-node/register"],
       "internalConsoleOptions": "openOnSessionStart",

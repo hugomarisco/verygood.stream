@@ -1,10 +1,10 @@
 import {
   ChunkAddressingMethod,
-  ContentIntegrityProtectionMethod,
   PPSPPClient,
   SwarmMetadata
 } from "@bitstreamy/ppspp-client";
 import MP4Box from "mp4box";
+import { parse as parseQueryString } from "query-string";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router";
 import { Logger } from "../Logger";
@@ -85,17 +85,32 @@ export class Swarm extends Component<ISwarmProps, ISwarmState> {
   }
 
   private initializeClient() {
+    const {
+      liveSignatureAlgorithm,
+      contentIntegrityProtectionMethod
+    } = parseQueryString(this.props.location.search);
+
+    if (!contentIntegrityProtectionMethod) {
+      throw new Error("ContentIntegrityProtectionMethod is not defined");
+    }
+
     const swarmMetadata = new SwarmMetadata(
-      Buffer.from(this.props.match.params.swarmId, "utf8"),
+      Buffer.from(
+        decodeURIComponent(this.props.match.params.swarmId),
+        "base64"
+      ),
       0xffffffff,
       ChunkAddressingMethod["32ChunkRanges"],
-      ContentIntegrityProtectionMethod.NONE
+      parseInt(contentIntegrityProtectionMethod as string, 10),
+      liveSignatureAlgorithm
+        ? parseInt(liveSignatureAlgorithm as string, 10)
+        : undefined
     );
 
     const client = new PPSPPClient(
       swarmMetadata,
       { liveDiscardWindow: 100 },
-      "wss://tracker.bitstreamy.com"
+      `wss://tracker.bitstreamy.com/${swarmMetadata.swarmId.toString("base64")}`
     );
 
     client.on("peer", () => {

@@ -26,5 +26,7 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.4.4"
   },
-  "dependencies": {}
+  "dependencies": {
+    "query-string": "^6.5.0"
+  }
 }

@@ -29,7 +29,7 @@ export class PreciseTimestamp {
     return new PreciseTimestamp([
       microsecondsDifference < 0 ? secondsDiff - 1 : secondsDiff,
       microsecondsDifference < 0
-        ? 10000 + microsecondsDifference
+        ? 1000000 + microsecondsDifference
         : microsecondsDifference
     ]);
   }
