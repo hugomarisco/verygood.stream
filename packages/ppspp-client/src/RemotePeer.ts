@@ -31,7 +31,6 @@ export class RemotePeer extends EventEmitter {
   private protocolOptions: ProtocolOptions;
   private chunkStore: ChunkStore;
   private privateKey?: any;
-  private lastSignedIntegrityMessage?: SignedIntegrityMessage;
   private publicKey?: any;
 
   constructor(
@@ -131,13 +130,8 @@ export class RemotePeer extends EventEmitter {
     });
   }
 
-  public have(chunkIndex: number) {
-    this.socket.send(
-      new HaveMessage(
-        this.peerId,
-        new ChunkSpec([chunkIndex, chunkIndex])
-      ).encode()
-    );
+  public have(chunkSpec: ChunkSpec) {
+    this.socket.send(new HaveMessage(this.peerId, chunkSpec).encode());
   }
 
   public request(chunkSpec: ChunkSpec) {
@@ -152,24 +146,39 @@ export class RemotePeer extends EventEmitter {
     const buffers: Buffer[] = [];
     const timestamp: PreciseTimestamp = new PreciseTimestamp();
 
+    let signature: Buffer;
+
     if (
       this.protocolOptions.integrityProtectionMethod ===
-        ContentIntegrityProtectionMethod.SIGN_ALL &&
-      this.privateKey
+      ContentIntegrityProtectionMethod.SIGN_ALL
     ) {
-      const signature = Buffer.from(
-        util.binary.raw.decode(
-          this.privateKey.sign(
-            this.messageDigest
-              .create()
-              .update(
-                util.binary.raw.encode(
-                  Buffer.concat([chunkSpec.encode(), timestamp.encode(), data])
+      [signature] = this.chunkStore.getChunkSignatures(chunkSpec);
+
+      if (!signature) {
+        if (!this.privateKey) {
+          this.emit("error", "Couldn't find a valid signature for the message");
+
+          return;
+        }
+
+        signature = Buffer.from(
+          util.binary.raw.decode(
+            this.privateKey.sign(
+              this.messageDigest
+                .create()
+                .update(
+                  util.binary.raw.encode(
+                    Buffer.concat([
+                      chunkSpec.encode(),
+                      timestamp.encode(),
+                      data
+                    ])
+                  )
                 )
-              )
+            )
           )
-        )
-      );
+        );
+      }
 
       buffers.push(
         new SignedIntegrityMessage(
@@ -261,7 +270,7 @@ export class RemotePeer extends EventEmitter {
 
         this.availability.setRange(begin, end);
 
-        if (!this.chunkStore.getChunk(begin)) {
+        if (this.chunkStore.getChunks(message.chunkSpec).length === 0) {
           this.request(message.chunkSpec);
         }
 
@@ -280,7 +289,11 @@ export class RemotePeer extends EventEmitter {
           this.protocolOptions.integrityProtectionMethod ===
           ContentIntegrityProtectionMethod.SIGN_ALL
         ) {
-          if (this.lastSignedIntegrityMessage) {
+          const [signature] = this.chunkStore.getChunkSignatures(
+            message.chunkSpec
+          );
+
+          if (signature) {
             try {
               if (
                 !this.publicKey.verify(
@@ -297,9 +310,7 @@ export class RemotePeer extends EventEmitter {
                     )
                     .digest()
                     .bytes(),
-                  util.binary.raw.encode(
-                    this.lastSignedIntegrityMessage.signature
-                  )
+                  util.binary.raw.encode(signature)
                 )
               ) {
                 this.emit("error", new Error("Invalid signature found"));
@@ -316,7 +327,7 @@ export class RemotePeer extends EventEmitter {
           } else {
             this.emit(
               "error",
-              new Error("Couldn't find the last Signed Integrity message")
+              new Error("Couldn't find the signature for the message")
             );
 
             return;
@@ -328,7 +339,7 @@ export class RemotePeer extends EventEmitter {
           new PreciseTimestamp().minus(message.timestamp)
         );
 
-        this.emit("dataMessage", message);
+        this.emit("data", message);
 
         break;
     }
@@ -368,12 +379,10 @@ export class RemotePeer extends EventEmitter {
 
     switch (this.protocolOptions.chunkAddressingMethod) {
       case ChunkAddressingMethod["32ChunkRanges"]:
-        const [chunkIndex] = message.chunkSpec.spec as [number, number];
-
-        const chunkData = this.chunkStore.getChunk(chunkIndex);
+        const [chunkData] = this.chunkStore.getChunks(message.chunkSpec);
 
         if (chunkData) {
-          this.data(new ChunkSpec([chunkIndex, chunkIndex]), chunkData);
+          this.data(message.chunkSpec, chunkData);
         }
 
         break;
@@ -381,7 +390,7 @@ export class RemotePeer extends EventEmitter {
   }
 
   private handleSignedIntegrityMessage(message: SignedIntegrityMessage) {
-    this.lastSignedIntegrityMessage = message;
+    this.chunkStore.setChunkSignatures(message.chunkSpec, [message.signature]);
   }
 
   // private handleIntegrityMessage(message: IntegrityMessage) {

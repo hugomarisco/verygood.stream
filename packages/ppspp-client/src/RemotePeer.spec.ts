@@ -107,11 +107,13 @@ describe("RemotePeer", () => {
 
   describe("#have()", () => {
     test("should send an HaveMessage to the socket", () => {
-      remotePeer.have(1);
+      const chunkSpec = new ChunkSpec([1, 1]);
+
+      remotePeer.have(chunkSpec);
 
       const expectedEncodedMessage = new HaveMessage(
         remotePeer.peerId,
-        new ChunkSpec([1, 1])
+        chunkSpec
       ).encode();
 
       expect(socket.send).toHaveBeenCalledWith(expectedEncodedMessage);
@@ -171,9 +173,9 @@ describe("RemotePeer", () => {
       });
 
       test("should not request chunk if its in the store already", () => {
-        chunkStore.setChunk(1, Buffer.from("abc"));
-
         const chunkSpec = new ChunkSpec([1, 1]);
+
+        chunkStore.setChunks(chunkSpec, [Buffer.from("abc")]);
 
         socket.emit(
           "data",
@@ -196,7 +198,7 @@ describe("RemotePeer", () => {
           Buffer.from("abc")
         );
 
-        remotePeer.on("dataMessage", message => {
+        remotePeer.on("data", message => {
           expect(message).toEqual(dataMessage);
 
           done();
@@ -227,7 +229,7 @@ describe("RemotePeer", () => {
       test("should emit an error if there isn't a stored signed integrity", done => {
         remotePeer.on("error", error => {
           expect(error).toEqual(
-            new Error("Couldn't find the last Signed Integrity message")
+            new Error("Couldn't find the signature for the message")
           );
 
           done();
@@ -321,7 +323,7 @@ describe("RemotePeer", () => {
         const timestamp = new PreciseTimestamp([1000, 1000]);
         const data = Buffer.from("abc");
 
-        chunkStore.setChunk(1, data);
+        chunkStore.setChunks(chunkSpec, [data]);
 
         socket.emit(
           "data",

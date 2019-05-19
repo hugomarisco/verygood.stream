@@ -8,7 +8,7 @@ class App extends Component {
     return (
       <Router>
         <Route path="/" exact component={Home} />
-        <Route path="/swarm/:swarmId" exact component={Swarm} />
+        <Route path="/stream" exact component={Swarm} />
       </Router>
     );
   }

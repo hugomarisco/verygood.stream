@@ -38,7 +38,7 @@ export class TCPServer extends EventEmitter {
   }
 
   private onSocketData(data: Buffer) {
-    Logger.debug("Received TCP message", { data: data.length });
+    // Logger.debug("Received TCP message", { data: data.length });
 
     switch (this.chunkIndex) {
       case 0:

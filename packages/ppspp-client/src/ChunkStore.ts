@@ -1,28 +1,73 @@
+import { ChunkSpec } from "@bitstreamy/ppspp-protocol";
+
 export class ChunkStore {
   private data: Buffer[];
+  private signatures: Buffer[];
   private offset: number;
   private discardWindow: number;
   private initSegment?: Buffer;
+  private initSegmentSignature?: Buffer;
 
   constructor(discardWindow: number) {
     this.data = [];
+    this.signatures = [];
     this.offset = 0;
     this.discardWindow = discardWindow;
   }
 
-  public getChunk(index: number) {
-    if (index === 0xffffffff) {
-      return this.initSegment;
-    } else {
-      return this.data[index - this.offset];
+  public getChunks(chunkSpec: ChunkSpec): Buffer[] {
+    if (chunkSpec.spec instanceof Array) {
+      const [from, to] = chunkSpec.spec;
+
+      if (from === 0xffffffff && to === 0xffffffff) {
+        return this.initSegment ? [this.initSegment] : [];
+      }
+
+      return this.data.slice(from - this.offset, to - this.offset + 1);
+    }
+
+    return [];
+  }
+
+  public getChunkSignatures(chunkSpec: ChunkSpec): Buffer[] {
+    if (chunkSpec.spec instanceof Array) {
+      const [from, to] = chunkSpec.spec;
+
+      if (from === 0xffffffff && to === 0xffffffff) {
+        return this.initSegmentSignature ? [this.initSegmentSignature] : [];
+      }
+
+      return this.signatures.slice(from - this.offset, to - this.offset + 1);
+    }
+
+    return [];
+  }
+
+  public setChunks(chunkSpec: ChunkSpec, data: Buffer[]) {
+    if (chunkSpec.spec instanceof Array) {
+      const [from, to] = chunkSpec.spec;
+
+      if (from === 0xffffffff && to === 0xffffffff) {
+        this.initSegment = data[0];
+      } else {
+        for (let i = from; i <= to; i++) {
+          this.data[i - this.offset] = data[i - from];
+        }
+      }
     }
   }
 
-  public setChunk(index: number, data: Buffer) {
-    if (index === 0xffffffff) {
-      this.initSegment = data;
-    } else {
-      this.data[index - this.offset] = data;
+  public setChunkSignatures(chunkSpec: ChunkSpec, data: Buffer[]) {
+    if (chunkSpec.spec instanceof Array) {
+      const [from, to] = chunkSpec.spec;
+
+      if (from === 0xffffffff && to === 0xffffffff) {
+        this.initSegmentSignature = data[0];
+      } else {
+        for (let i = from; i <= to; i++) {
+          this.signatures[i - this.offset] = data[i - from];
+        }
+      }
     }
   }
 

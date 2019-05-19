@@ -2,6 +2,7 @@
 
 import {
   ChunkAddressingMethod,
+  ChunkSpec,
   ContentIntegrityProtectionMethod,
   LiveSignatureAlgorithm,
   PPSPPClient,
@@ -97,23 +98,25 @@ switch (cli.integrityProtection) {
 }
 
 const queryParams: {
+  swarmId: string;
   contentIntegrityProtectionMethod: number;
   liveSignatureAlgorithm?: number;
 } = {
-  contentIntegrityProtectionMethod
+  contentIntegrityProtectionMethod,
+  swarmId: swarmId.toString("base64")
 };
 
 if (liveSignatureAlgorithm) {
   queryParams.liveSignatureAlgorithm = liveSignatureAlgorithm;
 }
 
+const encodedParams = Object.keys(queryParams)
+  .map(k => `${k}=${encodeURIComponent(queryParams[k])}`)
+  .join("&");
+
 Logger.info("URL", {
   swarmId: swarmId.toString("base64"),
-  url: `http://localhost:3000/swarm/${encodeURIComponent(
-    swarmId.toString("base64")
-  )}?${Object.keys(queryParams)
-    .map(k => `${k}=${queryParams[k]}`)
-    .join("&")}`
+  url: `http://localhost:3000/stream?${encodedParams}`
 });
 
 const swarmMetadata = new SwarmMetadata(
@@ -127,11 +130,15 @@ const swarmMetadata = new SwarmMetadata(
 const client = new PPSPPClient(
   swarmMetadata,
   { liveDiscardWindow, privateKey },
-  `wss://tracker.bitstreamy.com/${swarmId.toString("base64")}`
+  `wss://tracker.bitstreamy.com/${encodeURIComponent(
+    swarmId.toString("base64")
+  )}`
 );
 
 const tcpServer = new TCPServer("localhost", tcpServerPort);
 
-tcpServer.on("chunk", client.pushChunk.bind(client));
+tcpServer.on("chunk", (chunkIndex: number, data: Buffer) =>
+  client.pushChunks(new ChunkSpec([chunkIndex, chunkIndex]), [data])
+);
 
 tcpServer.on("end", client.clearChunkStore.bind(client));

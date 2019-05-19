@@ -1,7 +1,6 @@
 import {
   AckMessage,
   ChunkSpec,
-  ContentIntegrityProtectionMethod,
   DataMessage,
   ProtocolOptions
 } from "@bitstreamy/ppspp-protocol";
@@ -26,7 +25,7 @@ export class PPSPPClient extends Duplex {
   constructor(
     metadata: SwarmMetadata,
     {
-      liveDiscardWindow = 10,
+      liveDiscardWindow = 100,
       privateKey
     }: { liveDiscardWindow?: number; privateKey?: any },
     trackerUrl: string
@@ -38,8 +37,8 @@ export class PPSPPClient extends Duplex {
       chunkSize,
       chunkAddressingMethod,
       contentIntegrityProtectionMethod,
-      // merkleHashFunction,
       liveSignatureAlgorithm
+      // merkleHashFunction,
     } = metadata;
 
     if (chunkSize !== 0xffffffff) {
@@ -71,17 +70,19 @@ export class PPSPPClient extends Duplex {
     this.tracker.on("error", this.emit.bind(this, "error"));
   }
 
-  public pushChunk(chunkId: number, data: Buffer) {
-    this.chunkStore.setChunk(chunkId, data);
+  public pushChunks(chunkSpec: ChunkSpec, data: Buffer[]) {
+    this.chunkStore.setChunks(chunkSpec, data);
 
     this.chunkStore.discardOldChunks();
 
-    Object.keys(this.peers).forEach(peerId => this.peers[peerId].have(chunkId));
+    Object.keys(this.peers).forEach(peerId =>
+      this.peers[peerId].have(chunkSpec)
+    );
   }
 
-  public requestChunk(chunkId: number) {
+  public requestChunks(chunkSpec: ChunkSpec) {
     Object.keys(this.peers).forEach(peerId =>
-      this.peers[peerId].request(new ChunkSpec([chunkId, chunkId]))
+      this.peers[peerId].request(chunkSpec)
     );
   }
 
@@ -105,15 +106,13 @@ export class PPSPPClient extends Duplex {
 
     remotePeer.on("close", this.onPeerClose.bind(this, remotePeer.peerId));
 
-    remotePeer.on("dataMessage", (message: DataMessage) => {
-      const [chunkIndex] = message.chunkSpec.spec as [number, number];
-
-      if (!this.chunkStore.getChunk(chunkIndex)) {
-        this.chunkStore.setChunk(chunkIndex, message.data);
+    remotePeer.on("data", (message: DataMessage) => {
+      if (this.chunkStore.getChunks(message.chunkSpec).length === 0) {
+        this.chunkStore.setChunks(message.chunkSpec, [message.data]);
 
         this.chunkStore.discardOldChunks();
 
-        this.emit("chunk", chunkIndex, message.data);
+        this.emit("chunk", message.chunkSpec, message.data);
       }
     });
 
