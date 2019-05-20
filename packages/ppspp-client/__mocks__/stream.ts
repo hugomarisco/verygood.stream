@@ -1,11 +1,13 @@
 import { EventEmitter } from "events";
 
-export const WebRTCSocket = jest.fn().mockImplementation(() => {
+export const Duplex = jest.fn().mockImplementation(() => {
   const eventEmitter = new EventEmitter();
 
   return {
     emit: eventEmitter.emit.bind(eventEmitter),
     on: eventEmitter.on.bind(eventEmitter),
-    send: jest.fn()
+    write: jest.fn()
   };
 });
+
+export default jest.fn();

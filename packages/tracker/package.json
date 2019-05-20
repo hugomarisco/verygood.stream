@@ -23,14 +23,18 @@
     "test:ci": "jest --coverage --passWithNoTests"
   },
   "dependencies": {
-    "lodash": "^4.17.11",
+    "koa": "^2.7.0",
+    "koa-router": "^7.4.0",
+    "simple-peer": "^9.3.0",
     "uuid": "^3.3.2",
     "winston": "^3.2.1",
+    "wrtc": "^0.4.1",
     "ws": "^6.1.2"
   },
   "devDependencies": {
-    "@types/debug": "0.0.31",
-    "@types/lodash": "^4.14.119",
+    "@types/koa": "^2.0.48",
+    "@types/koa-router": "^7.0.40",
+    "@types/simple-peer": "^6.1.5",
     "@types/uuid": "^3.4.4",
     "@types/ws": "^6.0.1"
   },

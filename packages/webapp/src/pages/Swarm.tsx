@@ -40,7 +40,8 @@ export class Swarm extends Component<ISwarmProps, ISwarmState> {
         : liveSignatureAlgorithm
     );
 
-    const trackerUrl = "wss://tracker.bitstreamy.com";
+    // const trackerUrl = "wss://tracker.bitstreamy.com";
+    const trackerUrl = "ws://localhost:8080";
     const liveDiscardWindow = 100;
 
     return (

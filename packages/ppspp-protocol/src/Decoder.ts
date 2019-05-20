@@ -246,14 +246,10 @@ export class Decoder {
             throw new Error("Swarm ID is not available");
           }
 
-          if (
-            !protocolOptions.swarmId.exponent ||
-            !protocolOptions.swarmId.modulus
-          ) {
-            throw new Error("Swarm ID is not a valid public key");
-          }
-
-          const modulusLength = protocolOptions.swarmId.modulus.length;
+          const modulusLength = Buffer.from(
+            protocolOptions.swarmId.jwk.n,
+            "base64"
+          ).length;
 
           const signature = buffer.slice(index, index + modulusLength);
           index += modulusLength;

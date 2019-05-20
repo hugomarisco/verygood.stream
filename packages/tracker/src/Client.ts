@@ -1,12 +1,13 @@
 import EventEmitter from "events";
 import { SignalData } from "simple-peer";
+import { Duplex } from "stream";
 import { v4 as UUIDv4 } from "uuid";
 import WebSocket from "ws";
 import { WebRTCSocket } from "./WebRTCSocket";
 
 const OFFERS_WATERLINE = 10;
 
-export class TrackerClient extends EventEmitter {
+export class Client extends EventEmitter {
   private trackerSocket: WebSocket;
   private peerSockets: { [socketId: string]: WebRTCSocket };
 
@@ -25,7 +26,7 @@ export class TrackerClient extends EventEmitter {
     this.peerSockets = {};
   }
 
-  public announceOffer() {
+  private announceOffer() {
     const socketId = UUIDv4();
 
     const peerSocket = new WebRTCSocket({ initiator: true });
@@ -61,7 +62,7 @@ export class TrackerClient extends EventEmitter {
     this.send("find");
   }
 
-  private onPeerSocket(peerSocket: WebRTCSocket) {
+  private onPeerSocket(peerSocket: Duplex) {
     this.emit("peerSocket", peerSocket, false);
 
     this.announceOffer();

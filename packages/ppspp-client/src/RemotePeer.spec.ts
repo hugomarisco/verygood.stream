@@ -15,11 +15,11 @@ import {
   UnchokeMessage
 } from "@bitstreamy/ppspp-protocol";
 import forge from "node-forge";
+import { Duplex } from "stream";
 import { ChunkStore } from "./ChunkStore";
 import { RemotePeer } from "./RemotePeer";
-import { WebRTCSocket } from "./WebRTCSocket";
 
-jest.mock("./WebRTCSocket");
+jest.mock("stream");
 jest.mock("./Logger");
 
 Date.now = jest.fn().mockReturnValue(1000001);
@@ -53,7 +53,7 @@ const signature = Buffer.from(
 describe("RemotePeer", () => {
   let protocolOptions: ProtocolOptions;
   let chunkStore: ChunkStore;
-  let socket: WebRTCSocket;
+  let socket: Duplex;
   let remotePeer: RemotePeer;
 
   beforeEach(() => {
@@ -71,7 +71,7 @@ describe("RemotePeer", () => {
 
     chunkStore = new ChunkStore(10);
 
-    socket = new WebRTCSocket();
+    socket = new Duplex();
 
     remotePeer = new RemotePeer(
       socket,
@@ -101,7 +101,7 @@ describe("RemotePeer", () => {
         remotePeer.peerId
       ).encode();
 
-      expect(socket.send).toHaveBeenCalledWith(expectedEncodedMessage);
+      expect(socket.write).toHaveBeenCalledWith(expectedEncodedMessage);
     });
   });
 
@@ -116,7 +116,7 @@ describe("RemotePeer", () => {
         chunkSpec
       ).encode();
 
-      expect(socket.send).toHaveBeenCalledWith(expectedEncodedMessage);
+      expect(socket.write).toHaveBeenCalledWith(expectedEncodedMessage);
     });
   });
 
@@ -131,7 +131,7 @@ describe("RemotePeer", () => {
         chunkSpec
       ).encode();
 
-      expect(socket.send).toHaveBeenCalledWith(expectedEncodedMessage);
+      expect(socket.write).toHaveBeenCalledWith(expectedEncodedMessage);
     });
   });
 
@@ -149,7 +149,7 @@ describe("RemotePeer", () => {
           remotePeer.peerId
         ).encode();
 
-        expect(socket.send).toHaveBeenCalledWith(expectedEncodedMessage);
+        expect(socket.write).toHaveBeenCalledWith(expectedEncodedMessage);
       });
     });
 
@@ -167,7 +167,7 @@ describe("RemotePeer", () => {
           chunkSpec
         ).encode();
 
-        expect(socket.send).toHaveBeenCalledWith(expectedEncodedMessage);
+        expect(socket.write).toHaveBeenCalledWith(expectedEncodedMessage);
 
         expect(remotePeer.availability.get(1)).toBe(true);
       });
@@ -182,7 +182,7 @@ describe("RemotePeer", () => {
           new HaveMessage(remotePeer.peerId, chunkSpec).encode()
         );
 
-        expect(socket.send).not.toBeCalled();
+        expect(socket.write).not.toBeCalled();
       });
     });
 
@@ -223,7 +223,7 @@ describe("RemotePeer", () => {
           new PreciseTimestamp([0, 0])
         ).encode();
 
-        expect(socket.send).toHaveBeenCalledWith(expectedEncodedMessage);
+        expect(socket.write).toHaveBeenCalledWith(expectedEncodedMessage);
       });
 
       test("should emit an error if there isn't a stored signed integrity", done => {
@@ -247,7 +247,7 @@ describe("RemotePeer", () => {
           ])
         );
 
-        expect(socket.send).not.toHaveBeenCalled();
+        expect(socket.write).not.toHaveBeenCalled();
       });
 
       test("should emit an error if the signature is not valid", done => {
@@ -282,7 +282,7 @@ describe("RemotePeer", () => {
           ])
         );
 
-        expect(socket.send).not.toHaveBeenCalled();
+        expect(socket.write).not.toHaveBeenCalled();
       });
     });
 
@@ -345,7 +345,7 @@ describe("RemotePeer", () => {
           ).encode()
         ]);
 
-        expect(socket.send).toHaveBeenCalledWith(expectedEncodedMessages);
+        expect(socket.write).toHaveBeenCalledWith(expectedEncodedMessages);
       });
     });
   });

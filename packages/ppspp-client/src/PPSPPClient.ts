@@ -9,14 +9,11 @@ import { ChunkStore } from "./ChunkStore";
 import { Logger } from "./Logger";
 import { RemotePeer } from "./RemotePeer";
 import { SwarmMetadata } from "./SwarmMetadata";
-import { TrackerClient } from "./TrackerClient";
-import { WebRTCSocket } from "./WebRTCSocket";
 
 export class PPSPPClient extends Duplex {
   private static PROTOCOL_VERSION = 1;
   private static SUPPORTED_MESSAGES = [AckMessage.CODE];
 
-  private tracker: TrackerClient;
   private peers: { [peerId: string]: RemotePeer };
   private protocolOptions: ProtocolOptions;
   private chunkStore: ChunkStore;
@@ -63,11 +60,6 @@ export class PPSPPClient extends Duplex {
     this.chunkStore = new ChunkStore(liveDiscardWindow);
 
     this.peers = {};
-
-    this.tracker = new TrackerClient(trackerUrl);
-
-    this.tracker.on("peerSocket", this.onPeerSocket.bind(this));
-    this.tracker.on("error", this.emit.bind(this, "error"));
   }
 
   public pushChunks(chunkSpec: ChunkSpec, data: Buffer[]) {
@@ -90,7 +82,7 @@ export class PPSPPClient extends Duplex {
     this.chunkStore = new ChunkStore(this.protocolOptions.liveDiscardWindow);
   }
 
-  private onPeerSocket(peerSocket: WebRTCSocket, isInitiator: boolean) {
+  public addPeer(peerSocket: Duplex, isInitiator: boolean) {
     const remotePeer = new RemotePeer(
       peerSocket,
       this.protocolOptions,

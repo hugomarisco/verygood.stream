@@ -2,8 +2,8 @@ import { Logger } from "./Logger";
 import { Peer } from "./Peer";
 
 export class Swarm {
-  private swarmId: string;
-  private peers: { [peerId: string]: Peer };
+  public swarmId: string;
+  public peers: { [peerId: string]: Peer };
 
   constructor(swarmId: string) {
     this.swarmId = swarmId;

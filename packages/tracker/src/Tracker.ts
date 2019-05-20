@@ -2,28 +2,27 @@ import { EventEmitter } from "events";
 import { createServer, IncomingMessage } from "http";
 import URL from "url";
 import WebSocket from "ws";
+import { httpApi } from "./httpApi";
 import { Logger } from "./Logger";
 import { Peer } from "./Peer";
 import { Swarm } from "./Swarm";
 
+export interface ISwarms {
+  [swarmId: string]: Swarm;
+}
+
 export default class Tracker extends EventEmitter {
   private wss: WebSocket.Server;
-  private swarms: {
-    [swarmId: string]: Swarm;
-  };
+  private swarms: ISwarms;
 
   constructor(port: number) {
     super();
 
     this.swarms = {};
 
-    const httpServer = createServer();
+    const app = httpApi(this.swarms);
 
-    httpServer.on("request", (req, res) => {
-      res.writeHeader(200);
-
-      res.end();
-    });
+    const httpServer = createServer(app.callback());
 
     this.wss = new WebSocket.Server({
       server: httpServer
@@ -44,9 +43,19 @@ export default class Tracker extends EventEmitter {
       return;
     }
 
-    const swarmId = URL.parse(request.url).pathname;
+    const { pathname } = URL.parse(request.url);
 
-    if (!swarmId) {
+    if (!pathname) {
+      Logger.warn("Empty path in the request", {
+        url: request.url
+      });
+
+      return;
+    }
+
+    const swarmId = decodeURIComponent(pathname.slice(1));
+
+    if (swarmId.length === 0) {
       Logger.warn("Empty swarmId in the request", {
         url: request.url
       });

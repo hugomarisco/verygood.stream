@@ -19,22 +19,22 @@ import { EventEmitter } from "events";
 import BitSet from "fast-bitset";
 import { jsbn, md, pki, util } from "node-forge";
 import randomBytes from "randombytes";
+import { Duplex } from "stream";
 import { ChunkStore } from "./ChunkStore";
 import { Logger } from "./Logger";
-import { WebRTCSocket } from "./WebRTCSocket";
 
 export class RemotePeer extends EventEmitter {
   public peerId: number;
   public isChoking: boolean;
   public availability: BitSet;
-  private socket: WebRTCSocket;
+  private socket: Duplex;
   private protocolOptions: ProtocolOptions;
   private chunkStore: ChunkStore;
   private privateKey?: any;
   private publicKey?: any;
 
   constructor(
-    socket: WebRTCSocket,
+    socket: Duplex,
     protocolOptions: ProtocolOptions,
     chunkStore: ChunkStore,
     privateKey?: any
@@ -55,43 +55,20 @@ export class RemotePeer extends EventEmitter {
       this.protocolOptions.integrityProtectionMethod ===
       ContentIntegrityProtectionMethod.SIGN_ALL
     ) {
-      if (
-        !this.protocolOptions.swarmId ||
-        !this.protocolOptions.swarmId.exponent ||
-        !this.protocolOptions.swarmId.modulus
-      ) {
+      if (!this.protocolOptions.swarmId) {
         throw new Error("Invalid Swarm ID");
       }
-
-      // this.publicKey = pki.rsa.setPublicKey(
-      //   new jsbn.BigInteger(
-      //     util
-      //       .createBuffer(this.protocolOptions.swarmId.modulus)
-      //       .toHex(),
-      //     16
-      //   ),
-      //   new jsbn.BigInteger(
-      //     util
-      //       .createBuffer(this.protocolOptions.swarmId.exponent)
-      //       .toHex(),
-      //     16
-      //   )
-      // );
 
       this.publicKey = pki.rsa.setPublicKey(
         new jsbn.BigInteger(
           new util.createBuffer(
-            util.decode64(
-              this.protocolOptions.swarmId.modulus.toString("base64")
-            )
+            util.binary.base64.decode(this.protocolOptions.swarmId.jwk.n)
           ).toHex(),
           16
         ),
         new jsbn.BigInteger(
           new util.createBuffer(
-            util.decode64(
-              this.protocolOptions.swarmId.exponent.toString("base64")
-            )
+            util.binary.base64.decode(this.protocolOptions.swarmId.jwk.e)
           ).toHex(),
           16
         )
@@ -116,7 +93,7 @@ export class RemotePeer extends EventEmitter {
   }
 
   public handshake(sourceChannel: number = 0) {
-    this.socket.send(
+    this.socket.write(
       new HandshakeMessage(
         sourceChannel,
         this.protocolOptions,
@@ -131,15 +108,15 @@ export class RemotePeer extends EventEmitter {
   }
 
   public have(chunkSpec: ChunkSpec) {
-    this.socket.send(new HaveMessage(this.peerId, chunkSpec).encode());
+    this.socket.write(new HaveMessage(this.peerId, chunkSpec).encode());
   }
 
   public request(chunkSpec: ChunkSpec) {
-    this.socket.send(new RequestMessage(this.peerId, chunkSpec).encode());
+    this.socket.write(new RequestMessage(this.peerId, chunkSpec).encode());
   }
 
   private ack(chunkSpec: ChunkSpec, delay: PreciseTimestamp) {
-    this.socket.send(new AckMessage(this.peerId, chunkSpec, delay).encode());
+    this.socket.write(new AckMessage(this.peerId, chunkSpec, delay).encode());
   }
 
   private data(chunkSpec: ChunkSpec, data: Buffer) {
@@ -194,7 +171,7 @@ export class RemotePeer extends EventEmitter {
       new DataMessage(this.peerId, chunkSpec, timestamp, data).encode()
     );
 
-    this.socket.send(Buffer.concat(buffers));
+    this.socket.write(Buffer.concat(buffers));
   }
 
   private handleMessage(data: Buffer) {
