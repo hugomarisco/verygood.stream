@@ -92,18 +92,18 @@ export class RemotePeer extends EventEmitter {
     }
   }
 
-  public handshake(sourceChannel: number = 0) {
+  public handshake(destinationChannel?: number) {
     this.socket.write(
       new HandshakeMessage(
-        sourceChannel,
+        this.peerId,
         this.protocolOptions,
-        this.peerId
+        destinationChannel
       ).encode()
     );
 
     Logger.debug("Handshake sent", {
-      peerId: this.peerId,
-      sourceChannel
+      destinationChannel,
+      peerId: this.peerId
     });
   }
 
@@ -230,10 +230,13 @@ export class RemotePeer extends EventEmitter {
 
   private handleHandshakeMessage(message: HandshakeMessage) {
     Logger.info("Handshake message received", {
+      destinationChannel: message.destinationChannel,
       peerId: this.peerId
     });
 
-    this.handshake(message.sourceChannel);
+    if (message.destinationChannel === 0) {
+      this.handshake(message.sourceChannel);
+    }
   }
 
   private handleHaveMessage(message: HaveMessage) {

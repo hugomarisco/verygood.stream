@@ -4,6 +4,7 @@ import {
   DataMessage,
   ProtocolOptions
 } from "@bitstreamy/ppspp-protocol";
+import { Client as TrackerClient } from "@bitstreamy/tracker";
 import { Duplex } from "stream";
 import { ChunkStore } from "./ChunkStore";
 import { Logger } from "./Logger";
@@ -60,6 +61,10 @@ export class PPSPPClient extends Duplex {
     this.chunkStore = new ChunkStore(liveDiscardWindow);
 
     this.peers = {};
+
+    const tracker = new TrackerClient(trackerUrl);
+
+    tracker.on("peerSocket", this.onPeerSocket.bind(this));
   }
 
   public pushChunks(chunkSpec: ChunkSpec, data: Buffer[]) {
@@ -82,7 +87,7 @@ export class PPSPPClient extends Duplex {
     this.chunkStore = new ChunkStore(this.protocolOptions.liveDiscardWindow);
   }
 
-  public addPeer(peerSocket: Duplex, isInitiator: boolean) {
+  private onPeerSocket(peerSocket: Duplex, isInitiator: boolean) {
     const remotePeer = new RemotePeer(
       peerSocket,
       this.protocolOptions,
@@ -91,8 +96,6 @@ export class PPSPPClient extends Duplex {
     );
 
     this.peers[remotePeer.peerId] = remotePeer;
-
-    this.emit("peer");
 
     remotePeer.on("error", this.onPeerClose.bind(this, remotePeer.peerId));
 

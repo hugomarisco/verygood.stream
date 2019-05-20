@@ -9,13 +9,14 @@
     "url": "https://github.com/bitstreamy/bitstreamy/issues"
   },
   "main": "./lib/index.js",
+  "bin": "./lib/cli.js",
   "types": "./lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bitstreamy/bitstreamy.git"
   },
   "scripts": {
-    "start": "TS_NODE_FILES=true ts-node src/index.ts",
+    "start": "TS_NODE_FILES=true ts-node src/cli.ts",
     "build": "tsc",
     "build:watch": "tsc -w",
     "test": "jest --coverage --passWithNoTests",

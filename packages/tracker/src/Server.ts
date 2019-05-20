@@ -11,7 +11,7 @@ export interface ISwarms {
   [swarmId: string]: Swarm;
 }
 
-export default class Tracker extends EventEmitter {
+export class Server extends EventEmitter {
   private wss: WebSocket.Server;
   private swarms: ISwarms;
 

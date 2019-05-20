@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "dependencies": {
     "@bitstreamy/ppspp-client": "^0.2.0",
+    "@bitstreamy/tracker": "^0.2.0",
     "mp4box": "^0.3.19",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",

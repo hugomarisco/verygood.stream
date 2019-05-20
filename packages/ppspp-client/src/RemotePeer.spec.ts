@@ -96,9 +96,21 @@ describe("RemotePeer", () => {
       remotePeer.handshake(1);
 
       const expectedEncodedMessage = new HandshakeMessage(
-        1,
+        remotePeer.peerId,
         protocolOptions,
-        remotePeer.peerId
+        1
+      ).encode();
+
+      expect(socket.write).toHaveBeenCalledWith(expectedEncodedMessage);
+    });
+
+    test("should default the destination channel to 0", () => {
+      remotePeer.handshake();
+
+      const expectedEncodedMessage = new HandshakeMessage(
+        remotePeer.peerId,
+        protocolOptions,
+        0
       ).encode();
 
       expect(socket.write).toHaveBeenCalledWith(expectedEncodedMessage);
@@ -137,19 +149,28 @@ describe("RemotePeer", () => {
 
   describe("#handleMessage()", () => {
     describe("Handshake message", () => {
-      test("should respond with a valid Handshake message", () => {
+      test("should respond with a handshake message if destination channel is 0", () => {
         socket.emit(
           "data",
-          new HandshakeMessage(1, protocolOptions, remotePeer.peerId).encode()
+          new HandshakeMessage(1, protocolOptions, 0).encode()
         );
 
         const expectedEncodedMessage = new HandshakeMessage(
-          1,
+          remotePeer.peerId,
           protocolOptions,
-          remotePeer.peerId
+          1
         ).encode();
 
         expect(socket.write).toHaveBeenCalledWith(expectedEncodedMessage);
+      });
+
+      test("should respond if destination channel is not 0", () => {
+        socket.emit(
+          "data",
+          new HandshakeMessage(1, protocolOptions, 2).encode()
+        );
+
+        expect(socket.write).not.toBeCalled();
       });
     });
 

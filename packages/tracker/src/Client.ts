@@ -32,7 +32,7 @@ export class Client extends EventEmitter {
     const peerSocket = new WebRTCSocket({ initiator: true });
 
     peerSocket.once("signal", this.offer.bind(this, socketId));
-    peerSocket.once("connect", this.onPeerSocket.bind(this, peerSocket));
+    peerSocket.once("connect", this.onPeerSocket.bind(this, peerSocket, true));
 
     this.peerSockets[socketId] = peerSocket;
   }
@@ -62,8 +62,8 @@ export class Client extends EventEmitter {
     this.send("find");
   }
 
-  private onPeerSocket(peerSocket: Duplex) {
-    this.emit("peerSocket", peerSocket, false);
+  private onPeerSocket(peerSocket: Duplex, isInitiator: boolean) {
+    this.emit("peerSocket", peerSocket, isInitiator);
 
     this.announceOffer();
   }
@@ -87,7 +87,10 @@ export class Client extends EventEmitter {
             )
           );
 
-          peerSocket.once("connect", this.onPeerSocket.bind(this, peerSocket));
+          peerSocket.once(
+            "connect",
+            this.onPeerSocket.bind(this, peerSocket, false)
+          );
 
           peerSocket.signal(message.payload.signalData);
 

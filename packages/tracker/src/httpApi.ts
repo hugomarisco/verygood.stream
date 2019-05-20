@@ -1,6 +1,6 @@
 import Koa from "koa";
 import Router from "koa-router";
-import { ISwarms } from "./Tracker";
+import { ISwarms } from "./Server";
 
 export const httpApi = (swarms: ISwarms): Koa => {
   const app = new Koa();

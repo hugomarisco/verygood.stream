@@ -1,4 +1,4 @@
-# `ppspp-tracker`
+# `tracker`
 
 A simple WebSocket tracker for PPSPP.
 

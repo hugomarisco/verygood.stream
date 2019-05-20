@@ -1,7 +1,10 @@
 export abstract class Message {
+  public destinationChannel: number;
   private destinationChannelBuffer: Buffer;
 
   constructor(destinationChannel: number) {
+    this.destinationChannel = destinationChannel;
+
     this.destinationChannelBuffer = Buffer.alloc(4);
     this.destinationChannelBuffer.writeUInt32BE(destinationChannel, 0);
   }
