@@ -1,20 +1,14 @@
 import React, { Component } from "react";
 import { Box, Flex, Image } from "rebass";
-import EyeIcon from "../../assets/icons/eye.svg";
 import FatArrowUpIcon from "../../assets/icons/fat-arrow-up.svg";
-import LiveIcon from "../../assets/icons/live.svg";
 import LaptopCheckOutline from "../../assets/images/laptop-check-outline.png";
 import PeerNetworkOutline from "../../assets/images/peer-network-outline.png";
 import RadarOutline from "../../assets/images/radar-outline.png";
 import { Link } from "../../components/Link";
-import {
-  BiggerText,
-  BigText,
-  BoldHeader,
-  RegularText
-} from "../../components/Text";
-import { PageWrapper, Video } from "./styles";
+import { BiggerText, BoldHeader, RegularText } from "../../components/Text";
 import { Header } from "./components/Header";
+import { LiveStreams } from "./components/LiveStreams";
+import { PageWrapper, Video } from "./styles";
 
 export class Home extends Component {
   public render() {
@@ -27,29 +21,14 @@ export class Home extends Component {
             <Flex>
               <Box>
                 <BoldHeader color="fadeBlack40">Broadcast</BoldHeader>
-                <BoldHeader>and watch like</BoldHeader>
-                <BoldHeader>never before</BoldHeader>
+                <BoldHeader color="black">and watch like</BoldHeader>
+                <BoldHeader color="black">never before</BoldHeader>
               </Box>
             </Flex>
 
             <RegularText color="fadeBlack40">Now live</RegularText>
 
-            <Flex justifyContent="space-between">
-              <Box>
-                <Image src={LiveIcon} />
-              </Box>
-              <Box>
-                <BigText>Juventus - Roma</BigText>
-              </Box>
-              <Box>
-                {" "}
-                <BigText>
-                  <Image src={EyeIcon} />
-                  3,4 K
-                </BigText>
-              </Box>
-              <Box />
-            </Flex>
+            <LiveStreams />
           </Box>
         </Flex>
         <Box bg="black">
