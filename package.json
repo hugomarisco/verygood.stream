@@ -4,7 +4,7 @@
   "scripts": {
     "lerna": "lerna",
     "bootstrap": "lerna bootstrap",
-    "start": "lerna run start --stream",
+    "dev": "lerna run dev --stream",
     "build": "lerna run build",
     "build:watch": "lerna run build:watch --stream --parallel",
     "test": "lerna run test",

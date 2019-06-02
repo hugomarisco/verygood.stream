@@ -1,7 +1,7 @@
 {
-  "name": "@bitstreamy/tracker",
+  "name": "@bitstreamy/api",
   "version": "0.2.0",
-  "description": "Bitstreamy tracker",
+  "description": "> TODO: description",
   "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "GNU GPLv3",
   "homepage": "https://github.com/bitstreamy/bitstreamy#readme",
@@ -9,14 +9,13 @@
     "url": "https://github.com/bitstreamy/bitstreamy/issues"
   },
   "main": "./lib/index.js",
-  "bin": "./lib/cli.js",
   "types": "./lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bitstreamy/bitstreamy.git"
   },
   "scripts": {
-    "dev": "TS_NODE_FILES=true ts-node src/cli.ts",
+    "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts",
     "build": "tsc",
     "build:watch": "tsc -w",
     "test": "jest --coverage --passWithNoTests",
@@ -24,23 +23,24 @@
     "test:ci": "jest --coverage --passWithNoTests"
   },
   "dependencies": {
+    "@hapi/boom": "^7.4.2",
+    "ajv": "^6.10.0",
+    "base64-url": "^2.2.1",
     "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
-    "simple-peer": "^9.3.0",
-    "uuid": "^3.3.2",
-    "winston": "^3.2.1",
-    "wrtc": "^0.4.1",
-    "ws": "^6.1.2"
+    "pg": "^7.11.0",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@types/base64-url": "^2.2.0",
+    "@types/hapi__boom": "^7.4.0",
     "@types/koa": "^2.0.48",
+    "@types/koa-bodyparser": "^4.3.0",
     "@types/koa-router": "^7.0.40",
-    "@types/simple-peer": "^6.1.5",
-    "@types/uuid": "^3.4.4",
-    "@types/ws": "^6.0.1"
-  },
-  "gitHead": "ff1466ca635e3725d09a4fefeb724d20580d4918",
-  "publishConfig": {
-    "access": "public"
+    "@types/pg": "^7.4.14",
+    "db-migrate": "^0.11.5",
+    "db-migrate-pg": "^0.5.1",
+    "nodemon": "^1.19.1"
   }
 }

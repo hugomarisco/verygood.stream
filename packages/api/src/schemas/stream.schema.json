@@ -1,0 +1,22 @@
+{
+  "$async": true,
+  "$id": "https://bitstreamy.com/stream.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Stream",
+  "type": "object",
+  "properties": {
+    "public_key": {
+      "type": "string"
+    },
+    "category_id": {
+      "type": "integer"
+    },
+    "title": {
+      "type": "string"
+    },
+    "poster_path": {
+      "type": "string"
+    }
+  },
+  "required": ["public_key", "title"]
+}

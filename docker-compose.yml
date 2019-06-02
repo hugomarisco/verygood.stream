@@ -1,0 +1,27 @@
+version: "3"
+services:
+  api:
+    build:
+      context: ./packages/api
+      dockerfile: dev.Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - code:/app
+    environment:
+      DATABASE_URL: postgres://bitstreamy:bitstreamy@db:5432/bitstreamy
+  db:
+    image: "postgres:11-alpine"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: bitstreamy
+      POSTGRES_PASSWORD: bitstreamy
+      POSTGRES_DB: bitstreamy
+volumes:
+  code:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: "${PWD}"

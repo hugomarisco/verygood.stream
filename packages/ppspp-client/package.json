@@ -15,7 +15,7 @@
     "url": "git+https://github.com/bitstreamy/bitstreamy.git"
   },
   "scripts": {
-    "start": "TS_NODE_FILES=true ts-node src/index.ts",
+    "dev": "TS_NODE_FILES=true ts-node src/index.ts",
     "build": "tsc",
     "build:watch": "tsc -w",
     "test": "jest --coverage --passWithNoTests --colors",

@@ -5,7 +5,7 @@ import { Reset } from "styled-reset";
 import { GlobalStyles } from "./components/GlobalStyles";
 import { theme } from "./components/Theme";
 import { Home } from "./pages/Home";
-import { Swarm } from "./pages/Swarm";
+import { Stream } from "./pages/Stream";
 
 class App extends Component {
   public render() {
@@ -16,7 +16,7 @@ class App extends Component {
           <GlobalStyles />
           <Router>
             <Route path="/" exact component={Home} />
-            <Route path="/stream" exact component={Swarm} />
+            <Route path="/stream/:swarmId" exact component={Stream} />
           </Router>
         </>
       </ThemeProvider>

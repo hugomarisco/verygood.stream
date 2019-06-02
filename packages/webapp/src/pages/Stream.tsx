@@ -3,12 +3,13 @@ import { parse as parseQueryString } from "query-string";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router";
 import { Player } from "../components/Player";
+import { Logger } from "../utils/Logger";
 
 interface IMatchParams {
   swarmId: string;
 }
 
-interface ISwarmProps extends RouteComponentProps<IMatchParams> {}
+interface IStreamProps extends RouteComponentProps<IMatchParams> {}
 
 interface IMP4Track {
   codec: string;
@@ -18,11 +19,11 @@ interface IMP4Info {
   tracks: IMP4Track[];
 }
 
-interface ISwarmState {
+interface IStreamState {
   mediaInfo?: IMP4Info;
 }
 
-export class Swarm extends Component<ISwarmProps, ISwarmState> {
+export class Stream extends Component<IStreamProps, IStreamState> {
   public render() {
     const {
       swarmId,

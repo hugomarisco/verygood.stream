@@ -16,7 +16,7 @@
     "url": "git+https://github.com/bitstreamy/bitstreamy.git"
   },
   "scripts": {
-    "start": "ts-node src/index.ts -K /Users/xpto/key -T ws://localhost:8080",
+    "dev": "ts-node src/index.ts -K /Users/xpto/key -T ws://localhost:8080",
     "build": "tsc",
     "build:watch": "tsc -w",
     "test": "jest --coverage --passWithNoTests",
