@@ -1,4 +1,5 @@
 import Boom from "@hapi/boom";
+import cors from "@koa/cors";
 import Koa from "koa";
 import bodyParser from "koa-bodyparser";
 import { errorHandler } from "./errorHandler";
@@ -11,6 +12,7 @@ const app = new Koa();
 
 app
   .use(errorHandler)
+  .use(cors({ origin: "http://localhost:5000" }))
   .use(bodyParser())
   .use(router.routes())
   .use(

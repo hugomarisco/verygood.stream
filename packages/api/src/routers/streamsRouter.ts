@@ -30,9 +30,9 @@ streamsRouter.get("/:streamId", async (ctx, next) => {
   const stream = await Stream.findById(ctx.params.streamId);
 
   if (stream) {
-    throw Boom.notFound();
-  } else {
     ctx.body = stream;
+  } else {
+    throw Boom.notFound();
   }
 
   next();

@@ -3,7 +3,7 @@ import { databasePool } from "../DatabasePool";
 export class Stream {
   public static async all() {
     const { rows } = await databasePool.query(
-      "SELECT (stream_id, public_key, category_id, title, poster_path) FROM streams"
+      "SELECT stream_id, public_key, category_id, title, poster_path FROM streams"
     );
 
     return rows;
@@ -11,7 +11,7 @@ export class Stream {
 
   public static async findById(streamId: string) {
     const { rows } = await databasePool.query(
-      "SELECT (stream_id, public_key, category_id, title, poster_path) FROM streams WHERE stream_id = $1",
+      "SELECT stream_id, public_key, category_id, title, poster_path FROM streams WHERE stream_id = $1",
       [streamId]
     );
 

@@ -1,7 +1,11 @@
 import React from "react";
-import { Box, Flex, Image } from "rebass";
+import { Flex } from "../../../components/Flex";
+import { H5 } from "../../../components/H5";
+import { Hr } from "../../../components/Hr";
 import { EyeIcon, LiveIcon } from "../../../components/Icon";
-import { BigText } from "../../../components/Text";
+import { RawLink } from "../../../components/Link";
+import { P } from "../../../components/P";
+import { Spacer } from "../../../components/Spacer";
 
 interface ILiveStreamInfo {
   id: string;
@@ -14,20 +18,38 @@ interface ILiveStreamsProps {
 }
 
 export const LiveStreams = (props: ILiveStreamsProps) => (
-  <Flex justifyContent="space-between">
-    <Box>
-      <LiveIcon />
-    </Box>
-    <Box>
-      <BigText color="black">Juventus - Roma</BigText>
-    </Box>
-    <Box>
-      {" "}
-      <BigText color="black">
-        <EyeIcon color="fadeBlack40" />
-        3,4 K
-      </BigText>
-    </Box>
-    <Box />
-  </Flex>
+  <div>
+    <P dark translucent>
+      Now live
+    </P>
+
+    <Spacer layout size="xxs" />
+
+    <Hr dark translucent />
+
+    <RawLink to="/stream/123/edit">
+      <Flex
+        css={`
+          padding: 25px 0;
+        `}
+      >
+        <Flex>
+          <LiveIcon />
+
+          <Spacer horizontal size="l" />
+
+          <H5 dark>Juventus - Roma</H5>
+        </Flex>
+        <Flex>
+          <EyeIcon />
+
+          <Spacer horizontal size="m" />
+
+          <H5 dark>3,4 K</H5>
+
+          <Spacer horizontal size="xxl" />
+        </Flex>
+      </Flex>
+    </RawLink>
+  </div>
 );

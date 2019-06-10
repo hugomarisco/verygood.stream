@@ -6,11 +6,17 @@
     "@bitstreamy/ppspp-client": "^0.2.0",
     "@bitstreamy/tracker": "^0.2.0",
     "@svgr/webpack": "2.4.1",
+    "@types/react": "^16.8.17",
+    "@types/react-dom": "^16.8.4",
+    "@types/react-router-dom": "^4.3.3",
+    "@types/styled-components": "^4.1.15",
+    "@types/styled-system": "^4.2.1",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "9.0.0",
     "babel-jest": "23.6.0",
     "babel-loader": "8.0.4",
     "babel-plugin-named-asset-import": "^0.3.0",
+    "babel-plugin-styled-components": "^1.10.0",
     "babel-preset-react-app": "^7.0.0",
     "bfj": "6.1.1",
     "case-sensitive-paths-webpack-plugin": "2.1.2",
@@ -27,6 +33,7 @@
     "eslint-plugin-react": "7.11.1",
     "file-loader": "2.0.0",
     "fork-ts-checker-webpack-plugin-alt": "0.4.14",
+    "formik": "^1.5.7",
     "fs-extra": "7.0.0",
     "html-webpack-plugin": "4.0.0-alpha.2",
     "identity-obj-proxy": "3.0.0",
@@ -34,9 +41,12 @@
     "jest-pnp-resolver": "1.0.1",
     "jest-resolve": "23.6.0",
     "mini-css-extract-plugin": "0.4.3",
+    "mobx": "^5.10.1",
+    "mobx-react": "^6.0.3",
     "mp4box": "^0.3.19",
     "optimize-css-assets-webpack-plugin": "5.0.1",
     "pnp-webpack-plugin": "1.1.0",
+    "polished": "^3.3.2",
     "postcss-flexbugs-fixes": "4.1.0",
     "postcss-loader": "3.0.0",
     "postcss-preset-env": "6.3.1",
@@ -49,7 +59,8 @@
     "resolve": "1.8.1",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.0",
-    "styled-components": "^4.2.0",
+    "styled-components": "^4.2.1",
+    "styled-system": "^4.2.2",
     "terser-webpack-plugin": "1.1.0",
     "url-loader": "1.1.1",
     "webpack": "4.19.1",
@@ -77,21 +88,5 @@
   "gitHead": "ff1466ca635e3725d09a4fefeb724d20580d4918",
   "publishConfig": {
     "access": "public"
-  },
-  "devDependencies": {
-    "@types/react": "^16.8.17",
-    "@types/react-dom": "^16.8.4",
-    "@types/react-router-dom": "^4.3.3",
-    "@types/rebass": "^3.0.4",
-    "@types/styled-components": "^4.1.15",
-    "polished": "^3.3.2",
-    "rebass": "^3.1.0",
-    "styled-reset": "^2.0.12",
-    "styled-system": "^4.2.2"
-  },
-  "babel": {
-    "presets": [
-      "react-app"
-    ]
   }
 }

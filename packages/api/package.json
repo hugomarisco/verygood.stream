@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@hapi/boom": "^7.4.2",
+    "@koa/cors": "^2.2.3",
     "ajv": "^6.10.0",
     "base64-url": "^2.2.1",
     "koa": "^2.7.0",

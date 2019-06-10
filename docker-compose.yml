@@ -5,10 +5,11 @@ services:
       context: ./packages/api
       dockerfile: dev.Dockerfile
     ports:
-      - "5000:5000"
+      - "3000:3000"
     volumes:
       - code:/app
     environment:
+      API_PORT: 3000
       DATABASE_URL: postgres://bitstreamy:bitstreamy@db:5432/bitstreamy
   db:
     image: "postgres:11-alpine"
