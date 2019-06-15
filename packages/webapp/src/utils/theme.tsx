@@ -6,9 +6,9 @@ import baseStyled, {
 } from "styled-components";
 
 const colors = {
-  black: "#000000",
-  bloodyOrange: "#ff2727",
-  white: "#ffffff"
+  dark: "#000000",
+  light: "#ffffff",
+  primary: "#ff2727"
 };
 
 export const theme = {

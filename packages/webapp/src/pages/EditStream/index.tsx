@@ -1,49 +1,27 @@
 import { ErrorMessage, Field, Formik } from "formik";
 import { inject, observer } from "mobx-react";
-import { hideVisually, rgba } from "polished";
+import { hideVisually } from "polished";
 import React from "react";
 import { Button } from "../../components/Button";
+import { Column } from "../../components/Column";
+import { Container } from "../../components/Container";
 import { Fieldset } from "../../components/Fieldset";
-import { Flex } from "../../components/Flex";
-import { H4 } from "../../components/H4";
 import { PlusIcon, SoccerBallIcon } from "../../components/Icon";
 import { Input } from "../../components/Input";
 import { Label } from "../../components/Label";
 import { Legend } from "../../components/Legend";
 import { P } from "../../components/P";
-import { Spacer } from "../../components/Spacer";
+import { Row } from "../../components/Row";
 import { TopNav } from "../../components/TopNav";
 import { StreamStore } from "../../stores/StreamStore";
-import { css, styled } from "../../utils/theme";
-
-interface IPosterPanel {
-  posterUrl?: string;
-}
-
-const PosterPanel = styled.div<IPosterPanel>`
-  background: ${props =>
-    props.posterUrl
-      ? `url(${props.posterUrl})`
-      : rgba(props.theme.colors.white, 0.1)};
-  background-size: cover;
-  background-position: center center;
-  padding: 40px;
-  height: 260px;
-`;
-
-interface IHighlightableIcon {
-  checked: boolean;
-}
-
-const HighlightableIcon = styled.span<IHighlightableIcon>`
-  background: ${props =>
-    props.checked
-      ? props.theme.colors.bloodyOrange
-      : rgba(props.theme.colors.white, 0.1)};
-  padding: 40px;
-  border-radius: 70px;
-  display: inline-block;
-`;
+import { css } from "../../utils/theme";
+import {
+  CategoriesContainer,
+  CategoryLabel,
+  HighlightableIcon,
+  PageTitle,
+  PosterLabel
+} from "./styles";
 
 interface IEditStreamProps {
   streamStore: StreamStore;
@@ -72,19 +50,25 @@ export class EditStream extends React.Component<
       return null;
     }
 
-    debugger;
     return (
-      <div>
+      <Container>
         <TopNav />
 
-        <H4>CUSTOMIZE YOUR STREAM</H4>
-
-        <Spacer layout size="l" />
+        <Row>
+          <Column />
+          <Column span={10}>
+            <PageTitle>
+              CUSTOMIZE
+              <br />
+              YOUR STREAM
+            </PageTitle>
+          </Column>
+        </Row>
 
         <Formik
           initialValues={{
-            category_id: "",
-            poster: "",
+            category_id: this.props.streamStore.stream!.category_id,
+            poster_path: this.props.streamStore.stream!.poster_path,
             title: this.props.streamStore.stream!.title
           }}
           validate={values => ({})}
@@ -97,131 +81,133 @@ export class EditStream extends React.Component<
         >
           {({ handleSubmit, isSubmitting, values, setFieldValue }) => (
             <form onSubmit={handleSubmit}>
-              <Fieldset>
-                <Label htmlFor="title">Stream Title</Label>
+              <Row>
+                <Column />
+                <Column span={10}>
+                  <Fieldset>
+                    <Label htmlFor="title">Stream Title</Label>
 
-                <Field
-                  type="text"
-                  id="title"
-                  name="title"
-                  placeholder="Type your stream title"
-                  component={Input}
-                />
+                    <Field
+                      type="text"
+                      id="title"
+                      name="title"
+                      placeholder="Type your stream title"
+                      render={({ field, form, ...props }) => (
+                        <Input {...field} {...props} />
+                      )}
+                    />
 
-                <ErrorMessage name="title" />
-              </Fieldset>
+                    <ErrorMessage name="title" />
+                  </Fieldset>
+                </Column>
+              </Row>
 
-              <Fieldset>
-                <Legend>Category</Legend>
+              <Row>
+                <Column />
+                <Column span={11}>
+                  <Fieldset>
+                    <Legend>Category</Legend>
 
-                <Flex
-                  css={`
-                    overflow-x: auto;
-                  `}
-                >
-                  {[
-                    { id: 1, label: "Soccer" },
-                    { id: 2, label: "Gaming" },
-                    { id: 3, label: "Basketball" },
-                    { id: 4, label: "Basketball" }
-                  ].map(category => (
-                    <React.Fragment key={category.id}>
-                      <Field
-                        type="radio"
-                        name="category_id"
-                        css={`
-                          ${hideVisually()}
-                        `}
-                        id={`category-${category.id}`}
-                        value={category.id}
-                      />
+                    {this.renderCategories(
+                      values.category_id && parseInt(values.category_id, 10)
+                    )}
+                    <ErrorMessage name="category_id" />
+                  </Fieldset>
+                </Column>
+              </Row>
 
-                      <div
-                        css={`
-                          margin-right: 40px;
-                          text-align: center;
+              <Row>
+                <Column />
+                <Column span={10}>
+                  <Fieldset>
+                    <Legend>Poster image</Legend>
+
+                    <input
+                      type="file"
+                      id="poster_path"
+                      name="poster_path"
+                      css={`
+                        ${hideVisually()}
+                      `}
+                      onChange={ev =>
+                        ev.currentTarget.files &&
+                        setFieldValue(
+                          "poster_path",
+                          URL.createObjectURL(ev.currentTarget.files[0])
+                        )
+                      }
+                    />
+
+                    <PosterLabel
+                      posterUrl={values.poster_path}
+                      htmlFor="poster_path"
+                    >
+                      <span
+                        css={css`
+                          background: ${props => props.theme.colors.primary};
+                          padding: 8px;
+                          border-radius: 20px;
+                          display: inline-block;
                         `}
                       >
-                        <Label htmlFor={`category-${category.id}`}>
-                          <HighlightableIcon
-                            checked={
-                              values.category_id === category.id.toString()
-                            }
-                          >
-                            <SoccerBallIcon
-                              css={`
-                                display: block;
-                              `}
-                            />
-                          </HighlightableIcon>
+                        <PlusIcon
+                          css={`
+                            display: block;
+                          `}
+                        />
+                      </span>
+                      <P translucent>
+                        {values.poster_path ? "Change" : "Upload"} image
+                      </P>
+                      <P translucent>(1080x720)</P>
+                    </PosterLabel>
 
-                          <Spacer size="l" />
-                          <P
-                            translucent={
-                              values.category_id !== category.id.toString()
-                            }
-                          >
-                            {category.label}
-                          </P>
-                        </Label>
-                      </div>
-                    </React.Fragment>
-                  ))}
-                </Flex>
+                    <ErrorMessage name="poster_path" />
+                  </Fieldset>
+                </Column>
+              </Row>
 
-                <ErrorMessage name="category_id" />
-              </Fieldset>
-
-              <Fieldset>
-                <Legend>Poster image</Legend>
-
-                <input
-                  type="file"
-                  id="poster"
-                  name="poster"
-                  css={`
-                    ${hideVisually()}
-                  `}
-                  onChange={ev =>
-                    ev.currentTarget.files &&
-                    setFieldValue(
-                      "poster",
-                      URL.createObjectURL(ev.currentTarget.files[0])
-                    )
-                  }
-                />
-
-                <Label htmlFor={`poster`}>
-                  <PosterPanel posterUrl={values.poster}>
-                    <span
-                      css={css`
-                        background: ${props => props.theme.colors.bloodyOrange};
-                        padding: 8px;
-                        border-radius: 20px;
-                        display: inline-block;
-                      `}
-                    >
-                      <PlusIcon
-                        css={`
-                          display: block;
-                        `}
-                      />
-                    </span>
-                    <P translucent>Upload image</P>
-                    <P translucent>(1080x720)</P>
-                  </PosterPanel>
-                </Label>
-
-                <ErrorMessage name="poster" />
-              </Fieldset>
-
-              <Button type="submit" disabled={isSubmitting}>
-                Start Streaming
-              </Button>
+              <Row>
+                <Column />
+                <Column span={10}>
+                  <Button type="submit" disabled={isSubmitting}>
+                    Start Streaming
+                  </Button>
+                </Column>
+              </Row>
             </form>
           )}
         </Formik>
-      </div>
+      </Container>
     );
   }
+
+  private renderCategories = (selectedCategory?: number) => (
+    <CategoriesContainer>
+      {[
+        { id: 1, label: "Soccer" },
+        { id: 2, label: "Gaming" },
+        { id: 3, label: "Basketball" },
+        { id: 4, label: "Basketball" }
+      ].map(category => (
+        <CategoryLabel key={category.id} htmlFor={`category-${category.id}`}>
+          <Field
+            type="radio"
+            name="category_id"
+            css={`
+              ${hideVisually()}
+            `}
+            id={`category-${category.id}`}
+            value={category.id}
+          />
+
+          <HighlightableIcon checked={selectedCategory === category.id}>
+            <SoccerBallIcon width="60px" />
+          </HighlightableIcon>
+
+          <P translucent={selectedCategory !== category.id}>{category.label}</P>
+        </CategoryLabel>
+      ))}
+    </CategoriesContainer>
+  );
 }

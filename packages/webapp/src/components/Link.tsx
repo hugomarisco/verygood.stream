@@ -8,7 +8,7 @@ export const RawLink = styled(RouterLink)`
 
 export const Link = styled(RawLink)`
   padding-bottom: ${props => props.theme.spaceTokens.xxs};
-  border-bottom: 1px solid ${props => props.theme.colors.white};
+  border-bottom: 1px solid ${props => props.theme.colors.light};
 `;
 
 export const ExternalRawLink = styled.a`
@@ -18,5 +18,5 @@ export const ExternalRawLink = styled.a`
 
 export const ExternalLink = styled(ExternalRawLink)`
   padding-bottom: ${props => props.theme.spaceTokens.xxs};
-  border-bottom: 1px solid ${props => props.theme.colors.white};
+  border-bottom: 1px solid ${props => props.theme.colors.light};
 `;

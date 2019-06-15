@@ -8,7 +8,7 @@ interface IH5 {
 
 export const H5 = styled.h5<IH5>`
   color: ${props =>
-    props.dark ? props.theme.colors.black : props.theme.colors.white};
+    props.dark ? props.theme.colors.dark : props.theme.colors.light};
   font-family: ${props => props.theme.fonts.sansSerif};
   font-size: 16px;
   line-height: 1.33;

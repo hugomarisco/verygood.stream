@@ -1,14 +1,14 @@
 import { desktop } from "../utils/media";
 import { styled } from "../utils/theme";
 
-interface IP {
+export interface IP {
   translucent?: boolean;
   dark?: boolean;
 }
 
 export const P = styled.p<IP>`
   color: ${props =>
-    props.dark ? props.theme.colors.black : props.theme.colors.white};
+    props.dark ? props.theme.colors.dark : props.theme.colors.light};
   font-family: ${props => props.theme.fonts.sansSerif};
   font-size: 14px;
   line-height: 1.79;

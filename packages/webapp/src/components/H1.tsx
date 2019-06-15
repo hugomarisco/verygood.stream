@@ -8,7 +8,7 @@ interface IH1 {
 
 export const H1 = styled.h1<IH1>`
   color: ${props =>
-    props.dark ? props.theme.colors.black : props.theme.colors.white};
+    props.dark ? props.theme.colors.dark : props.theme.colors.light};
   font-family: ${props => props.theme.fonts.sansSerif};
   font-size: 34px;
   line-height: 1.18;

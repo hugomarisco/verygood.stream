@@ -1,5 +1,7 @@
+import React from "react";
 import { CSSObject, SimpleInterpolation } from "styled-components";
 import { css } from "./theme";
+import { Button } from "../components/Button";
 
 export const tablet = (
   first: CSSObject | TemplateStringsArray,

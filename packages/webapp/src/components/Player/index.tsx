@@ -3,21 +3,26 @@ import {
   PPSPPClient,
   SwarmMetadata
 } from "@bitstreamy/ppspp-client";
-import React, { Component } from "react";
-import { Logger } from "../utils/Logger";
-import { IMP4Info, parseMp4Chunk } from "../utils/parseMp4Chunk";
+import React, { VideoHTMLAttributes } from "react";
+import { Logger } from "../../utils/Logger";
+import { IMP4Info, parseMp4Chunk } from "../../utils/parseMp4Chunk";
+import { PlayerControls } from "./components/PlayerControls";
+import { PlayerWrapper, Video } from "./styles";
 
-interface IPlayerProps {
+interface IPlayerProps extends VideoHTMLAttributes<HTMLVideoElement> {
   swarmMetadata: SwarmMetadata;
   trackerUrl: string;
   liveDiscardWindow: number;
 }
 
-interface ISwarmState {
+interface IPlayerState {
+  controlsVisible: boolean;
   mediaInfo?: IMP4Info;
 }
 
-export class Player extends Component<IPlayerProps, ISwarmState> {
+export class Player extends React.Component<IPlayerProps, IPlayerState> {
+  private playerRef = React.createRef<HTMLVideoElement>();
+  private hideControlsTimeout?: number;
   private mediaSource: MediaSource;
   private bufferedSegments: Buffer[];
   private sourceBuffer?: SourceBuffer;
@@ -25,7 +30,9 @@ export class Player extends Component<IPlayerProps, ISwarmState> {
   constructor(props: IPlayerProps) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      controlsVisible: true
+    };
 
     this.bufferedSegments = [];
 
@@ -55,12 +62,68 @@ export class Player extends Component<IPlayerProps, ISwarmState> {
   }
 
   public render() {
-    if (this.mimeCodec && !MediaSource.isTypeSupported(this.mimeCodec)) {
-      return <div>Your browser doesn't support this media</div>;
+    return (
+      <PlayerWrapper
+        onMouseEnter={this.showControls}
+        onMouseLeave={this.hideControls}
+        onMouseMove={this.showControls}
+      >
+        <Video
+          ref={this.playerRef}
+          src="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
+          // src={URL.createObjectURL(this.mediaSource)}
+          {...this.props}
+        />
+
+        {this.state.controlsVisible && (
+          <PlayerControls
+            onPlayPause={this.handlePlayPause}
+            onFullScreen={this.handleFullScreen}
+            isPlaying={this.isPlaying}
+          />
+        )}
+      </PlayerWrapper>
+    );
+  }
+
+  private isPlaying = () =>
+    this.playerRef.current &&
+    this.playerRef.current.currentTime > 0 &&
+    !this.playerRef.current.paused &&
+    !this.playerRef.current.ended &&
+    this.playerRef.current.readyState > 2;
+
+  private handlePlayPause = () => {
+    if (this.playerRef.current) {
+      if (this.playerRef.current.paused) {
+        this.playerRef.current.play();
+      } else {
+        this.playerRef.current.pause();
+      }
+    }
+  };
+
+  private handleFullScreen = () => {
+    if (this.playerRef.current) {
+      this.playerRef.current.requestFullscreen();
+    }
+  };
+
+  private showControls = () => {
+    if (this.hideControlsTimeout) {
+      clearTimeout(this.hideControlsTimeout);
     }
 
-    return <video src={URL.createObjectURL(this.mediaSource)} controls />;
-  }
+    this.hideControlsTimeout = setTimeout(this.hideControls, 3000);
+
+    if (!this.state.controlsVisible) {
+      this.setState({ controlsVisible: true });
+    }
+  };
+
+  private hideControls = () => {
+    this.setState({ controlsVisible: false });
+  };
 
   private get mimeCodec(): string | undefined {
     const codecs =
@@ -73,7 +136,7 @@ export class Player extends Component<IPlayerProps, ISwarmState> {
   private initializeClient() {
     const { swarmMetadata, trackerUrl, liveDiscardWindow } = this.props;
 
-    if (!swarmMetadata.contentIntegrityProtectionMethod) {
+    if (swarmMetadata.contentIntegrityProtectionMethod === undefined) {
       throw new Error("ContentIntegrityProtectionMethod is not defined");
     }
 

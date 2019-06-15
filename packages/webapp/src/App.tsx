@@ -5,7 +5,7 @@ import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "./components/GlobalStyles";
 import { EditStream } from "./pages/EditStream";
 import { Home } from "./pages/Home";
-import { Stream } from "./pages/Stream";
+import { ViewStream } from "./pages/ViewStream";
 import { stores } from "./stores";
 import { theme } from "./utils/theme";
 
@@ -18,12 +18,8 @@ class App extends Component {
             <GlobalStyles />
             <Router>
               <Route path="/" exact component={Home} />
-              <Route path="/stream/:swarmId" exact component={Stream} />
-              <Route
-                path="/stream/:swarmId/edit"
-                exact
-                component={EditStream}
-              />
+              <Route path="/s/:swarmId/edit" exact component={EditStream} />
+              <Route path="/s/:swarmId" exact component={ViewStream} />
             </Router>
           </>
         </ThemeProvider>

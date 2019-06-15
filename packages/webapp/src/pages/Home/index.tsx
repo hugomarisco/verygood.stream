@@ -1,19 +1,49 @@
+import {
+  ChunkAddressingMethod,
+  ContentIntegrityProtectionMethod,
+  SwarmMetadata
+} from "@bitstreamy/ppspp-client";
 import React, { Component } from "react";
 import LaptopCheckOutline from "../../assets/images/laptop-check-outline.png";
 import PeerNetworkOutline from "../../assets/images/peer-network-outline.png";
 import RadarOutline from "../../assets/images/radar-outline.png";
-import { Box } from "../../components/Box";
-import { Button } from "../../components/Button";
-import { Grid, GridCell } from "../../components/Grid";
+import { Column } from "../../components/Column";
+import { Container } from "../../components/Container";
 import { H1 } from "../../components/H1";
 import { H4 } from "../../components/H4";
-import { Hr } from "../../components/Hr";
+import { GithubIcon, NpmIcon, RedditIcon } from "../../components/Icon";
 import { ExternalLink } from "../../components/Link";
 import { P } from "../../components/P";
-import { Spacer } from "../../components/Spacer";
+import { Row } from "../../components/Row";
 import { TopNav } from "../../components/TopNav";
-import { Video } from "../../components/Video";
 import { LiveStreams } from "./components/LiveStreams";
+import {
+  BroadcastButton,
+  ContactInformationContainer,
+  CopyrightInformation,
+  FatArrowUp,
+  Feature,
+  FeaturedVideoPlayer,
+  FeaturesContainer,
+  FeaturesTitleContainer,
+  LiveBroadcastsSection,
+  SocialLink,
+  SocialLinksContainer
+} from "./styles";
+
+const featuredPlayerSwarmMetadata = new SwarmMetadata(
+  Buffer.from("aaa"),
+  0xffffffff,
+  ChunkAddressingMethod["32ChunkRanges"],
+  ContentIntegrityProtectionMethod.NONE
+);
+
+const mockLiveStreams = [
+  { id: "1", title: "Juventus - Roma", peers: 34 },
+  { id: "2", title: "Juventus - Roma", peers: 34 },
+  { id: "3", title: "Juventus - Roma", peers: 34 },
+  { id: "4", title: "Juventus - Roma", peers: 34 }
+];
 
 export class Home extends Component {
   public render() {
@@ -21,191 +51,188 @@ export class Home extends Component {
       <div>
         <TopNav />
 
-        <Video poster="https://images.wallpaperscraft.com/image/football_game_field_tribune_gate_spectators_11418_1920x1080.jpg" />
-        <Box>
-          <Spacer layout size="m" />
+        <FeaturedVideoPlayer
+          trackerUrl="wss://tracker.bitstreamy.com"
+          liveDiscardWindow={10}
+          swarmMetadata={featuredPlayerSwarmMetadata}
+          poster="https://images.wallpaperscraft.com/image/football_game_field_tribune_gate_spectators_11418_1920x1080.jpg"
+        />
 
-          <Grid>
-            <GridCell row="1" column="2/-2">
-              <H1 dark translucent>
-                Broadcast
-              </H1>
-            </GridCell>
+        <LiveBroadcastsSection>
+          <Container>
+            <Row>
+              <Column />
+              <Column span={10}>
+                <H1 dark translucent>
+                  Broadcast
+                </H1>
+              </Column>
+            </Row>
 
-            <GridCell row="2" column="3/-2">
-              <H1 dark>and watch like</H1>
-            </GridCell>
+            <Row>
+              <Column span={2} />
+              <Column span={9}>
+                <H1 dark>and watch like</H1>
+              </Column>
+            </Row>
 
-            <GridCell row="3" column="2/-2">
-              <H1 dark>never before</H1>
-            </GridCell>
-          </Grid>
+            <Row>
+              <Column />
+              <Column span={10}>
+                <H1 dark>never before</H1>
+              </Column>
+            </Row>
 
-          <Spacer layout size="s" />
+            <BroadcastButton>Broadcast now</BroadcastButton>
 
-          <div
-            css={`
-              text-align: center;
-            `}
-          >
-            <Button>Broadcast now</Button>
-          </div>
+            <Row>
+              <Column />
+              <Column span={11}>
+                <LiveStreams streams={mockLiveStreams} />
+              </Column>
+            </Row>
+          </Container>
+        </LiveBroadcastsSection>
 
-          <Spacer layout size="s" />
+        <Container>
+          <FeaturesTitleContainer>
+            <Row>
+              <Column span={1} />
+              <Column span={10}>
+                <H1 translucent>No more buffering</H1>
+                <H1 translucent>and bad quality</H1>
+              </Column>
+            </Row>
+            <Row>
+              <Column span={2} />
+              <Column span={9}>
+                <H1>Why Bitstreamy</H1>
+              </Column>
+            </Row>
+            <Row>
+              <Column span={1} />
+              <Column span={10}>
+                <H1>is better.</H1>
+              </Column>
+            </Row>
+          </FeaturesTitleContainer>
 
-          <Grid>
-            <GridCell row="1" column="2/-1">
-              <LiveStreams />
-            </GridCell>
-          </Grid>
+          <FeaturesContainer>
+            <Row>
+              <Column />
+              <Column span={10}>
+                <Feature>
+                  <H4>Peer to Peer</H4>
+                  <P translucent>
+                    Text here to explain briefly whats this point. Obviously not
+                    more than 3/4 lines.
+                  </P>
+                  <img src={PeerNetworkOutline} />
+                </Feature>
+              </Column>
+            </Row>
+            <Row>
+              <Column />
+              <Column span={10}>
+                <Feature>
+                  <H4>Open Source</H4>
 
-          <Spacer layout size="m" />
-        </Box>
-        <div>
-          <Spacer layout size="m" />
+                  <P translucent>
+                    Text here to explain briefly whats this point. Obviously not
+                    more than 3/4 lines.
+                  </P>
 
-          <Grid>
-            <GridCell row="1" column="2/-2">
-              <H1 translucent>No more buffering</H1>
-            </GridCell>
-            <GridCell row="2" column="2/-2">
-              <H1 translucent>and bad quality</H1>
-            </GridCell>
-            <GridCell row="3" column="3/-2">
-              <H1>Why Bitstreamy</H1>
-            </GridCell>
-            <GridCell row="4" column="2/-2">
-              <H1>is better.</H1>
-            </GridCell>
-          </Grid>
+                  <img src={RadarOutline} />
+                </Feature>
+              </Column>
+            </Row>
+            <Row>
+              <Column />
+              <Column span={10}>
+                <Feature>
+                  <H4>Based on Standards</H4>
 
-          <Spacer layout size="m" />
+                  <P translucent>
+                    Text here to explain briefly whats this point. Obviously not
+                    more than 3/4 lines.
+                  </P>
 
-          <Grid>
-            <GridCell row="1" column="2/-2">
-              <Hr />
+                  <img src={LaptopCheckOutline} />
+                </Feature>
+              </Column>
+            </Row>
+          </FeaturesContainer>
 
-              <Spacer layout size="xs" />
+          <SocialLinksContainer>
+            <SocialLink>
+              <Column />
 
-              <H4>Peer to Peer</H4>
+              <Column>
+                <GithubIcon width="30px" />
+              </Column>
 
-              <Spacer layout size="xs" />
+              <Column />
 
-              <P translucent>
-                Text here to explain briefly whats this point. Obviously not
-                more than 3/4 lines.
-              </P>
+              <Column span={9}>
+                <ExternalLink href="https://www.github.com/">
+                  <H4>Github</H4>
+                </ExternalLink>
+              </Column>
+            </SocialLink>
 
-              <Spacer layout size="m" />
+            <SocialLink>
+              <Column />
 
-              <img src={PeerNetworkOutline} />
+              <Column>
+                <NpmIcon width="30px" />
+              </Column>
 
-              <Spacer layout size="m" />
-            </GridCell>
+              <Column />
 
-            <GridCell row="2" column="2/-2">
-              <Hr />
+              <Column span={9}>
+                <ExternalLink>
+                  <H4>NPM</H4>
+                </ExternalLink>
+              </Column>
+            </SocialLink>
 
-              <Spacer layout size="xs" />
+            <SocialLink>
+              <Column />
 
-              <H4>Open Source</H4>
+              <Column>
+                <RedditIcon width="30px" />
+              </Column>
 
-              <Spacer layout size="xs" />
+              <Column />
 
-              <P translucent>
-                Text here to explain briefly whats this point. Obviously not
-                more than 3/4 lines.
-              </P>
+              <Column span={9}>
+                <ExternalLink>
+                  <H4>Reddit</H4>
+                </ExternalLink>
+              </Column>
+            </SocialLink>
 
-              <Spacer layout size="m" />
+            <FatArrowUp />
+          </SocialLinksContainer>
 
-              <img src={RadarOutline} />
+          <Row>
+            <Column span={3} />
 
-              <Spacer layout size="m" />
-            </GridCell>
+            <Column span={8}>
+              <ContactInformationContainer>
+                <H4>Contact</H4>
 
-            <GridCell row="3" column="2/-2">
-              <Hr />
+                <ExternalLink href="mailto:hello@bitstreamy.com">
+                  <H4>hello@bitstreamy.com</H4>
+                </ExternalLink>
+              </ContactInformationContainer>
 
-              <Spacer layout size="xs" />
-
-              <H4>Based on Standards</H4>
-
-              <Spacer layout size="xs" />
-
-              <P translucent>
-                Text here to explain briefly whats this point. Obviously not
-                more than 3/4 lines.
-              </P>
-
-              <Spacer layout size="m" />
-
-              <img src={LaptopCheckOutline} />
-            </GridCell>
-          </Grid>
-
-          <Spacer layout size="xxl" />
-
-          <Grid>
-            <GridCell row="1" column="4/9">
-              <ExternalLink href="https://www.github.com/">
-                <H4>Github</H4>
-              </ExternalLink>
-
-              <Spacer size="l" />
-            </GridCell>
-
-            <GridCell row="2" column="4/9">
-              <ExternalLink>
-                <H4>NPM</H4>
-              </ExternalLink>
-
-              <Spacer size="l" />
-            </GridCell>
-
-            <GridCell row="3" column="4/9">
-              <ExternalLink>
-                <H4>Reddit</H4>
-              </ExternalLink>
-
-              <Spacer layout size="l" />
-            </GridCell>
-
-            {/* <GridCell row="1/span 3" column="9/-2">
-              <img src={FatArrowUpIcon} />
-            </GridCell> */}
-
-            <GridCell row="4" column="4/-2">
-              <H4>Contact</H4>
-
-              <Spacer size="xs" />
-
-              <ExternalLink href="mailto:hello@bitstreamy.com">
-                <H4>hello@bitstreamy.com</H4>
-              </ExternalLink>
-            </GridCell>
-          </Grid>
-
-          <Spacer layout size="l" />
-
-          <Grid>
-            <GridCell row="1" column="4/-2">
-              <P translucent>©2019 — All rights reserved.</P>
-
-              <Spacer layout size="xxs" />
-            </GridCell>
-
-            <GridCell row="2" column="4/9">
-              <P translucent>Terms &amp; Conditions</P>
-            </GridCell>
-
-            <GridCell row="2" column="9/-2">
-              <P translucent>Policy</P>
-            </GridCell>
-          </Grid>
-
-          <Spacer layout size="l" />
-        </div>
+              <CopyrightInformation translucent>
+                ©2019 — All rights reserved.
+              </CopyrightInformation>
+            </Column>
+          </Row>
+        </Container>
       </div>
     );
   }

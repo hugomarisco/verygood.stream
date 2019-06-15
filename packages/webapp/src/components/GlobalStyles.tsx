@@ -20,11 +20,14 @@ export const GlobalStyles = createGlobalStyle<IGlobalStylesProps>`
   }
 
   body {
-    color: ${props => props.theme.colors.white};
-    background: ${props => props.theme.colors.black};
+    color: ${props => props.theme.colors.light};
+    background: ${props => props.theme.colors.dark};
   }
 
   body, button {
     font-family: ${props => props.theme.fonts.sansSerif};
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }  
 `;

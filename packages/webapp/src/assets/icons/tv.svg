@@ -1,3 +1,3 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="60" height="43" viewBox="0 0 60 43">
-    <path fill="#FFF" fill-rule="nonzero" d="M0 0v40h60V0H0zm59 39H1V1h58v38zM5 42h50v1H5v-1zm0-6h3v1H5v-1zm5 0h3v1h-3v-1z"/>
+    <path fill-rule="nonzero" d="M0 0v40h60V0H0zm59 39H1V1h58v38zM5 42h50v1H5v-1zm0-6h3v1H5v-1zm5 0h3v1h-3v-1z"/>
 </svg>
