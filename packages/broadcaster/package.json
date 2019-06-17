@@ -24,6 +24,7 @@
     "test:ci": "jest --coverage --passWithNoTests"
   },
   "dependencies": {
+    "@bitstreamy/commons": "^0.2.0",
     "@bitstreamy/ppspp-client": "^0.2.0",
     "commander": "^2.20.0",
     "node-forge": "^0.8.2",

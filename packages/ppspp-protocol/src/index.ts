@@ -1,12 +1,6 @@
 export { Decoder } from "./Decoder";
 
-export {
-  ProtocolOptions,
-  ChunkAddressingMethod,
-  ContentIntegrityProtectionMethod,
-  // MerkleHashFunction,
-  LiveSignatureAlgorithm
-} from "./fields/ProtocolOptions";
+export { ProtocolOptions } from "./fields/ProtocolOptions";
 export { ChunkSpec } from "./fields/ChunkSpec";
 export { SwarmId } from "./fields/SwarmId";
 export { PreciseTimestamp } from "./fields/PreciseTimestamp";

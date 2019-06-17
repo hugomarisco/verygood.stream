@@ -1,5 +1,5 @@
+import { Logger } from "@bitstreamy/commons";
 import { Server } from ".";
-import { Logger } from "./Logger";
 
 const port = process.env.BITSTREAMY_TRACKER_PORT
   ? parseInt(process.env.BITSTREAMY_TRACKER_PORT, 10)

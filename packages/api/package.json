@@ -23,10 +23,10 @@
     "test:ci": "jest --coverage --passWithNoTests"
   },
   "dependencies": {
+    "@bitstreamy/commons": "^0.2.0",
     "@hapi/boom": "^7.4.2",
     "@koa/cors": "^2.2.3",
     "ajv": "^6.10.0",
-    "base64-url": "^2.2.1",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
@@ -34,7 +34,6 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@types/base64-url": "^2.2.0",
     "@types/hapi__boom": "^7.4.0",
     "@types/koa": "^2.0.48",
     "@types/koa-bodyparser": "^4.3.0",

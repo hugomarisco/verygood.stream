@@ -1,12 +1,11 @@
-import { ChunkSpec } from "./fields/ChunkSpec";
-import { PreciseTimestamp } from "./fields/PreciseTimestamp";
 import {
   ChunkAddressingMethod,
   ContentIntegrityProtectionMethod,
-  LiveSignatureAlgorithm,
-  ProtocolOptionCode,
-  ProtocolOptions
-} from "./fields/ProtocolOptions";
+  LiveSignatureAlgorithm
+} from "@bitstreamy/commons";
+import { ChunkSpec } from "./fields/ChunkSpec";
+import { PreciseTimestamp } from "./fields/PreciseTimestamp";
+import { ProtocolOptionCode, ProtocolOptions } from "./fields/ProtocolOptions";
 import { AckMessage } from "./messages/AckMessage";
 import { CancelMessage } from "./messages/CancelMessage";
 import { ChokeMessage } from "./messages/ChokeMessage";

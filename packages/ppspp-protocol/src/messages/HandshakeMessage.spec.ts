@@ -1,8 +1,8 @@
 import {
   ChunkAddressingMethod,
-  ContentIntegrityProtectionMethod,
-  ProtocolOptions
-} from "../fields/ProtocolOptions";
+  ContentIntegrityProtectionMethod
+} from "@bitstreamy/commons";
+import { ProtocolOptions } from "../fields/ProtocolOptions";
 import { HandshakeMessage } from "./HandshakeMessage";
 
 describe("HandshakeMessage", () => {

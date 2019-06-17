@@ -1,7 +1,7 @@
+import { Logger } from "@bitstreamy/commons";
 import { EventEmitter } from "events";
 import { v4 as UUIDv4 } from "uuid";
 import WebSocket from "ws";
-import { Logger } from "./Logger";
 import { Offer } from "./Offer";
 
 export class Peer extends EventEmitter {

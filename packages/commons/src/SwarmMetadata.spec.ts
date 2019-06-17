@@ -1,9 +1,9 @@
 import {
   ChunkAddressingMethod,
   ContentIntegrityProtectionMethod,
-  LiveSignatureAlgorithm
-} from "@bitstreamy/ppspp-protocol";
-import { SwarmMetadata } from "./SwarmMetadata";
+  LiveSignatureAlgorithm,
+  SwarmMetadata
+} from "./SwarmMetadata";
 
 const swarmId = Buffer.from("abc");
 

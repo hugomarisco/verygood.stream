@@ -1,47 +1,25 @@
 #!/usr/bin/env node
 
 import {
+  base64UrlEscape,
   ChunkAddressingMethod,
-  ChunkSpec,
-  PPSPPClient,
+  Logger,
   SwarmMetadata
-} from "@bitstreamy/ppspp-client";
+} from "@bitstreamy/commons";
+import { ChunkSpec, PPSPPClient } from "@bitstreamy/ppspp-client";
 import { CliArgumentsParser } from "./CliArgumentsParser";
-import { Logger } from "./Logger";
 import { TCPServer } from "./TCPServer";
 
 const {
   contentIntegrityProtectionMethod,
   liveSignatureAlgorithm,
   swarmId,
-  publicKeyFingerprint,
   liveDiscardWindow,
+  ownershipSignature,
   privateKey,
   trackerUrl,
   tcpServerPort
 } = CliArgumentsParser.parse();
-
-const queryParams: {
-  swarmId: string;
-  contentIntegrityProtectionMethod: number;
-  liveSignatureAlgorithm?: number;
-} = {
-  contentIntegrityProtectionMethod,
-  swarmId: publicKeyFingerprint
-};
-
-if (liveSignatureAlgorithm) {
-  queryParams.liveSignatureAlgorithm = liveSignatureAlgorithm;
-}
-
-const encodedParams = Object.keys(queryParams)
-  .map(k => `${k}=${encodeURIComponent(queryParams[k])}`)
-  .join("&");
-
-Logger.info("URL", {
-  swarmId: swarmId.toString("base64"),
-  url: `http://localhost:3000/stream?${encodedParams}`
-});
 
 const swarmMetadata = new SwarmMetadata(
   swarmId,
@@ -51,10 +29,21 @@ const swarmMetadata = new SwarmMetadata(
   liveSignatureAlgorithm
 );
 
+const swarmMetadataSearchParams = swarmMetadata.toSearchParams();
+
+swarmMetadataSearchParams.append(
+  "ownershipSignature",
+  base64UrlEscape(ownershipSignature.toString("base64"))
+);
+
+Logger.info("Edit your broadcast information", {
+  url: `http://localhost:3000/s/edit?${swarmMetadataSearchParams.toString()}`
+});
+
 const client = new PPSPPClient(
   swarmMetadata,
   { liveDiscardWindow, privateKey },
-  `${trackerUrl}/${encodeURIComponent(swarmId.toString("base64"))}`
+  `${trackerUrl}/${swarmMetadataSearchParams.get("swarmId")}`
 );
 
 const tcpServer = new TCPServer("localhost", tcpServerPort);

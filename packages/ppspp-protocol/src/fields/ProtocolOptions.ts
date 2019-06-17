@@ -1,3 +1,9 @@
+import {
+  ChunkAddressingMethod,
+  ContentIntegrityProtectionMethod,
+  LiveSignatureAlgorithm
+  // MerkleHashFunction
+} from "@bitstreamy/commons";
 import { dropWhile, fill } from "lodash";
 import { SwarmId } from "./SwarmId";
 
@@ -13,36 +19,6 @@ export enum ProtocolOptionCode {
   SUPPORTED_MESSAGES = 8,
   SWARM_ID = 2,
   VERSION = 0
-}
-
-export enum ChunkAddressingMethod {
-  // "32BINs" = 0,
-  // "64ByteRanges" = 1,
-  "32ChunkRanges" = 2
-  // "64BINs" = 3,
-  // "64ChunkRanges" = 4
-}
-
-// export enum MerkleHashFunction {
-//   SHA1 = 0,
-//   SHA224 = 1,
-//   SHA256 = 2,
-//   SHA384 = 3,
-//   SHA512 = 4
-// }
-
-export enum LiveSignatureAlgorithm {
-  // ECDSAP256SHA256 = 13,
-  // ECDSAP384SHA384 = 14,
-  RSASHA1 = 5,
-  RSASHA256 = 8
-}
-
-export enum ContentIntegrityProtectionMethod {
-  NONE = 0,
-  // MERKLE_HASH_TREE = 1,
-  SIGN_ALL = 2
-  // UNIFIED_MERKLE_TREE = 3
 }
 
 export class ProtocolOptions {

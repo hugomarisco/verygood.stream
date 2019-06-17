@@ -1,4 +1,4 @@
-import { LiveSignatureAlgorithm } from "./ProtocolOptions";
+import { LiveSignatureAlgorithm } from "@bitstreamy/commons";
 import { SwarmId } from "./SwarmId";
 
 describe("SwarmId", () => {

@@ -1,5 +1,5 @@
+import { Logger } from "@bitstreamy/commons";
 import { Pool } from "pg";
-import { Logger } from "./Logger";
 
 Logger.warn("Creating database pool");
 

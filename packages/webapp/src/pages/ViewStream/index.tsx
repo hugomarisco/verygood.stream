@@ -2,7 +2,7 @@ import {
   ChunkAddressingMethod,
   ContentIntegrityProtectionMethod,
   SwarmMetadata
-} from "@bitstreamy/ppspp-client";
+} from "@bitstreamy/commons";
 import React, { Component } from "react";
 import { Badge } from "../../components/Badge";
 import { Column } from "../../components/Column";

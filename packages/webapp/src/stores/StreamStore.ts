@@ -1,4 +1,4 @@
-import { action, computed, observable } from "mobx";
+import { action, observable } from "mobx";
 
 export class StreamStore {
   @observable public stream: any = null;

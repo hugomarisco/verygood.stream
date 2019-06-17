@@ -1,14 +1,17 @@
 import {
+  ChunkAddressingMethod,
+  ContentIntegrityProtectionMethod,
+  LiveSignatureAlgorithm,
+  Logger
+} from "@bitstreamy/commons";
+import {
   AckMessage,
   ChokeMessage,
-  ChunkAddressingMethod,
   ChunkSpec,
-  ContentIntegrityProtectionMethod,
   DataMessage,
   Decoder,
   HandshakeMessage,
   HaveMessage,
-  LiveSignatureAlgorithm,
   PreciseTimestamp,
   ProtocolOptions,
   RequestMessage,
@@ -21,7 +24,6 @@ import { jsbn, md, pki, util } from "node-forge";
 import randomBytes from "randombytes";
 import { Duplex } from "stream";
 import { ChunkStore } from "./ChunkStore";
-import { Logger } from "./Logger";
 
 export class RemotePeer extends EventEmitter {
   public peerId: number;

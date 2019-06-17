@@ -1,13 +1,15 @@
 import {
+  ChunkAddressingMethod,
+  ContentIntegrityProtectionMethod,
+  LiveSignatureAlgorithm
+} from "@bitstreamy/commons";
+import {
   AckMessage,
   ChokeMessage,
-  ChunkAddressingMethod,
   ChunkSpec,
-  ContentIntegrityProtectionMethod,
   DataMessage,
   HandshakeMessage,
   HaveMessage,
-  LiveSignatureAlgorithm,
   PreciseTimestamp,
   ProtocolOptions,
   RequestMessage,
@@ -20,7 +22,6 @@ import { ChunkStore } from "./ChunkStore";
 import { RemotePeer } from "./RemotePeer";
 
 jest.mock("stream");
-jest.mock("./Logger");
 
 Date.now = jest.fn().mockReturnValue(1000001);
 

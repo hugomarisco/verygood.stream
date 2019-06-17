@@ -1,3 +1,4 @@
+import { Logger, SwarmMetadata } from "@bitstreamy/commons";
 import {
   AckMessage,
   ChunkSpec,
@@ -7,9 +8,7 @@ import {
 import { Client as TrackerClient } from "@bitstreamy/tracker";
 import { Duplex } from "stream";
 import { ChunkStore } from "./ChunkStore";
-import { Logger } from "./Logger";
 import { RemotePeer } from "./RemotePeer";
-import { SwarmMetadata } from "./SwarmMetadata";
 
 export class PPSPPClient extends Duplex {
   private static PROTOCOL_VERSION = 1;

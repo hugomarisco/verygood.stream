@@ -2,7 +2,7 @@ import {
   ChunkAddressingMethod,
   ContentIntegrityProtectionMethod,
   SwarmMetadata
-} from "@bitstreamy/ppspp-client";
+} from "@bitstreamy/commons";
 import React, { Component } from "react";
 import LaptopCheckOutline from "../../assets/images/laptop-check-outline.png";
 import PeerNetworkOutline from "../../assets/images/peer-network-outline.png";

@@ -1,9 +1,9 @@
+import { Logger } from "@bitstreamy/commons";
 import { EventEmitter } from "events";
 import { createServer, IncomingMessage } from "http";
 import URL from "url";
 import WebSocket from "ws";
 import { httpApi } from "./httpApi";
-import { Logger } from "./Logger";
 import { Peer } from "./Peer";
 import { Swarm } from "./Swarm";
 

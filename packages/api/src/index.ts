@@ -1,9 +1,9 @@
+import { Logger } from "@bitstreamy/commons";
 import Boom from "@hapi/boom";
 import cors from "@koa/cors";
 import Koa from "koa";
 import bodyParser from "koa-bodyparser";
 import { errorHandler } from "./errorHandler";
-import { Logger } from "./Logger";
 import router from "./routers";
 
 const PORT = process.env.API_PORT || "5000";

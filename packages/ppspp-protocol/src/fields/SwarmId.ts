@@ -1,4 +1,4 @@
-import { LiveSignatureAlgorithm } from "./ProtocolOptions";
+import { LiveSignatureAlgorithm } from "@bitstreamy/commons";
 
 export class SwarmId {
   public jwk: { n: string; e: string };

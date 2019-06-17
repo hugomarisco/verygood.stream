@@ -1,6 +1,6 @@
+import { Logger } from "@bitstreamy/commons";
 import { EventEmitter } from "events";
 import { Server, Socket } from "net";
-import { Logger } from "./Logger";
 
 export class TCPServer extends EventEmitter {
   private server: Server;

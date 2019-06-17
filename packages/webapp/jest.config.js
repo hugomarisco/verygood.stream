@@ -5,11 +5,7 @@ module.exports = {
   roots: ["<rootDir>/src"],
   collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}", "!src/**/*.d.ts"],
   resolver: "jest-pnp-resolver",
-  setupFiles: ["react-app-polyfill/jsdom"],
-  testMatch: [
-    "<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
-    "<rootDir>/src/**/?(*.)(spec|test).{js,jsx,ts,tsx}"
-  ],
+  setupFiles: ["react-app-polyfill/jsdom", "./jest.setup.js"],
   testEnvironment: "jsdom",
   testURL: "http://localhost",
   transform: {

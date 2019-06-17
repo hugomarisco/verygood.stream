@@ -1,10 +1,6 @@
-import {
-  ChunkSpec,
-  PPSPPClient,
-  SwarmMetadata
-} from "@bitstreamy/ppspp-client";
+import { Logger, SwarmMetadata } from "@bitstreamy/commons";
+import { ChunkSpec, PPSPPClient } from "@bitstreamy/ppspp-client";
 import React, { VideoHTMLAttributes } from "react";
-import { Logger } from "../../utils/Logger";
 import { IMP4Info, parseMp4Chunk } from "../../utils/parseMp4Chunk";
 import { PlayerControls } from "./components/PlayerControls";
 import { PlayerWrapper, Video } from "./styles";

@@ -1,10 +1,10 @@
 import {
   ContentIntegrityProtectionMethod,
   LiveSignatureAlgorithm
-} from "@bitstreamy/ppspp-client";
+} from "@bitstreamy/commons";
 import Commander from "commander";
 import { readFileSync } from "fs";
-import { pki, ssh, util as forgeUtil } from "node-forge";
+import { md, pki, util as forgeUtil } from "node-forge";
 import { version } from "../package.json";
 
 export class CliArgumentsParser {
@@ -51,10 +51,8 @@ export class CliArgumentsParser {
           bits: 1024,
           e: 65537
         }).privateKey;
+
     const publicKey = pki.rsa.setPublicKey(privateKey.n, privateKey.e);
-    const publicKeyFingerprint = ssh.getPublicKeyFingerprint(publicKey, {
-      encoding: "hex"
-    });
 
     let swarmId: Buffer;
     let liveSignatureAlgorithm: number | undefined;
@@ -111,12 +109,20 @@ export class CliArgumentsParser {
         swarmId = Buffer.from("abc", "utf-8");
     }
 
+    const ownershipSignature = Buffer.from(
+      forgeUtil.binary.raw.decode(
+        privateKey.sign(
+          md.sha1.create().update(forgeUtil.binary.raw.encode(swarmId))
+        )
+      )
+    );
+
     return {
       contentIntegrityProtectionMethod,
       liveDiscardWindow,
       liveSignatureAlgorithm,
+      ownershipSignature,
       privateKey,
-      publicKeyFingerprint,
       swarmId,
       tcpServerPort,
       trackerUrl

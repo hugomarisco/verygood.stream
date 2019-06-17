@@ -10,4 +10,7 @@ export const Duplex = jest.fn().mockImplementation(() => {
   };
 });
 
-export default jest.fn();
+export const Readable = jest.fn();
+
+export const prototype = () => null;
+export const call = () => null;

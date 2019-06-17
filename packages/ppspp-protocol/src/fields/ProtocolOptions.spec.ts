@@ -1,9 +1,9 @@
-import { AckMessage } from "../messages/AckMessage";
 import {
   ChunkAddressingMethod,
-  ContentIntegrityProtectionMethod,
-  ProtocolOptions
-} from "./ProtocolOptions";
+  ContentIntegrityProtectionMethod
+} from "@bitstreamy/commons";
+import { AckMessage } from "../messages/AckMessage";
+import { ProtocolOptions } from "./ProtocolOptions";
 
 describe("ProtocolOptions", () => {
   test("should encode if all options are provided", () => {

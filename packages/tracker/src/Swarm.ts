@@ -1,4 +1,4 @@
-import { Logger } from "./Logger";
+import { Logger } from "@bitstreamy/commons";
 import { Peer } from "./Peer";
 
 export class Swarm {
