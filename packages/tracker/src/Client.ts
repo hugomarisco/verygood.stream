@@ -16,7 +16,7 @@ export class Client extends EventEmitter {
 
     this.trackerSocket =
       typeof window !== "undefined"
-        ? new window.WebSocket(url)
+        ? new (window as any).WebSocket(url)
         : new WebSocket(url);
 
     this.trackerSocket.onopen = this.onOpen.bind(this);

@@ -30,6 +30,7 @@ import {
   SocialLink,
   SocialLinksContainer
 } from "./styles";
+import { ViewportContext } from "../../components/ViewportProvider";
 
 const featuredPlayerSwarmMetadata = new SwarmMetadata(
   Buffer.from("aaa"),
@@ -46,13 +47,15 @@ const mockLiveStreams = [
 ];
 
 export class Home extends Component {
+  public static contextType = ViewportContext;
+  public context!: React.ContextType<typeof ViewportContext>;
+
   public render() {
     return (
       <div>
         <TopNav />
 
         <FeaturedVideoPlayer
-          trackerUrl="wss://tracker.bitstreamy.com"
           liveDiscardWindow={10}
           swarmMetadata={featuredPlayerSwarmMetadata}
           poster="https://images.wallpaperscraft.com/image/football_game_field_tribune_gate_spectators_11418_1920x1080.jpg"
@@ -61,33 +64,39 @@ export class Home extends Component {
         <LiveBroadcastsSection>
           <Container>
             <Row>
-              <Column />
-              <Column span={10}>
-                <H1 dark translucent>
-                  Broadcast
-                </H1>
+              <Column span={[12, 16]}>
+                <Row>
+                  {this.context.mobile && <Column />}
+                  <Column span={[10]}>
+                    <H1 dark translucent>
+                      Broadcast
+                    </H1>
+                  </Column>
+                </Row>
+
+                <Row>
+                  <Column span={[2]} />
+                  <Column span={[9, 10]}>
+                    <H1 dark>and watch like</H1>
+                  </Column>
+                </Row>
+
+                <Row>
+                  {this.context.mobile && <Column />}
+                  <Column span={[10]}>
+                    <H1 dark>never before</H1>
+                  </Column>
+                </Row>
+              </Column>
+
+              <Column span={[12, 16]}>
+                <BroadcastButton>Broadcast now</BroadcastButton>
               </Column>
             </Row>
 
             <Row>
-              <Column span={2} />
-              <Column span={9}>
-                <H1 dark>and watch like</H1>
-              </Column>
-            </Row>
-
-            <Row>
-              <Column />
-              <Column span={10}>
-                <H1 dark>never before</H1>
-              </Column>
-            </Row>
-
-            <BroadcastButton>Broadcast now</BroadcastButton>
-
-            <Row>
-              <Column />
-              <Column span={11}>
+              {this.context.mobile && <Column />}
+              <Column span={[11, 12]}>
                 <LiveStreams streams={mockLiveStreams} />
               </Column>
             </Row>
@@ -97,70 +106,57 @@ export class Home extends Component {
         <Container>
           <FeaturesTitleContainer>
             <Row>
-              <Column span={1} />
-              <Column span={10}>
+              <Column span={[1, 2]} />
+              <Column span={[10]}>
                 <H1 translucent>No more buffering</H1>
                 <H1 translucent>and bad quality</H1>
               </Column>
             </Row>
             <Row>
-              <Column span={2} />
-              <Column span={9}>
+              <Column span={[2, 3]} />
+              <Column span={[9]}>
                 <H1>Why Bitstreamy</H1>
               </Column>
             </Row>
             <Row>
-              <Column span={1} />
-              <Column span={10}>
+              <Column span={[1, 2]} />
+              <Column span={[10]}>
                 <H1>is better.</H1>
               </Column>
             </Row>
           </FeaturesTitleContainer>
 
           <FeaturesContainer>
-            <Row>
-              <Column />
-              <Column span={10}>
-                <Feature>
-                  <H4>Peer to Peer</H4>
-                  <P translucent>
-                    Text here to explain briefly whats this point. Obviously not
-                    more than 3/4 lines.
-                  </P>
-                  <img src={PeerNetworkOutline} />
-                </Feature>
-              </Column>
-            </Row>
-            <Row>
-              <Column />
-              <Column span={10}>
-                <Feature>
-                  <H4>Open Source</H4>
+            <Feature>
+              <H4>Peer to Peer</H4>
+              <P translucent>
+                Text here to explain briefly whats this point. Obviously not
+                more than 3/4 lines.
+              </P>
+              <img src={PeerNetworkOutline} />
+            </Feature>
 
-                  <P translucent>
-                    Text here to explain briefly whats this point. Obviously not
-                    more than 3/4 lines.
-                  </P>
+            <Feature>
+              <H4>Open Source</H4>
 
-                  <img src={RadarOutline} />
-                </Feature>
-              </Column>
-            </Row>
-            <Row>
-              <Column />
-              <Column span={10}>
-                <Feature>
-                  <H4>Based on Standards</H4>
+              <P translucent>
+                Text here to explain briefly whats this point. Obviously not
+                more than 3/4 lines.
+              </P>
 
-                  <P translucent>
-                    Text here to explain briefly whats this point. Obviously not
-                    more than 3/4 lines.
-                  </P>
+              <img src={RadarOutline} />
+            </Feature>
 
-                  <img src={LaptopCheckOutline} />
-                </Feature>
-              </Column>
-            </Row>
+            <Feature>
+              <H4>Based on Standards</H4>
+
+              <P translucent>
+                Text here to explain briefly whats this point. Obviously not
+                more than 3/4 lines.
+              </P>
+
+              <img src={LaptopCheckOutline} />
+            </Feature>
           </FeaturesContainer>
 
           <SocialLinksContainer>
@@ -173,7 +169,7 @@ export class Home extends Component {
 
               <Column />
 
-              <Column span={9}>
+              <Column span={[9]}>
                 <ExternalLink href="https://www.github.com/">
                   <H4>Github</H4>
                 </ExternalLink>
@@ -189,7 +185,7 @@ export class Home extends Component {
 
               <Column />
 
-              <Column span={9}>
+              <Column span={[9]}>
                 <ExternalLink>
                   <H4>NPM</H4>
                 </ExternalLink>
@@ -205,7 +201,7 @@ export class Home extends Component {
 
               <Column />
 
-              <Column span={9}>
+              <Column span={[9]}>
                 <ExternalLink>
                   <H4>Reddit</H4>
                 </ExternalLink>
@@ -216,9 +212,9 @@ export class Home extends Component {
           </SocialLinksContainer>
 
           <Row>
-            <Column span={3} />
+            <Column span={[3]} />
 
-            <Column span={8}>
+            <Column span={[8]}>
               <ContactInformationContainer>
                 <H4>Contact</H4>
 

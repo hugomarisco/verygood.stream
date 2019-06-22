@@ -3,9 +3,9 @@
   "version": "0.2.0",
   "dependencies": {
     "@babel/core": "7.1.6",
+    "@bitstreamy/commons": "^0.2.0",
     "@bitstreamy/ppspp-client": "^0.2.0",
     "@bitstreamy/tracker": "^0.2.0",
-    "@bitstreamy/commons": "^0.2.0",
     "@svgr/webpack": "2.4.1",
     "@types/react": "^16.8.17",
     "@types/react-dom": "^16.8.4",
@@ -52,6 +52,7 @@
     "postcss-loader": "3.0.0",
     "postcss-preset-env": "6.3.1",
     "postcss-safe-parser": "4.0.1",
+    "query-string": "^6.8.0",
     "react": "^16.7.0",
     "react-app-polyfill": "^0.2.0",
     "react-dev-utils": "^7.0.1",
@@ -71,7 +72,7 @@
     "workbox-webpack-plugin": "3.6.3"
   },
   "scripts": {
-    "dev": "node scripts/start.js",
+    "dev": "REACT_APP_TRACKER_URL='ws://localhost:8080' node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "jest --coverage --passWithNoTests",
     "test:watch": "jest --watch --passWithNoTests",

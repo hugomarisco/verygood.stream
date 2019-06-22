@@ -1,9 +1,8 @@
 import { Logger } from "@bitstreamy/commons";
 import { EventEmitter } from "events";
-import { createServer, IncomingMessage } from "http";
+import { IncomingMessage } from "http";
 import URL from "url";
 import WebSocket from "ws";
-import { httpApi } from "./httpApi";
 import { Peer } from "./Peer";
 import { Swarm } from "./Swarm";
 
@@ -20,20 +19,12 @@ export class Server extends EventEmitter {
 
     this.swarms = {};
 
-    const app = httpApi(this.swarms);
-
-    const httpServer = createServer(app.callback());
-
-    this.wss = new WebSocket.Server({
-      server: httpServer
-    });
+    this.wss = new WebSocket.Server({ port });
 
     this.wss.on("listening", this.emit.bind(this, "listening"));
     this.wss.on("close", this.emit.bind(this, "close"));
     this.wss.on("error", this.emit.bind(this, "error"));
     this.wss.on("connection", this.onConnection.bind(this));
-
-    httpServer.listen(port);
   }
 
   private onConnection(ws: WebSocket, request: IncomingMessage) {

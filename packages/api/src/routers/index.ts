@@ -1,8 +1,10 @@
 import Router from "koa-router";
-import streamsRouter from "./streamsRouter";
+import broadcasts from "./broadcasts";
+import categories from "./categories";
 
 const router = new Router();
 
-router.use("/streams", streamsRouter.routes(), streamsRouter.allowedMethods());
+router.use("/broadcasts", broadcasts.routes(), broadcasts.allowedMethods());
+router.use("/categories", categories.routes(), categories.allowedMethods());
 
 export default router;

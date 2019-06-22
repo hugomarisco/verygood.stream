@@ -16,7 +16,7 @@
     "url": "git+https://github.com/bitstreamy/bitstreamy.git"
   },
   "scripts": {
-    "dev": "TS_NODE_FILES=true ts-node src/cli.ts",
+    "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/cli.ts",
     "build": "tsc",
     "build:watch": "tsc -w",
     "test": "jest --coverage --passWithNoTests",

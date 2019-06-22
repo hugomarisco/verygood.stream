@@ -37,7 +37,10 @@ swarmMetadataSearchParams.append(
 );
 
 Logger.info("Edit your broadcast information", {
-  url: `http://localhost:3000/s/edit?${swarmMetadataSearchParams.toString()}`
+  swarmId: swarmId.toString("base64"),
+  url: `http://localhost:5000/b/${swarmMetadataSearchParams.get(
+    "swarmId"
+  )}/edit?${swarmMetadataSearchParams.toString()}`
 });
 
 const client = new PPSPPClient(

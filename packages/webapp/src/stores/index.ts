@@ -1,5 +1,5 @@
-import { StreamStore } from "./StreamStore";
+import { EditBroadcastStore } from "./EditBroadcastStore";
 
 export const stores = {
-  streamStore: new StreamStore()
+  editBroadcastStore: new EditBroadcastStore()
 };

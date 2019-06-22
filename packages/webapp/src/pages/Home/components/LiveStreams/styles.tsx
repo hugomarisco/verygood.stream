@@ -3,6 +3,7 @@ import { H5 } from "../../../../components/H5";
 import { RawLink } from "../../../../components/Link";
 import { P } from "../../../../components/P";
 import { styled } from "../../../../utils/theme";
+import { tablet } from "../../../../utils/media";
 
 export const LiveStreamsTitle = styled(P)`
   margin-bottom: 15px;
@@ -33,4 +34,10 @@ export const StreamPeers = styled(StreamSection)`
   ${H5} {
     margin-left: 10px;
   }
+
+  ${tablet`
+    ${H5} {
+      margin-right: 70px;
+    }
+  `}
 `;

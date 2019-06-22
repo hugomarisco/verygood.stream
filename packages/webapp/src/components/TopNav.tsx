@@ -6,7 +6,7 @@ import { RawLink } from "./Link";
 import { Logo } from "./Logo";
 
 export const topNavCss = css`
-  padding: ${props => props.theme.spaceTokens.xl};
+  padding: 32px;
 `;
 
 export const TopNav = () => (

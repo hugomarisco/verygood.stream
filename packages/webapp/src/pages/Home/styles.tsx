@@ -6,6 +6,7 @@ import { P } from "../../components/P";
 import { Player } from "../../components/Player";
 import { Row } from "../../components/Row";
 import { styled } from "../../utils/theme";
+import { tablet } from "../../utils/media";
 
 export const FeaturedVideoPlayer = styled(Player)`
   max-height: 100vh;
@@ -25,10 +26,6 @@ export const FeaturesTitleContainer = styled.div`
   padding: 80px 0;
 `;
 
-export const FeaturesContainer = styled.div`
-  margin-bottom: 80px;
-`;
-
 export const Feature = styled.div`
   border-top: 1px solid ${props => props.theme.colors.light};
   padding: 20px 0 80px 0;
@@ -40,6 +37,23 @@ export const Feature = styled.div`
   ${P} {
     margin-bottom: 40px;
   }
+
+  ${tablet`
+    min-width: 270px;
+  `}
+`;
+
+export const FeaturesContainer = styled.div`
+  margin-bottom: 80px;
+
+  ${tablet`
+    display: flex;
+    overflow-x: auto;
+
+    ${Feature} + ${Feature} {
+      margin-left: 54px;
+    }
+  `}
 `;
 
 export const SocialLinksContainer = styled.div`

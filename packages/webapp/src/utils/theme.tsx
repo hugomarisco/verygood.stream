@@ -1,4 +1,3 @@
-import { rgba } from "polished";
 import baseStyled, {
   css as baseCss,
   ThemedCssFunction,
@@ -12,32 +11,16 @@ const colors = {
 };
 
 export const theme = {
+  breakpoints: {
+    desktop: "992px",
+    tablet: "768px"
+  },
   colors,
   fonts: {
     sansSerif: "Roboto, sans-serif"
   },
   gridGutter: "2px",
-  gridRows: 12,
-  layoutTokens: {
-    l: "64px",
-    m: "48px",
-    s: "32px",
-    xl: "96px",
-    xs: "24px",
-    xxl: "160px",
-    xxs: "16px"
-  },
-  spaceTokens: {
-    l: "24px",
-    m: "16px",
-    s: "12px",
-    xl: "32px",
-    xs: "8px",
-    xxl: "40px",
-    xxs: "4px",
-    xxxl: "48px",
-    xxxs: "2px"
-  }
+  gridRows: 12
 };
 
 export type Theme = typeof theme;

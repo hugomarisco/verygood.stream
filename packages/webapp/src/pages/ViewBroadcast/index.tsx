@@ -3,7 +3,9 @@ import {
   ContentIntegrityProtectionMethod,
   SwarmMetadata
 } from "@bitstreamy/commons";
+import { inject, observer } from "mobx-react";
 import React, { Component } from "react";
+import { RouteComponentProps } from "react-router";
 import { Badge } from "../../components/Badge";
 import { Column } from "../../components/Column";
 import { Container } from "../../components/Container";
@@ -16,6 +18,7 @@ import { Input } from "../../components/Input";
 import { P } from "../../components/P";
 import { Row } from "../../components/Row";
 import { TopNav } from "../../components/TopNav";
+import { EditBroadcastStore } from "../../stores/EditBroadcastStore";
 import {
   BroadcastInformationSection,
   CategoryIconContainer,
@@ -24,39 +27,77 @@ import {
   VideoPlayer
 } from "./styles";
 
-const featuredPlayerSwarmMetadata = new SwarmMetadata(
-  Buffer.from("aaa"),
-  0xffffffff,
-  ChunkAddressingMethod["32ChunkRanges"],
-  ContentIntegrityProtectionMethod.NONE
-);
+interface IViewBroadcastRouteParams {
+  broadcastId: string;
+}
 
-export class ViewStream extends Component {
+interface IViewBroadcastProps
+  extends RouteComponentProps<IViewBroadcastRouteParams> {
+  editBroadcastStore: EditBroadcastStore;
+}
+
+@inject("editBroadcastStore")
+@observer
+export class ViewBroadcast extends Component<IViewBroadcastProps> {
+  public componentDidMount() {
+    const { editBroadcastStore, match } = this.props;
+
+    editBroadcastStore.fetchById(match.params.broadcastId);
+  }
+
   public render() {
+    const { editBroadcastStore } = this.props;
+
+    const { broadcast } = editBroadcastStore;
+
+    if (!broadcast) {
+      return null;
+    }
+
+    const {
+      title,
+      category,
+      swarmId,
+      chunkSize,
+      chunkAddressingMethod,
+      contentIntegrityProtectionMethod,
+      liveSignatureAlgorithm
+    } = broadcast;
+
     return (
       <div>
         <TopNav />
 
-        <VideoPlayer
-          trackerUrl="wss://tracker.bitstreamy.com"
-          liveDiscardWindow={10}
-          swarmMetadata={featuredPlayerSwarmMetadata}
-          poster="https://images.wallpaperscraft.com/image/football_game_field_tribune_gate_spectators_11418_1920x1080.jpg"
-        />
+        {swarmId && (
+          <VideoPlayer
+            key={swarmId}
+            liveDiscardWindow={200}
+            swarmMetadata={
+              new SwarmMetadata(
+                Buffer.from(swarmId, "base64"),
+                chunkSize,
+                chunkAddressingMethod,
+                contentIntegrityProtectionMethod,
+                liveSignatureAlgorithm
+              )
+            }
+          />
+        )}
+
         <BroadcastInformationSection>
           <Container>
             <Row>
               <Column />
-              <Column span={2}>
+              <Column span={[2]}>
                 <CategoryIconContainer>
                   <SoccerBallIcon width="30px" height="30px" />
                 </CategoryIconContainer>
               </Column>
-              <Column span={8}>
+              <Column span={[8]}>
                 <StreamTitle>
-                  <P dark>Juventus - Roma</P>
+                  <P dark>{title}</P>
                   <P dark translucent>
-                    Soccer
+                    {category && category.name}
                   </P>
                 </StreamTitle>
               </Column>
@@ -64,7 +105,7 @@ export class ViewStream extends Component {
 
             <Row>
               <Column />
-              <Column span={10}>
+              <Column span={[10]}>
                 <StreamDetails>
                   <EyeIcon color="dark" translucent />
                   <P dark>2.9K</P>
@@ -79,7 +120,7 @@ export class ViewStream extends Component {
 
             <Row>
               <Column />
-              <Column span={10}>
+              <Column span={[10]}>
                 <Input />
               </Column>
             </Row>

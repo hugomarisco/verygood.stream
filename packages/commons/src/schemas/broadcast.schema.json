@@ -1,0 +1,31 @@
+{
+  "type": "object",
+  "properties": {
+    "categoryId": {
+      "type": "integer"
+    },
+    "swarmId": {
+      "type": "string"
+    },
+    "title": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "chunkSize": {
+      "type": "number"
+    },
+    "chunkAddresingMethod": {
+      "type": "number"
+    },
+    "contentIntegrityProtectionMethod": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "swarmId",
+    "title",
+    "chunkSize",
+    "chunkAddressingMethod",
+    "contentIntegrityProtectionMethod"
+  ]
+}

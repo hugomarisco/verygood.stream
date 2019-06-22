@@ -52,7 +52,7 @@ export class CliArgumentsParser {
           e: 65537
         }).privateKey;
 
-    const publicKey = pki.rsa.setPublicKey(privateKey.n, privateKey.e);
+    // const publicKey = pki.rsa.setPublicKey(privateKey.n, privateKey.e);
 
     let swarmId: Buffer;
     let liveSignatureAlgorithm: number | undefined;

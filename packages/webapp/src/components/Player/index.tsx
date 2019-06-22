@@ -1,22 +1,26 @@
-import { Logger, SwarmMetadata } from "@bitstreamy/commons";
+import { base64UrlEscape, Logger, SwarmMetadata } from "@bitstreamy/commons";
 import { ChunkSpec, PPSPPClient } from "@bitstreamy/ppspp-client";
 import React, { VideoHTMLAttributes } from "react";
 import { IMP4Info, parseMp4Chunk } from "../../utils/parseMp4Chunk";
+import { ViewportContext } from "../ViewportProvider";
 import { PlayerControls } from "./components/PlayerControls";
 import { PlayerWrapper, Video } from "./styles";
 
 interface IPlayerProps extends VideoHTMLAttributes<HTMLVideoElement> {
   swarmMetadata: SwarmMetadata;
-  trackerUrl: string;
   liveDiscardWindow: number;
 }
 
 interface IPlayerState {
   controlsVisible: boolean;
   mediaInfo?: IMP4Info;
+  mediaSourceUrl: string;
 }
 
 export class Player extends React.Component<IPlayerProps, IPlayerState> {
+  public static contextType = ViewportContext;
+  public context!: React.ContextType<typeof ViewportContext>;
+
   private playerRef = React.createRef<HTMLVideoElement>();
   private hideControlsTimeout?: number;
   private mediaSource: MediaSource;
@@ -25,10 +29,6 @@ export class Player extends React.Component<IPlayerProps, IPlayerState> {
 
   constructor(props: IPlayerProps) {
     super(props);
-
-    this.state = {
-      controlsVisible: true
-    };
 
     this.bufferedSegments = [];
 
@@ -51,6 +51,11 @@ export class Player extends React.Component<IPlayerProps, IPlayerState> {
         readyState: this.mediaSource.readyState
       });
     });
+
+    this.state = {
+      controlsVisible: true,
+      mediaSourceUrl: URL.createObjectURL(this.mediaSource)
+    };
   }
 
   public componentDidMount() {
@@ -58,6 +63,9 @@ export class Player extends React.Component<IPlayerProps, IPlayerState> {
   }
 
   public render() {
+    const { controlsVisible } = this.state;
+    const { desktop } = this.context;
+
     return (
       <PlayerWrapper
         onMouseEnter={this.showControls}
@@ -66,12 +74,12 @@ export class Player extends React.Component<IPlayerProps, IPlayerState> {
       >
         <Video
           ref={this.playerRef}
-          src="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
-          // src={URL.createObjectURL(this.mediaSource)}
+          src={this.state.mediaSourceUrl}
+          controls={!desktop}
           {...this.props}
         />
 
-        {this.state.controlsVisible && (
+        {desktop && controlsVisible && (
           <PlayerControls
             onPlayPause={this.handlePlayPause}
             onFullScreen={this.handleFullScreen}
@@ -130,7 +138,7 @@ export class Player extends React.Component<IPlayerProps, IPlayerState> {
   }
 
   private initializeClient() {
-    const { swarmMetadata, trackerUrl, liveDiscardWindow } = this.props;
+    const { swarmMetadata, liveDiscardWindow } = this.props;
 
     if (swarmMetadata.contentIntegrityProtectionMethod === undefined) {
       throw new Error("ContentIntegrityProtectionMethod is not defined");
@@ -139,7 +147,7 @@ export class Player extends React.Component<IPlayerProps, IPlayerState> {
     const client = new PPSPPClient(
       swarmMetadata,
       { liveDiscardWindow },
-      `${trackerUrl}/${encodeURIComponent(
+      `${process.env.REACT_APP_TRACKER_URL}/${base64UrlEscape(
         swarmMetadata.swarmId.toString("base64")
       )}`
     );
@@ -159,21 +167,15 @@ export class Player extends React.Component<IPlayerProps, IPlayerState> {
         const mediaInfo = await parseMp4Chunk(data);
 
         this.setState({ mediaInfo }, () => {
-          this.mediaSource.addEventListener("sourceopen", () => {
-            Logger.debug("Media Source Open", {
-              readyState: this.mediaSource.readyState
-            });
+          if (this.mimeCodec) {
+            this.sourceBuffer = this.mediaSource.addSourceBuffer(
+              this.mimeCodec
+            );
 
-            if (this.mimeCodec) {
-              this.sourceBuffer = this.mediaSource.addSourceBuffer(
-                this.mimeCodec
-              );
-
-              this.sourceBuffer.mode = "sequence";
-            } else {
-              Logger.error("Couldn't parse MIME from media info");
-            }
-          });
+            this.sourceBuffer.mode = "sequence";
+          } else {
+            Logger.error("Couldn't parse MIME from media info");
+          }
         });
       }
 

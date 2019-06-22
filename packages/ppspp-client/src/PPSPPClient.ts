@@ -113,6 +113,8 @@ export class PPSPPClient extends Duplex {
     if (isInitiator) {
       remotePeer.handshake();
     }
+
+    this.emit("peer");
   }
 
   private onPeerClose(peerId: number) {
