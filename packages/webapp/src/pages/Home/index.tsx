@@ -51,9 +51,11 @@ export class Home extends Component {
   public context!: React.ContextType<typeof ViewportContext>;
 
   public render() {
+    const { mobile, tablet } = this.context;
+
     return (
       <div>
-        <TopNav />
+        {(mobile || tablet) && <TopNav />}
 
         <FeaturedVideoPlayer
           liveDiscardWindow={10}
@@ -66,7 +68,7 @@ export class Home extends Component {
             <Row>
               <Column span={[12, 16]}>
                 <Row>
-                  {this.context.mobile && <Column />}
+                  {mobile && <Column />}
                   <Column span={[10]}>
                     <H1 dark translucent>
                       Broadcast
@@ -82,7 +84,7 @@ export class Home extends Component {
                 </Row>
 
                 <Row>
-                  {this.context.mobile && <Column />}
+                  {mobile && <Column />}
                   <Column span={[10]}>
                     <H1 dark>never before</H1>
                   </Column>
@@ -95,7 +97,7 @@ export class Home extends Component {
             </Row>
 
             <Row>
-              {this.context.mobile && <Column />}
+              {mobile && <Column />}
               <Column span={[11, 12]}>
                 <LiveStreams streams={mockLiveStreams} />
               </Column>

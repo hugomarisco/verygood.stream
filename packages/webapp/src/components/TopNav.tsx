@@ -1,19 +1,31 @@
 import React from "react";
-import { css } from "../utils/theme";
-import { Flex } from "./Flex";
-import { ArrowDownIcon } from "./Icon";
+import { desktop } from "../utils/media";
+import { styled } from "../utils/theme";
+import { Container } from "./Container";
 import { RawLink } from "./Link";
 import { Logo } from "./Logo";
 
-export const topNavCss = css`
-  padding: 32px;
+export const Wrapper = styled.header`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px;
+
+  ${desktop`
+    padding: 60px;
+  `}
 `;
 
-export const TopNav = () => (
-  <Flex as="header" css={topNavCss}>
-    <RawLink to="/">
-      <Logo />
-    </RawLink>
-    <ArrowDownIcon height="30px" />
-  </Flex>
+export interface ITopNavProps {
+  className?: string;
+}
+
+export const TopNav = (props: ITopNavProps) => (
+  <Wrapper {...props}>
+    <Container>
+      <RawLink to="/">
+        <Logo />
+      </RawLink>
+    </Container>
+  </Wrapper>
 );

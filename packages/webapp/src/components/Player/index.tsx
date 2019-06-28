@@ -4,7 +4,7 @@ import React, { VideoHTMLAttributes } from "react";
 import { IMP4Info, parseMp4Chunk } from "../../utils/parseMp4Chunk";
 import { ViewportContext } from "../ViewportProvider";
 import { PlayerControls } from "./components/PlayerControls";
-import { PlayerWrapper, Video } from "./styles";
+import { FixedNav, PlayerWrapper, Video } from "./styles";
 
 interface IPlayerProps extends VideoHTMLAttributes<HTMLVideoElement> {
   swarmMetadata: SwarmMetadata;
@@ -72,6 +72,8 @@ export class Player extends React.Component<IPlayerProps, IPlayerState> {
         onMouseLeave={this.hideControls}
         onMouseMove={this.showControls}
       >
+        {desktop && controlsVisible && <FixedNav />}
+
         <Video
           ref={this.playerRef}
           src={this.state.mediaSourceUrl}

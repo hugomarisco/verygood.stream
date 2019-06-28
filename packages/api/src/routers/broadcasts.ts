@@ -28,15 +28,16 @@ broadcasts.post("/", async (ctx, next) => {
 
 broadcasts.get("/", async (ctx, next) => {
   const { swarmId } = ctx.query;
+  const query: { swarmId?: string } = {};
 
-  if (!swarmId) {
-    throw Boom.badData();
+  if (swarmId) {
+    query.swarmId = base64UrlUnescape(swarmId);
   }
 
   ctx.body = await Broadcast.query()
     .eager("category")
-    .where({ swarmId: base64UrlUnescape(swarmId) })
-    .limit(1);
+    .where(query)
+    .limit(5);
 
   next();
 });

@@ -2,10 +2,10 @@ import React from "react";
 import { tablet } from "../../../utils/media";
 import { styled } from "../../../utils/theme";
 import { Button } from "../../Button";
+import { Container } from "../../Container";
 import { FullScreenIcon, PauseIcon, PlayIcon } from "../../Icon";
 
-const PlayerControlsContainer = styled.div`
-  max-width: 1320px;
+const Wrapper = styled.div`
   background-image: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 0),
@@ -16,13 +16,17 @@ const PlayerControlsContainer = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
+  padding: 0 30px;
+`;
 
-  justify-content: space-between;
-  align-items: center;
+const Controls = styled.div`
   display: none;
 
   ${tablet`
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 60px;
   `}
 `;
 
@@ -32,17 +36,20 @@ const ControlsSection = styled.div`
 `;
 
 export const PlayerControls = ({ onPlayPause, isPlaying, onFullScreen }) => (
-  <PlayerControlsContainer>
-    <ControlsSection>
-      <Button onClick={onPlayPause}>
-        {isPlaying() ? <PauseIcon /> : <PlayIcon />}
-      </Button>
-    </ControlsSection>
-
-    <ControlsSection>
-      <Button onClick={onFullScreen}>
-        <FullScreenIcon />
-      </Button>
-    </ControlsSection>
-  </PlayerControlsContainer>
+  <Wrapper>
+    <Container>
+      <Controls>
+        <ControlsSection>
+          <Button onClick={onPlayPause}>
+            {isPlaying() ? <PauseIcon /> : <PlayIcon />}
+          </Button>
+        </ControlsSection>
+        <ControlsSection>
+          <Button onClick={onFullScreen}>
+            <FullScreenIcon />
+          </Button>
+        </ControlsSection>
+      </Controls>
+    </Container>
+  </Wrapper>
 );

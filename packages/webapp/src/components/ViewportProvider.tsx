@@ -60,7 +60,9 @@ class Provider extends Component<IProviderProps, IViewportState> {
       innerHeight,
       innerWidth,
       mobile: innerWidth < stripUnit(theme.breakpoints.tablet),
-      tablet: innerWidth >= stripUnit(theme.breakpoints.tablet)
+      tablet:
+        innerWidth >= stripUnit(theme.breakpoints.tablet) &&
+        innerWidth < stripUnit(theme.breakpoints.desktop)
     };
 
     return (
