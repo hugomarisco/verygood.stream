@@ -8,23 +8,13 @@ blocks:
   - name: Deploy
     task:
       jobs:
-        - name: Checkout
+        - name: Deploy
           commands:
             - checkout
-        - name: Install dependencies
-          commands:
             - npm install
-        - name: Boostrap
-          commands:
             - npm run bootstrap
-        - name: Test
-          commands:
             - npm run test:ci
-        - name: Build
-          commands:
             - npm run build
-        - name: Upload webapp
-          commands:
             - aws s3 cp ./packages/webapp/build s3://$WEBAPP_S3_BUCKET/ --recursive
       secrets:
         - name: aws_keys
