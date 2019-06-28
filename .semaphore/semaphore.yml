@@ -8,6 +8,9 @@ blocks:
   - name: Deploy
     task:
       jobs:
+        - name: Checkout
+          commands:
+            - checkout
         - name: Install dependencies
           commands:
             - npm install
