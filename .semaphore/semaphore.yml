@@ -19,3 +19,4 @@ blocks:
       secrets:
         - name: aws_keys
         - name: aws_resources
+        - name: codecov_secrets
