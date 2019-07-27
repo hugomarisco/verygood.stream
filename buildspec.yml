@@ -6,14 +6,10 @@ phases:
     commands:
       - npm install
   pre_build:
-    runtime-versions:
-      nodejs: 10
     commands:
       - npm run bootstrap
       - npm run test:ci
   build:
-    runtime-versions:
-      nodejs: 10
     commands:
       - npm run build
   # post-build:
