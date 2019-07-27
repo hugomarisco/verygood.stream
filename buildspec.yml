@@ -1,0 +1,24 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 10
+      commands:
+        - npm install
+  pre-build:
+    runtime-versions:
+      nodejs: 10
+      commands:
+        - npm run bootstrap
+        - npm run test:ci
+  build:
+    runtime-versions:
+      nodejs: 10
+      commands:
+        - npm run build
+  # post-build:
+  #   runtime-versions:
+  #     nodejs: 10
+  #     commands:
+  #       - cd packages/tracker && zip -rq ../../bitstreamy-tracker.zip * && cd ../../
+  #       - cd packages/api && zip -rq ../../bitstreamy-api.zip * && cd ../../
