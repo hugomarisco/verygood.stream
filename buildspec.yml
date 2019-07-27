@@ -26,5 +26,3 @@ artifacts:
   files:
     - appspec.yml
     - scripts/**/*
-    - packages/api/**/*
-    - packages/tracker/**/*

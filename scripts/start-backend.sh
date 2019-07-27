@@ -1,4 +1,4 @@
 #!/bin/bash
 
-node /app/packages/api/lib/index.js &
-node /app/packages/tracker/lib/cli.js &
+npx @bitstreamy/tracker --no-install --ignore-existing &
+npx @bitstreamy/api --no-install --ignore-existing &
