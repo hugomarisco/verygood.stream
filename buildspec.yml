@@ -2,6 +2,7 @@ version: 0.2
 env:
   parameter-store:
     CLOUDFRONT_DISTRIBUTION_ID: /CodeBuild/CLOUDFRONT_DISTRIBUTION_ID
+    NPM_TOKEN: /CodeBuild/NPM_TOKEN
 phases:
   install:
     runtime-versions:
@@ -20,6 +21,7 @@ phases:
       - aws s3 sync packages/webapp/build/ s3://www.bitstreamy.com --delete
       - aws configure set preview.cloudfront true
       - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
+      - npm run publish
 artifacts:
   files:
     - appspec.yml
