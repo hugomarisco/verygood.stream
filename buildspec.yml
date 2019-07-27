@@ -21,7 +21,7 @@ phases:
       - aws s3 sync packages/webapp/build/ s3://www.bitstreamy.com --delete
       - aws configure set preview.cloudfront true
       - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
-      - npm run lerna-publish
+      - npm run lerna-publish -- --git-head ${CODEBUILD_RESOLVED_SOURCE_VERSION}
 artifacts:
   files:
     - appspec.yml
