@@ -75,8 +75,7 @@
     "dev": "REACT_APP_TRACKER_URL='ws://localhost:8080' node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "jest --coverage --passWithNoTests",
-    "test:watch": "jest --watch --passWithNoTests",
-    "test:ci": "CI=true jest --coverage --passWithNoTests"
+    "test:watch": "jest --watch --passWithNoTests"
   },
   "eslintConfig": {
     "extends": "react-app"

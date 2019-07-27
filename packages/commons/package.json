@@ -19,8 +19,7 @@
     "build": "tsc",
     "build:watch": "tsc -w",
     "test": "jest --coverage --passWithNoTests",
-    "test:watch": "jest --watch --passWithNoTests",
-    "test:ci": "jest --coverage --passWithNoTests"
+    "test:watch": "jest --watch --passWithNoTests"
   },
   "dependencies": {
     "base64-url": "^2.2.2",

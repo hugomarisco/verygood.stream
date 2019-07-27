@@ -1,5 +1,4 @@
-[![Travis](https://img.shields.io/travis/bitstreamy/bitstreamy.svg)](https://travis-ci.org/bitstreamy/bitstreamy)
-[![Codecov](https://img.shields.io/codecov/c/github/bitstreamy/bitstreamy.svg)](https://codecov.io/gh/bitstreamy/bitstreamy)
+![BuildStatus](https://codebuild.eu-west-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiWTVodElQMWhWZDZQekdBNFdvUDlsbk9YZ09HdHlSV05XdDJCdGhIaEs3eXRGMHBGcGZLTTl3WWx3ZGxIOEJFM2E3eUFSSzE5bGU3Y1lFQm45WVZUNW1ZPSIsIml2UGFyYW1ldGVyU3BlYyI6InA1UmJSRjQySHhkaDNZc1MiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
 
 **Under active development**
 

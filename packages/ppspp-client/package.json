@@ -19,8 +19,7 @@
     "build": "tsc",
     "build:watch": "tsc -w",
     "test": "jest --coverage --passWithNoTests --colors",
-    "test:watch": "jest --watch --passWithNoTests --colors",
-    "test:ci": "jest --coverage --passWithNoTests"
+    "test:watch": "jest --watch --passWithNoTests --colors"
   },
   "devDependencies": {
     "@types/randombytes": "^2.0.0"
