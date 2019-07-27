@@ -1,4 +1,4 @@
 #!/bin/bash
 
-npx @bitstreamy/tracker --no-install --ignore-existing &
-npx @bitstreamy/api --no-install --ignore-existing &
+npx @bitstreamy/tracker --ignore-existing &
+npx @bitstreamy/api --ignore-existing &

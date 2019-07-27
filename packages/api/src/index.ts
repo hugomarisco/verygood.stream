@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { Logger } from "@bitstreamy/commons";
 import Boom from "@hapi/boom";
 import cors from "@koa/cors";
