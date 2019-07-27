@@ -1,4 +1,4 @@
 #!/bin/bash
 
-node packages/api/lib/index.js &
-node packages/tracker/lib/cli.js &
+node /app/packages/api/lib/index.js &
+node /app/packages/tracker/lib/cli.js &
