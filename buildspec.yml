@@ -5,7 +5,7 @@ phases:
       nodejs: 10
     commands:
       - npm install
-  pre-build:
+  pre_build:
     runtime-versions:
       nodejs: 10
     commands:
