@@ -15,6 +15,9 @@
     "type": "git",
     "url": "git+https://github.com/bitstreamy/bitstreamy.git"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w",

@@ -15,6 +15,9 @@
     "type": "git",
     "url": "git+https://github.com/bitstreamy/bitstreamy.git"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/cli.ts",
     "build": "tsc",
