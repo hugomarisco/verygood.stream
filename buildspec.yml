@@ -8,7 +8,7 @@ phases:
     runtime-versions:
       nodejs: 10
     commands:
-      - rm -rf * && git clone -f git@github.com:hugomarisco/bitstreamy.git .
+      - rm -rf * && git clone git@github.com:hugomarisco/bitstreamy.git .
       - npm install
   pre_build:
     commands:
