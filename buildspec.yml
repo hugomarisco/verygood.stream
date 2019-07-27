@@ -16,4 +16,7 @@ phases:
       - npm run test
 artifacts:
   files:
-    - "**/*"
+    - appspec.yml
+    - packages/webapp/build/**/*
+    - packages/api/**/*
+    - packages/tracker/**/*
