@@ -1,2 +1,8 @@
 version: 0.0
 os: linux
+files:
+  - source: .
+    destination: /app
+hooks:
+  ApplicationStart:
+    - location: scripts/start-backend.sh
