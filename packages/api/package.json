@@ -47,5 +47,6 @@
     "@types/koa-router": "^7.0.40",
     "@types/lodash": "^4.14.134",
     "@types/pg": "^7.4.14"
-  }
+  },
+  "gitHead": "09b44f9a0bb8b7329b0fa8c491465fbbae2f6edc"
 }

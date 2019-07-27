@@ -32,8 +32,5 @@
     "node-forge": "^0.8.2",
     "winston": "^3.2.1"
   },
-  "gitHead": "ff1466ca635e3725d09a4fefeb724d20580d4918",
-  "publishConfig": {
-    "access": "public"
-  }
+  "gitHead": "09b44f9a0bb8b7329b0fa8c491465fbbae2f6edc"
 }

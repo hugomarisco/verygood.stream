@@ -86,7 +86,7 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "gitHead": "ff1466ca635e3725d09a4fefeb724d20580d4918",
+  "gitHead": "09b44f9a0bb8b7329b0fa8c491465fbbae2f6edc",
   "publishConfig": {
     "access": "public"
   },
