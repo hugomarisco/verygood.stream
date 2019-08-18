@@ -1,7 +1,6 @@
 import React from "react";
-import { desktop } from "../utils/media";
+import { desktop, tablet } from "../utils/media";
 import { styled } from "../utils/theme";
-import { Container } from "./Container";
 import { RawLink } from "./Link";
 import { Logo } from "./Logo";
 
@@ -11,8 +10,8 @@ export const Wrapper = styled.header`
   justify-content: space-between;
   padding: 30px;
 
-  ${desktop`
-    padding: 60px;
+  ${tablet`
+    padding: 30px 60px;
   `}
 `;
 
@@ -22,10 +21,8 @@ export interface ITopNavProps {
 
 export const TopNav = (props: ITopNavProps) => (
   <Wrapper {...props}>
-    <Container>
-      <RawLink to="/">
-        <Logo />
-      </RawLink>
-    </Container>
+    <RawLink to="/">
+      <Logo />
+    </RawLink>
   </Wrapper>
 );

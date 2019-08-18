@@ -1,8 +1,13 @@
 import { rgba } from "polished";
 import { styled } from "../utils/theme";
 
-export const Button = styled.button`
+export const UnstyledButton = styled.button`
   border: none;
+  background: none;
+  cursor: pointer;
+`;
+
+export const Button = styled(UnstyledButton)`
   color: ${props => props.theme.colors.light};
   background: ${props => props.theme.colors.primary};
   box-shadow: ${props =>

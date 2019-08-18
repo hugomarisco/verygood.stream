@@ -6,7 +6,7 @@ import { P } from "../../components/P";
 import { Player } from "../../components/Player";
 import { Row } from "../../components/Row";
 import { styled } from "../../utils/theme";
-import { tablet } from "../../utils/media";
+import { tablet, desktop } from "../../utils/media";
 
 export const FeaturedVideoPlayer = styled(Player)`
   max-height: 100vh;
@@ -14,7 +14,7 @@ export const FeaturedVideoPlayer = styled(Player)`
 `;
 
 export const LiveBroadcastsSection = styled(Box)`
-  padding: 50px 0 30px 0;
+  padding: 100px 0 30px 0;
 `;
 
 export const BroadcastButton = styled(Button)`
@@ -41,10 +41,21 @@ export const Feature = styled.div`
   ${tablet`
     min-width: 270px;
   `}
+
+  ${desktop`
+    &:nth-child(2) {
+      margin-top: 80px;
+    }
+
+    &:nth-child(3) {
+      margin-top: 160px;
+    }
+  `}
 `;
 
 export const FeaturesContainer = styled.div`
   margin-bottom: 80px;
+  counter-reset: feature;
 
   ${tablet`
     display: flex;

@@ -51,7 +51,7 @@ export class Home extends Component {
   public context!: React.ContextType<typeof ViewportContext>;
 
   public render() {
-    const { mobile, tablet } = this.context;
+    const { mobile, tablet, desktop } = this.context;
 
     return (
       <div>
@@ -66,9 +66,9 @@ export class Home extends Component {
         <LiveBroadcastsSection>
           <Container>
             <Row>
-              <Column span={[12, 16]}>
+              <Column span={[12]}>
                 <Row>
-                  {mobile && <Column />}
+                  <Column />
                   <Column span={[10]}>
                     <H1 dark translucent>
                       Broadcast
@@ -84,14 +84,14 @@ export class Home extends Component {
                 </Row>
 
                 <Row>
-                  {mobile && <Column />}
+                  <Column />
                   <Column span={[10]}>
                     <H1 dark>never before</H1>
                   </Column>
                 </Row>
               </Column>
 
-              <Column span={[12, 16]}>
+              <Column span={[12]}>
                 <BroadcastButton>Broadcast now</BroadcastButton>
               </Column>
             </Row>

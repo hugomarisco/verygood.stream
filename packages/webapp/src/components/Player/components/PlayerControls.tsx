@@ -1,9 +1,16 @@
 import React from "react";
-import { tablet } from "../../../utils/media";
 import { styled } from "../../../utils/theme";
-import { Button } from "../../Button";
-import { Container } from "../../Container";
-import { FullScreenIcon, PauseIcon, PlayIcon } from "../../Icon";
+import { Button, UnstyledButton } from "../../Button";
+import {
+  EyeIcon,
+  FullScreenIcon,
+  PauseIcon,
+  PlayIcon,
+  UploadDownloadIcon,
+  VolumeIcon
+} from "../../Icon";
+import { P } from "../../P";
+import { RangeSlider } from "../../RangeSlider";
 
 const Wrapper = styled.div`
   background-image: linear-gradient(
@@ -11,45 +18,54 @@ const Wrapper = styled.div`
     rgba(0, 0, 0, 0),
     rgba(0, 0, 0, 0.8)
   );
-  height: 100px;
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 0 30px;
+  padding: 30px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const Controls = styled.div`
-  display: none;
-
-  ${tablet`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 60px;
-  `}
-`;
-
-const ControlsSection = styled.div`
   display: flex;
   align-items: center;
 `;
 
+const PlayPauseButton = styled(Button)`
+  border-radius: 100%;
+  padding: 8px;
+  line-height: 1;
+
+  ${PlayIcon}, ${PauseIcon} {
+    fill: ${props => props.theme.colors.dark};
+  }
+`;
+
 export const PlayerControls = ({ onPlayPause, isPlaying, onFullScreen }) => (
   <Wrapper>
-    <Container>
-      <Controls>
-        <ControlsSection>
-          <Button onClick={onPlayPause}>
-            {isPlaying() ? <PauseIcon /> : <PlayIcon />}
-          </Button>
-        </ControlsSection>
-        <ControlsSection>
-          <Button onClick={onFullScreen}>
-            <FullScreenIcon />
-          </Button>
-        </ControlsSection>
-      </Controls>
-    </Container>
+    <Controls>
+      <PlayPauseButton onClick={onPlayPause}>
+        {isPlaying() ? <PauseIcon /> : <PlayIcon />}
+      </PlayPauseButton>
+
+      <EyeIcon />
+
+      <P>2.9K</P>
+
+      <UploadDownloadIcon />
+
+      <P>3.1 Mb/s</P>
+    </Controls>
+    <Controls>
+      <VolumeIcon />
+
+      <RangeSlider />
+
+      <UnstyledButton onClick={onFullScreen}>
+        <FullScreenIcon />
+      </UnstyledButton>
+    </Controls>
   </Wrapper>
 );

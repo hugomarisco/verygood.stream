@@ -14,7 +14,7 @@ const app = new Koa();
 
 app
   .use(errorHandler)
-  .use(cors({ origin: "http://localhost:5000" }))
+  .use(cors({ origin: "http://192.168.1.70:5000" }))
   .use(
     bodyParser({
       onerror: err => {

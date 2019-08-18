@@ -128,7 +128,7 @@ export class Player extends React.Component<IPlayerProps, IPlayerState> {
   };
 
   private hideControls = () => {
-    this.setState({ controlsVisible: false });
+    // this.setState({ controlsVisible: false });
   };
 
   private get mimeCodec(): string | undefined {

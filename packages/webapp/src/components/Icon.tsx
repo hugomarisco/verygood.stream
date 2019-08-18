@@ -1,5 +1,6 @@
 import React from "react";
 import { ReactComponent as ArrowDownSvg } from "../assets/icons/arrow-down.svg";
+import { ReactComponent as ArrowRightSvg } from "../assets/icons/arrow-right.svg";
 import { ReactComponent as EyeSvg } from "../assets/icons/eye.svg";
 import { ReactComponent as FullScreenSvg } from "../assets/icons/fullscreen.svg";
 import { ReactComponent as GithubSvg } from "../assets/icons/github.svg";
@@ -11,6 +12,7 @@ import { ReactComponent as PlusSvg } from "../assets/icons/plus.svg";
 import { ReactComponent as RedditSvg } from "../assets/icons/reddit.svg";
 import { ReactComponent as SoccerBallSvg } from "../assets/icons/soccer-ball.svg";
 import { ReactComponent as UploadDownloadSvg } from "../assets/icons/upload-download.svg";
+import { ReactComponent as VolumeSvg } from "../assets/icons/volume.svg";
 import { styled } from "../utils/theme";
 
 interface IIconProps {
@@ -23,7 +25,7 @@ interface IIconProps {
 const withIcon = (
   IconSvg: React.FunctionComponent<React.SVGProps<SVGSVGElement>>
 ) => styled(IconSvg)<IIconProps>`
-  display: inline-block;
+  display: block;
   fill: ${props => props.theme.colors[props.color || "light"]};
   width: ${props => props.width || "auto"};
   height: ${props => props.height || "auto"};
@@ -35,6 +37,7 @@ export const LiveIcon = withIcon(LiveSvg);
 export const SoccerBallIcon = withIcon(SoccerBallSvg);
 export const PlusIcon = withIcon(PlusSvg);
 export const ArrowDownIcon = withIcon(ArrowDownSvg);
+export const ArrowRightIcon = withIcon(ArrowRightSvg);
 export const PauseIcon = withIcon(PauseSvg);
 export const FullScreenIcon = withIcon(FullScreenSvg);
 export const PlayIcon = withIcon(PlaySvg);
@@ -42,3 +45,4 @@ export const GithubIcon = withIcon(GithubSvg);
 export const RedditIcon = withIcon(RedditSvg);
 export const NpmIcon = withIcon(NpmSvg);
 export const UploadDownloadIcon = withIcon(UploadDownloadSvg);
+export const VolumeIcon = withIcon(VolumeSvg);
