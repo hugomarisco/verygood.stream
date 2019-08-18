@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { H5 } from "../../../../components/H5";
-import { ArrowDownIcon, EyeIcon, LiveIcon } from "../../../../components/Icon";
+import { ArrowRightIcon, EyeIcon, LiveIcon } from "../../../../components/Icon";
 import { ViewportContext } from "../../../../components/ViewportProvider";
 import {
   LiveStreamsTitle,
@@ -47,7 +47,7 @@ export class LiveStreams extends Component<ILiveStreamsProps> {
               <H5 dark>{stream.peers}</H5>
 
               {(tablet || desktop) && (
-                <ArrowDownIcon color="dark" translucent />
+                <ArrowRightIcon color="dark" translucent />
               )}
             </StreamPeers>
           </StreamLink>
