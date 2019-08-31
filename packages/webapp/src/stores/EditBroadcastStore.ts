@@ -26,7 +26,7 @@ export class EditBroadcastStore {
     this.isFetching = true;
 
     const response = await fetch(
-      `http://${process.env.REACT_APP_API_URL}/broadcasts/${broadcastId}`
+      `${process.env.REACT_APP_API_URL}/broadcasts/${broadcastId}`
     );
 
     if (response.ok) {
@@ -42,7 +42,7 @@ export class EditBroadcastStore {
     this.isFetching = true;
 
     const response = await fetch(
-      `http://${process.env.REACT_APP_API_URL}/broadcasts?swarmId=${swarmId}`
+      `${process.env.REACT_APP_API_URL}/broadcasts?swarmId=${swarmId}`
     );
 
     if (response.ok) {
@@ -63,8 +63,8 @@ export class EditBroadcastStore {
   @action public async save({ broadcastId, ...broadcast }: IBroadcast) {
     const response = await fetch(
       broadcastId
-        ? `http://${process.env.REACT_APP_API_URL}/broadcasts/${broadcastId}`
-        : `http://${process.env.REACT_APP_API_URL}/broadcasts`,
+        ? `${process.env.REACT_APP_API_URL}/broadcasts/${broadcastId}`
+        : `${process.env.REACT_APP_API_URL}/broadcasts`,
       {
         body: JSON.stringify(broadcast),
         headers: { "Content-Type": "application/json" },
