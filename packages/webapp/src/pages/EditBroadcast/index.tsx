@@ -1,4 +1,10 @@
-import { base64UrlUnescape, SwarmMetadata } from "@bitstreamy/commons";
+import {
+  base64UrlUnescape,
+  SwarmMetadata,
+  ChunkAddressingMethod,
+  ContentIntegrityProtectionMethod,
+  LiveSignatureAlgorithm
+} from "@bitstreamy/commons";
 import { ErrorMessage, Field, Formik } from "formik";
 import { inject, observer } from "mobx-react";
 import { hideVisually } from "polished";
@@ -58,7 +64,24 @@ export class EditBroadcast extends React.Component<IEditBroadcastProps> {
   public render() {
     const { editBroadcastStore } = this.props;
 
-    const { isFetching, isSaved, broadcast } = editBroadcastStore;
+    // const { isFetching, isSaved, broadcast } = editBroadcastStore;
+
+    const isFetching = false;
+
+    const isSaved = false;
+
+    const broadcast = {
+      broadcastId: "1",
+      categoryId: 1,
+      category: { name: "Football" },
+      chunkAddressingMethod: ChunkAddressingMethod["32ChunkRanges"],
+      chunkSize: 0xffffffff,
+      contentIntegrityProtectionMethod:
+        ContentIntegrityProtectionMethod.SIGN_ALL,
+      liveSignatureAlgorithm: LiveSignatureAlgorithm.RSASHA1,
+      swarmId: "abc",
+      title: "Barcelona vs Ateltico Madrid"
+    };
 
     if (isFetching || !broadcast) {
       return null;

@@ -1,5 +1,6 @@
 import React from "react";
 import { styled } from "../../../utils/theme";
+import { Badge } from "../../Badge";
 import { Button, UnstyledButton } from "../../Button";
 import {
   EyeIcon,
@@ -28,9 +29,21 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
+const MetricWithIcon = styled.div`
+  display: flex;
+
+  * + * {
+    margin-left: 10px;
+  }
+`;
+
 const Controls = styled.div`
   display: flex;
   align-items: center;
+
+  > * + * {
+    margin-left: 40px;
+  }
 `;
 
 const PlayPauseButton = styled(Button)`
@@ -43,25 +56,30 @@ const PlayPauseButton = styled(Button)`
   }
 `;
 
-export const PlayerControls = ({ onPlayPause, isPlaying, onFullScreen }) => (
+export const PlayerControls = ({ onPlayPause, isPaused, onFullScreen }) => (
   <Wrapper>
     <Controls>
       <PlayPauseButton onClick={onPlayPause}>
-        {isPlaying() ? <PauseIcon /> : <PlayIcon />}
+        {isPaused ? <PlayIcon /> : <PauseIcon />}
       </PlayPauseButton>
+      <MetricWithIcon>
+        <EyeIcon />
+        <P>2.9K</P>
+      </MetricWithIcon>
 
-      <EyeIcon />
-
-      <P>2.9K</P>
-
-      <UploadDownloadIcon />
-
-      <P>3.1 Mb/s</P>
+      <MetricWithIcon>
+        <UploadDownloadIcon />
+        <P>3.1 Mb/s</P>
+      </MetricWithIcon>
     </Controls>
     <Controls>
-      <VolumeIcon />
-
-      <RangeSlider />
+      <Badge>
+        <P>1080p</P>
+      </Badge>
+      <MetricWithIcon>
+        <VolumeIcon />
+        <RangeSlider />
+      </MetricWithIcon>
 
       <UnstyledButton onClick={onFullScreen}>
         <FullScreenIcon />
