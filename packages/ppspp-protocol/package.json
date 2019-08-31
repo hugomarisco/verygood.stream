@@ -1,6 +1,6 @@
 {
   "name": "@bitstreamy/ppspp-protocol",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "PPSPP implementation in JavaScript",
   "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "GNU GPLv3",
@@ -27,7 +27,7 @@
     "@types/lodash": "^4.14.119"
   },
   "dependencies": {
-    "@bitstreamy/commons": "^0.3.5",
+    "@bitstreamy/commons": "^0.3.6",
     "lodash": "^4.17.11"
   },
   "gitHead": "09b44f9a0bb8b7329b0fa8c491465fbbae2f6edc"
