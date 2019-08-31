@@ -56,7 +56,7 @@ export class Player extends React.Component<IPlayerProps, IPlayerState> {
     this.state = {
       controlsVisible: true,
       isPaused: true,
-      mediaSourceUrl: "/test.mp4" //URL.createObjectURL(this.mediaSource)
+      mediaSourceUrl: URL.createObjectURL(this.mediaSource)
     };
   }
 
