@@ -36,7 +36,7 @@ export class CliArgumentsParser {
       .option(
         "-T|--tracker <trackerUrl>",
         "Tracker to find peers",
-        "wss://tracker.bitstreamy.com"
+        "wss://tracker.bitstreamy.com:8080"
       )
       .parse(process.argv);
 
