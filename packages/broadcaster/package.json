@@ -1,6 +1,6 @@
 {
   "name": "@bitstreamy/broadcaster",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "> TODO: description",
   "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "GNU GPLv3",
@@ -26,8 +26,8 @@
     "test:watch": "jest --watch --passWithNoTests"
   },
   "dependencies": {
-    "@bitstreamy/commons": "^0.3.1",
-    "@bitstreamy/ppspp-client": "^0.3.4",
+    "@bitstreamy/commons": "^0.3.5",
+    "@bitstreamy/ppspp-client": "^0.3.5",
     "commander": "^2.20.0",
     "node-forge": "^0.8.2"
   },
