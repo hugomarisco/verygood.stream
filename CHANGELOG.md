@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.2](http://ec2-18-218-192-178.us-east-2.compute.amazonaws.com:9292/hugomarisco/bitstreamy/compare/v0.3.1...v0.3.2) (2019-08-31)
+
+
+### Features
+
+* add publish script ([32dd25b](http://ec2-18-218-192-178.us-east-2.compute.amazonaws.com:9292/hugomarisco/bitstreamy/commits/32dd25b))
+
+
+
+
+
 ## [0.3.1](https://github.com/bitstreamy/bitstreamy/compare/v0.3.0...v0.3.1) (2019-07-27)
 
 **Note:** Version bump only for package root
