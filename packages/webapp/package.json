@@ -1,11 +1,11 @@
 {
   "name": "@bitstreamy/webapp",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "dependencies": {
     "@babel/core": "7.1.6",
-    "@bitstreamy/commons": "^0.3.7",
-    "@bitstreamy/ppspp-client": "^0.3.7",
-    "@bitstreamy/tracker": "^0.3.7",
+    "@bitstreamy/commons": "^0.3.8",
+    "@bitstreamy/ppspp-client": "^0.3.8",
+    "@bitstreamy/tracker": "^0.3.8",
     "@svgr/webpack": "2.4.1",
     "@types/react": "^16.8.17",
     "@types/react-dom": "^16.8.4",
