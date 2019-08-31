@@ -1,7 +1,8 @@
 import {
   ChunkAddressingMethod,
   ContentIntegrityProtectionMethod,
-  SwarmMetadata
+  SwarmMetadata,
+  LiveSignatureAlgorithm
 } from "@bitstreamy/commons";
 import { inject, observer } from "mobx-react";
 import React, { Component } from "react";
@@ -66,8 +67,6 @@ export class ViewBroadcast extends Component<IViewBroadcastProps> {
 
     return (
       <div>
-        <TopNav />
-
         {swarmId && (
           <VideoPlayer
             key={swarmId}
@@ -111,7 +110,7 @@ export class ViewBroadcast extends Component<IViewBroadcastProps> {
                   <P dark>2.9K</P>
                   <UploadDownloadIcon color="dark" translucent />
                   <P dark>3.1Mb/s</P>
-                  <Badge>
+                  <Badge dark>
                     <P dark>1080p</P>
                   </Badge>
                 </StreamDetails>

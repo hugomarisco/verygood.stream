@@ -34,7 +34,7 @@ export class LiveStreams extends Component<ILiveStreamsProps> {
         </LiveStreamsTitle>
 
         {streams.map(stream => (
-          <StreamLink key={stream.id} to={`/s/${stream.id}`}>
+          <StreamLink key={stream.id} to={`/b/${stream.id}`}>
             <StreamTitle>
               <LiveIcon color="primary" />
 

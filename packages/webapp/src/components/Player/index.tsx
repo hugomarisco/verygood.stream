@@ -15,6 +15,7 @@ interface IPlayerState {
   controlsVisible: boolean;
   mediaInfo?: IMP4Info;
   mediaSourceUrl: string;
+  isPaused: boolean;
 }
 
 export class Player extends React.Component<IPlayerProps, IPlayerState> {
@@ -54,7 +55,8 @@ export class Player extends React.Component<IPlayerProps, IPlayerState> {
 
     this.state = {
       controlsVisible: true,
-      mediaSourceUrl: URL.createObjectURL(this.mediaSource)
+      isPaused: true,
+      mediaSourceUrl: "/test.mp4" //URL.createObjectURL(this.mediaSource)
     };
   }
 
@@ -72,7 +74,7 @@ export class Player extends React.Component<IPlayerProps, IPlayerState> {
         onMouseLeave={this.hideControls}
         onMouseMove={this.showControls}
       >
-        {desktop && controlsVisible && <FixedNav />}
+        {desktop && controlsVisible && <FixedNav scrollToBottomButton />}
 
         <Video
           ref={this.playerRef}
@@ -85,19 +87,12 @@ export class Player extends React.Component<IPlayerProps, IPlayerState> {
           <PlayerControls
             onPlayPause={this.handlePlayPause}
             onFullScreen={this.handleFullScreen}
-            isPlaying={this.isPlaying}
+            isPaused={this.state.isPaused}
           />
         )}
       </PlayerWrapper>
     );
   }
-
-  private isPlaying = () =>
-    this.playerRef.current &&
-    this.playerRef.current.currentTime > 0 &&
-    !this.playerRef.current.paused &&
-    !this.playerRef.current.ended &&
-    this.playerRef.current.readyState > 2;
 
   private handlePlayPause = () => {
     if (this.playerRef.current) {
@@ -107,6 +102,10 @@ export class Player extends React.Component<IPlayerProps, IPlayerState> {
         this.playerRef.current.pause();
       }
     }
+
+    this.setState({
+      isPaused: this.playerRef.current ? this.playerRef.current.paused : true
+    });
   };
 
   private handleFullScreen = () => {
