@@ -8,6 +8,7 @@
   "bugs": {
     "url": "https://github.com/bitstreamy/bitstreamy/issues"
   },
+  "bin": "./lib/index.js",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "repository": {
