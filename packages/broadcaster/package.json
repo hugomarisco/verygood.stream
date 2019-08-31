@@ -29,8 +29,7 @@
     "@bitstreamy/commons": "^0.3.1",
     "@bitstreamy/ppspp-client": "^0.3.3",
     "commander": "^2.20.0",
-    "node-forge": "^0.8.2",
-    "winston": "^3.2.1"
+    "node-forge": "^0.8.2"
   },
   "gitHead": "09b44f9a0bb8b7329b0fa8c491465fbbae2f6edc"
 }
