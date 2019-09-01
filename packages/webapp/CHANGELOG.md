@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.10](http://ec2-18-218-192-178.us-east-2.compute.amazonaws.com:9292/hugomarisco/bitstreamy/compare/v0.3.9...v0.3.10) (2019-09-01)
+
+**Note:** Version bump only for package @bitstreamy/webapp
+
+
+
+
+
 ## [0.3.9](http://ec2-18-218-192-178.us-east-2.compute.amazonaws.com:9292/hugomarisco/bitstreamy/compare/v0.3.8...v0.3.9) (2019-08-31)
 
 **Note:** Version bump only for package @bitstreamy/webapp
