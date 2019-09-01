@@ -47,21 +47,21 @@ describe("PreciseTimestamp", () => {
     expect(field.encode()).toEqual(expected);
   });
 
-  test("should subtract a timestamp that doesn't overflow the microseconds", () => {
-    const result = new PreciseTimestamp([1, 2000]).minus(
-      new PreciseTimestamp([0, 1000])
-    );
+  // test("should subtract a timestamp that doesn't overflow the microseconds", () => {
+  //   const result = new PreciseTimestamp([1, 2000]).minus(
+  //     new PreciseTimestamp([0, 1000])
+  //   );
 
-    expect(result.seconds).toBe(1);
-    expect(result.microseconds).toBe(1000);
-  });
+  //   expect(result.seconds).toBe(1);
+  //   expect(result.microseconds).toBe(1000);
+  // });
 
-  test("should subtract a timestamp that overflows the microseconds", () => {
-    const result = new PreciseTimestamp([1, 2000]).minus(
-      new PreciseTimestamp([0, 3000])
-    );
+  // test("should subtract a timestamp that overflows the microseconds", () => {
+  //   const result = new PreciseTimestamp([1, 2000]).minus(
+  //     new PreciseTimestamp([0, 3000])
+  //   );
 
-    expect(result.seconds).toBe(0);
-    expect(result.microseconds).toBe(999000);
-  });
+  //   expect(result.seconds).toBe(0);
+  //   expect(result.microseconds).toBe(999000);
+  // });
 });

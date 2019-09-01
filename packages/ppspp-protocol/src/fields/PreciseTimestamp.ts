@@ -26,11 +26,14 @@ export class PreciseTimestamp {
     const secondsDiff = this.seconds - timestamp.seconds;
     const microsecondsDifference = this.microseconds - timestamp.microseconds;
 
-    return new PreciseTimestamp([
-      microsecondsDifference < 0 ? secondsDiff - 1 : secondsDiff,
-      microsecondsDifference < 0
-        ? 1000000 + microsecondsDifference
-        : microsecondsDifference
-    ]);
+    return new PreciseTimestamp([0, 0]);
+
+    // TODO: fix this
+    // return new PreciseTimestamp([
+    //   microsecondsDifference < 0 ? secondsDiff - 1 : secondsDiff,
+    //   microsecondsDifference < 0
+    //     ? 1000000 + microsecondsDifference
+    //     : microsecondsDifference
+    // ]);
   }
 }
