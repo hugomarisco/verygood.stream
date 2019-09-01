@@ -5,12 +5,10 @@ import {
 import Commander from "commander";
 import { readFileSync } from "fs";
 import { md, pki, util as forgeUtil } from "node-forge";
-import { version } from "../package.json";
 
 export class CliArgumentsParser {
   public static parse() {
     const cli = new Commander.Command()
-      .version(version)
       .option("-P|--port <port>", "Port to bind the media listener", "3333")
       .option(
         "-K|--private-key <file>",

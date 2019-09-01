@@ -38,7 +38,7 @@ swarmMetadataSearchParams.append(
 
 Logger.info("Edit your broadcast information", {
   swarmId: swarmId.toString("base64"),
-  url: `http://localhost:5000/b/${swarmMetadataSearchParams.get(
+  url: `https://www.bitstreamy.com/b/${swarmMetadataSearchParams.get(
     "swarmId"
   )}/edit?${swarmMetadataSearchParams.toString()}`
 });
