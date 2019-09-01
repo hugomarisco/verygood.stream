@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.10](https://github.com/bitstreamy/bitstreamy/compare/v0.3.9...v0.3.10) (2019-09-01)
+
+**Note:** Version bump only for package @bitstreamy/commons
+
+
+
+
+
 ## [0.3.9](https://github.com/bitstreamy/bitstreamy/compare/v0.3.8...v0.3.9) (2019-08-31)
 
 **Note:** Version bump only for package @bitstreamy/commons
