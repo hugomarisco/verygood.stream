@@ -1,6 +1,6 @@
 {
   "name": "@bitstreamy/tracker",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "description": "Bitstreamy tracker",
   "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "GNU GPLv3",
@@ -26,7 +26,7 @@
     "test:watch": "jest --watch --passWithNoTests"
   },
   "dependencies": {
-    "@bitstreamy/commons": "^0.3.8",
+    "@bitstreamy/commons": "^0.3.9",
     "koa": "^2.7.0",
     "koa-router": "^7.4.0",
     "simple-peer": "^9.3.0",
