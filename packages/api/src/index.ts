@@ -10,11 +10,21 @@ import router from "./routers";
 
 const PORT = process.env.API_PORT || "5000";
 
+const VALID_CORS_ORIGINS = [
+  "https://www.bitstreamy.com",
+  "http://localhost:5000"
+];
+
 const app = new Koa();
 
 app
   .use(errorHandler)
-  .use(cors({ origin: "https://www.bitstreamy.com" }))
+  .use(
+    cors({
+      origin: (ctx: Koa.Context) =>
+        VALID_CORS_ORIGINS.indexOf(ctx.headers.origin) >= 0
+    })
+  )
   .use(
     bodyParser({
       onerror: err => {
