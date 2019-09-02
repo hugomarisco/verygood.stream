@@ -1,3 +1,4 @@
+import { Logger } from "@bitstreamy/commons";
 import { action, observable } from "mobx";
 
 export interface ICategory {
@@ -25,17 +26,21 @@ export class EditBroadcastStore {
   @action public async fetchById(broadcastId: string) {
     this.isFetching = true;
 
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/broadcasts/${broadcastId}`
-    );
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/broadcasts/${broadcastId}`
+      );
 
-    if (response.ok) {
-      const { payload: broadcast } = await response.json();
+      if (response.ok) {
+        const { payload: broadcast } = await response.json();
 
-      this.broadcast = broadcast;
+        this.broadcast = broadcast;
+      }
+    } catch (error) {
+      Logger.error(error);
+    } finally {
+      this.isFetching = false;
     }
-
-    this.isFetching = false;
   }
 
   @action public async fetch(swarmId: string) {
