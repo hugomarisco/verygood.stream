@@ -64,24 +64,7 @@ export class EditBroadcast extends React.Component<IEditBroadcastProps> {
   public render() {
     const { editBroadcastStore } = this.props;
 
-    // const { isFetching, isSaved, broadcast } = editBroadcastStore;
-
-    const isFetching = false;
-
-    const isSaved = false;
-
-    const broadcast = {
-      broadcastId: "1",
-      categoryId: 1,
-      category: { name: "Football" },
-      chunkAddressingMethod: ChunkAddressingMethod["32ChunkRanges"],
-      chunkSize: 0xffffffff,
-      contentIntegrityProtectionMethod:
-        ContentIntegrityProtectionMethod.SIGN_ALL,
-      liveSignatureAlgorithm: LiveSignatureAlgorithm.RSASHA1,
-      swarmId: "abc",
-      title: "Barcelona vs Ateltico Madrid"
-    };
+    const { isFetching, isSaved, broadcast } = editBroadcastStore;
 
     if (isFetching || !broadcast) {
       return null;

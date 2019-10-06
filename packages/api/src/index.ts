@@ -8,7 +8,7 @@ import bodyParser from "koa-bodyparser";
 import { errorHandler } from "./errorHandler";
 import router from "./routers";
 
-const PORT = process.env.API_PORT || "5000";
+const PORT = process.env.API_PORT || "3000";
 
 const VALID_CORS_ORIGINS = [
   "https://www.bitstreamy.com",
@@ -21,8 +21,11 @@ app
   .use(errorHandler)
   .use(
     cors({
-      origin: (ctx: Koa.Context) =>
-        VALID_CORS_ORIGINS.indexOf(ctx.headers.origin) >= 0
+      origin: (ctx: Koa.Context) => {
+        const originIndex = VALID_CORS_ORIGINS.indexOf(ctx.headers.origin);
+
+        return VALID_CORS_ORIGINS[originIndex >= 0 ? originIndex : 0];
+      }
     })
   )
   .use(
