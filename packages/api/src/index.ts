@@ -43,8 +43,8 @@ app
       notImplemented: () => Boom.notImplemented(),
       throw: true
     })
-  );
-
-app.listen(parseInt(PORT, 10));
+  )
+  .on("error", err => Logger.error(err))
+  .listen(parseInt(PORT, 10));
 
 Logger.debug(`API is listening on port ${PORT}`);
