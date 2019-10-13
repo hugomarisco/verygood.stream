@@ -29,9 +29,9 @@
     "@bitstreamy/commons": "^0.3.11",
     "koa": "^2.7.0",
     "koa-router": "^7.4.0",
-    "simple-peer": "^9.3.0",
+    "simple-peer": "^9.6.0",
     "uuid": "^3.3.2",
-    "wrtc": "^0.4.1",
+    "wrtc": "^0.4.2",
     "ws": "^6.1.2"
   },
   "devDependencies": {

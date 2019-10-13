@@ -120,7 +120,7 @@ module.exports = function(webpackEnv) {
       ? shouldUseSourceMap
         ? "source-map"
         : false
-      : isEnvDevelopment && "eval",
+      : isEnvDevelopment && "cheap-eval-source-map",
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
     entry: [

@@ -36,18 +36,21 @@ swarmMetadataSearchParams.append(
   base64UrlEscape(ownershipSignature.toString("base64"))
 );
 
-Logger.info("Edit your broadcast information", {
-  swarmId: swarmId.toString("base64"),
-  url: `https://www.bitstreamy.com/b/${swarmMetadataSearchParams.get(
-    "swarmId"
-  )}/edit?${swarmMetadataSearchParams.toString()}`
-});
+const WEBAPP_URL = process.env.WEBAPP_URL || "https://www.bitstreamy.com";
+
+const editBroadcastUrl = `${WEBAPP_URL}/b/${swarmMetadataSearchParams.get(
+  "swarmId"
+)}/edit?${swarmMetadataSearchParams.toString()}`;
+
+Logger.info(`Edit your broadcast information: ${editBroadcastUrl}`);
 
 const client = new PPSPPClient(
   swarmMetadata,
   { liveDiscardWindow, privateKey },
   `${trackerUrl}/${swarmMetadataSearchParams.get("swarmId")}`
 );
+
+client.on("error", err => Logger.error(err));
 
 const tcpServer = new TCPServer("localhost", tcpServerPort);
 

@@ -80,6 +80,7 @@ export class Player extends React.Component<IPlayerProps, IPlayerState> {
           ref={this.playerRef}
           src={this.state.mediaSourceUrl}
           controls={!desktop}
+          autoPlay
           {...this.props}
         />
 

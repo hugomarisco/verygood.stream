@@ -118,3 +118,4 @@ Temporary Items
 
 lerna-debug.log
 packages/*/lib
+deploy.sh

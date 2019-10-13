@@ -33,6 +33,7 @@ export class Client extends EventEmitter {
 
     peerSocket.once("signal", this.offer.bind(this, socketId));
     peerSocket.once("connect", this.onPeerSocket.bind(this, peerSocket, true));
+    peerSocket.on("error", this.emit.bind(this, "error"));
 
     this.peerSockets[socketId] = peerSocket;
   }
@@ -77,6 +78,8 @@ export class Client extends EventEmitter {
       switch (message.type) {
         case "offer":
           peerSocket = new WebRTCSocket();
+
+          peerSocket.on("error", this.emit.bind(this, "error"));
 
           peerSocket.once(
             "signal",

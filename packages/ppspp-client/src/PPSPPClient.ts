@@ -64,6 +64,7 @@ export class PPSPPClient extends Duplex {
     const tracker = new TrackerClient(trackerUrl);
 
     tracker.on("peerSocket", this.onPeerSocket.bind(this));
+    tracker.on("error", this.emit.bind(this, "error"));
   }
 
   public pushChunks(chunkSpec: ChunkSpec, data: Buffer[]) {

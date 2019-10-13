@@ -7,7 +7,6 @@ export class WebRTCSocket extends SimplePeer {
       super(opts);
     } else {
       super({
-        trickle: false,
         wrtc,
         ...opts
       });
