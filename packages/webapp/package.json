@@ -1,6 +1,6 @@
 {
   "name": "@bitstreamy/webapp",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "dependencies": {
     "@babel/core": "7.1.6",
     "@bitstreamy/commons": "^0.4.0",
