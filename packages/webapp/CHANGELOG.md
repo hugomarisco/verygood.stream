@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/bitstreamy/bitstreamy/compare/v0.3.11...v0.4.0) (2019-10-13)
+
+
+### Features
+
+* allow localhost to cors ([9fab12b](https://github.com/bitstreamy/bitstreamy/commit/9fab12b))
+
+
+
+
+
 ## [0.3.11](http://ec2-18-218-192-178.us-east-2.compute.amazonaws.com:9292/hugomarisco/bitstreamy/compare/v0.3.10...v0.3.11) (2019-09-01)
 
 **Note:** Version bump only for package @bitstreamy/webapp

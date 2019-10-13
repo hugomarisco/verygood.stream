@@ -1,6 +1,6 @@
 {
   "name": "@bitstreamy/api",
-  "version": "0.3.11",
+  "version": "0.4.0",
   "description": "> TODO: description",
   "author": "Hugo Mendes <hello@hugomarisco.in>",
   "license": "GNU GPLv3",
@@ -27,7 +27,7 @@
     "test:watch": "jest --watch --passWithNoTests"
   },
   "dependencies": {
-    "@bitstreamy/commons": "^0.3.11",
+    "@bitstreamy/commons": "^0.4.0",
     "@hapi/boom": "^7.4.2",
     "@koa/cors": "^2.2.3",
     "hashids": "^1.2.2",

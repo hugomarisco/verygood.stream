@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/bitstreamy/bitstreamy/compare/v0.3.11...v0.4.0) (2019-10-13)
+
+**Note:** Version bump only for package @bitstreamy/tracker
+
+
+
+
+
 ## [0.3.11](https://github.com/bitstreamy/bitstreamy/compare/v0.3.10...v0.3.11) (2019-09-01)
 
 **Note:** Version bump only for package @bitstreamy/tracker
