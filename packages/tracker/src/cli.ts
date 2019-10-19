@@ -3,9 +3,9 @@
 import { Logger } from "@bitstreamy/commons";
 import { Server } from ".";
 
-const port = process.env.BITSTREAMY_TRACKER_PORT
-  ? parseInt(process.env.BITSTREAMY_TRACKER_PORT, 10)
-  : 8080;
+const port = process.env.PORT
+  ? parseInt(process.env.PORT, 10)
+  : 2000;
 
 const tracker = new Server(port);
 

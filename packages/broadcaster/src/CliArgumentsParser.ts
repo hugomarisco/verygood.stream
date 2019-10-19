@@ -9,7 +9,7 @@ import { md, pki, util as forgeUtil } from "node-forge";
 export class CliArgumentsParser {
   public static parse() {
     const cli = new Commander.Command()
-      .option("-P|--port <port>", "Port to bind the media listener", "3333")
+      .option("-P|--port <port>", "Port to bind the media listener", "2003")
       .option(
         "-K|--private-key <file>",
         "RSA private key to sign data messages"

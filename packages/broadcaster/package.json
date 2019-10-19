@@ -19,7 +19,7 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "WEBAPP_URL=http://localhost:4000 nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts",
+    "dev": "WEBAPP_URL=http://localhost:2002 nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts",
     "build": "tsc",
     "build:watch": "tsc -w",
     "test": "jest --coverage --passWithNoTests",

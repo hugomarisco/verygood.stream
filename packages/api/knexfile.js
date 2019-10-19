@@ -1,12 +1,10 @@
 module.exports = {
   development: {
-    client: "postgresql",
+    client: "sqlite3",
     connection: {
-      user: "bitstreamy",
-      password: "bitstreamy",
-      host: "localhost",
-      database: "bitstreamy"
-    }
+      filename: 'dev.sqlite3',
+    },
+    useNullAsDefault: true
   },
   production: {
     client: "postgresql",

@@ -19,7 +19,7 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "API_PORT=3000 nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts",
+    "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts",
     "knex": "knex",
     "build": "tsc",
     "build:watch": "tsc -w",
@@ -38,7 +38,8 @@
     "lodash": "^4.17.11",
     "objection": "^1.6.9",
     "objection-db-errors": "^1.1.1",
-    "pg": "^7.11.0"
+    "pg": "^7.11.0",
+    "sqlite3": "^4.1.0"
   },
   "devDependencies": {
     "@types/hapi__boom": "^7.4.0",

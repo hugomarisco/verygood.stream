@@ -70,7 +70,7 @@
     "workbox-webpack-plugin": "3.6.3"
   },
   "scripts": {
-    "dev": "REACT_APP_TRACKER_URL='wss://tracker.bitstreamy.com:8080' REACT_APP_API_URL='http://localhost:3000' node scripts/start.js",
+    "dev": "PORT=2002 REACT_APP_TRACKER_URL='ws://localhost:2000' REACT_APP_API_URL='http://localhost:2001' node scripts/start.js",
     "build": "REACT_APP_TRACKER_URL='wss://tracker.bitstreamy.com:8080' REACT_APP_API_URL='https://api.bitstreamy.com' node scripts/build.js",
     "test": "jest --coverage --passWithNoTests",
     "test:watch": "jest --watch --passWithNoTests"

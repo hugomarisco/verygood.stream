@@ -8,11 +8,11 @@ import bodyParser from "koa-bodyparser";
 import { errorHandler } from "./errorHandler";
 import router from "./routers";
 
-const PORT = process.env.API_PORT || "5000";
+const PORT = process.env.PORT || "2001";
 
 const VALID_CORS_ORIGINS = [
   "https://www.bitstreamy.com",
-  "http://localhost:4000"
+  "http://localhost:2002"
 ];
 
 const app = new Koa();
@@ -47,4 +47,4 @@ app
   .on("error", err => Logger.error(err))
   .listen(parseInt(PORT, 10));
 
-Logger.notice(`API is listening on port ${PORT}`);
+Logger.info(`API is listening on port ${PORT}`);
