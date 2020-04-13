@@ -1,17 +1,21 @@
 import { LiveSignatureAlgorithm } from "@bitstreamy/commons";
 
 export class SwarmId {
-  public jwk: { n: string; e: string };
+  public components: { n: Buffer; e: Buffer };
   public data: Buffer;
 
-  constructor(swarmIdBuffer: Buffer, liveSignatureAlgorithm?: number) {
+  constructor(swarmIdBuffer: Buffer) {
     this.data = swarmIdBuffer;
+
+    let index = 0;
+
+    const liveSignatureAlgorithm = swarmIdBuffer.readUInt8(0);
+    index += 1;
 
     switch (liveSignatureAlgorithm) {
       case LiveSignatureAlgorithm.RSASHA1:
       case LiveSignatureAlgorithm.RSASHA256:
       default:
-        let index = 1;
         let exponentLength = swarmIdBuffer.readInt8(index);
 
         index += 1;
@@ -26,7 +30,7 @@ export class SwarmId {
 
         const n = swarmIdBuffer.slice(index);
 
-        this.jwk = { e: e.toString("base64"), n: n.toString("base64") };
+        this.components = { e, n };
     }
   }
 }

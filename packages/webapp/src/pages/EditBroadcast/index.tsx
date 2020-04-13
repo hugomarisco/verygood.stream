@@ -46,19 +46,24 @@ export class EditBroadcast extends React.Component<IEditBroadcastProps> {
   public context!: React.ContextType<typeof ViewportContext>;
 
   private swarmMetadata: SwarmMetadata;
+  private queryParams: URLSearchParams;
 
   constructor(props: IEditBroadcastProps) {
     super(props);
 
-    this.swarmMetadata = SwarmMetadata.fromSearchParams(
-      new URLSearchParams(props.location.search)
-    );
+    this.queryParams = new URLSearchParams(props.location.search);
+
+    this.swarmMetadata = SwarmMetadata.fromSearchParams(this.queryParams);
   }
 
   public componentDidMount() {
-    const { editBroadcastStore, match } = this.props;
+    const { editBroadcastStore } = this.props;
 
-    editBroadcastStore.fetch(match.params.swarmId);
+    const swarmId = this.queryParams.get("swarmId");
+
+    if (swarmId) {
+      editBroadcastStore.fetch(swarmId);
+    }
   }
 
   public render() {
@@ -107,7 +112,7 @@ export class EditBroadcast extends React.Component<IEditBroadcastProps> {
             chunkSize,
             contentIntegrityProtectionMethod,
             liveSignatureAlgorithm,
-            swarmId: base64UrlUnescape(this.props.match.params.swarmId),
+            swarmId: this.queryParams.get("swarmId") || '',
             title
           }}
           onSubmit={async (values, { setSubmitting }) => {

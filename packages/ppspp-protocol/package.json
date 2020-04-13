@@ -18,6 +18,7 @@
     "access": "public"
   },
   "scripts": {
+    "dev": "tsc -w --preserveWatchOutput",
     "build": "tsc",
     "build:watch": "tsc -w",
     "test": "jest --coverage",

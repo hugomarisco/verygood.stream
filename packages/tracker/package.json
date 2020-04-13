@@ -19,7 +19,7 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/cli.ts",
+    "dev": "ts-node-dev src/cli.ts",
     "build": "tsc",
     "build:watch": "tsc -w",
     "test": "jest --coverage --passWithNoTests",

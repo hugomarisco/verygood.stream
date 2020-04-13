@@ -51,7 +51,7 @@ export class ProtocolOptions {
     this.liveDiscardWindow = liveDiscardWindow;
     this.chunkAddressingMethod = chunkAddressingMethod;
     this.chunkSize = chunkSize;
-    this.swarmId = swarmId && new SwarmId(swarmId, liveSignatureAlgorithm);
+    this.swarmId = swarmId && new SwarmId(swarmId);
     this.supportedMessages = supportedMessages;
     this.liveSignatureAlgorithm = liveSignatureAlgorithm;
     // this.merkleHashFunction = merkleHashFunction;

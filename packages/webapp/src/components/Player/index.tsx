@@ -1,10 +1,10 @@
 import { base64UrlEscape, Logger, SwarmMetadata } from "@bitstreamy/commons";
 import { ChunkSpec, PPSPPClient } from "@bitstreamy/ppspp-client";
 import React, { VideoHTMLAttributes } from "react";
-import { IMP4Info, parseMp4Chunk } from "../../utils/parseMp4Chunk";
 import { ViewportContext } from "../ViewportProvider";
 import { PlayerControls } from "./components/PlayerControls";
 import { FixedNav, PlayerWrapper, Video } from "./styles";
+import { parseMp4Chunk, IMP4Info } from "../../utils/parseMp4Chunk";
 
 interface IPlayerProps extends VideoHTMLAttributes<HTMLVideoElement> {
   swarmMetadata: SwarmMetadata;
@@ -13,9 +13,9 @@ interface IPlayerProps extends VideoHTMLAttributes<HTMLVideoElement> {
 
 interface IPlayerState {
   controlsVisible: boolean;
-  mediaInfo?: IMP4Info;
   mediaSourceUrl: string;
   isPaused: boolean;
+  mediaInfo?: IMP4Info;
 }
 
 export class Player extends React.Component<IPlayerProps, IPlayerState> {

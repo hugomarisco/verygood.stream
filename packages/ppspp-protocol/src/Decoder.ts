@@ -245,10 +245,7 @@ export class Decoder {
             throw new Error("Swarm ID is not available");
           }
 
-          const modulusLength = Buffer.from(
-            protocolOptions.swarmId.jwk.n,
-            "base64"
-          ).length;
+          const modulusLength = protocolOptions.swarmId.components.n.length;
 
           const signature = buffer.slice(index, index + modulusLength);
           index += modulusLength;

@@ -4,6 +4,22 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Broadcaster",
+      "program": "${workspaceRoot}/packages/broadcaster/src/index.ts",
+      "args": [
+        "-T",
+        "ws://localhost:2000",
+        "-K",
+        "${workspaceRoot}/packages/broadcaster/key.pem"
+      ],
+      "cwd": "${workspaceRoot}",
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "env": { "WEBAPP_URL": "http://localhost:2002" },
+      "outputCapture": "std",
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Launch Program",
       "runtimeArgs": ["-r", "ts-node/register"],
       "args": ["${relativeFile}"],

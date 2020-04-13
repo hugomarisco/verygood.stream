@@ -3,11 +3,14 @@ import {
   LiveSignatureAlgorithm
 } from "@bitstreamy/commons";
 import Commander from "commander";
-import { readFileSync } from "fs";
-import { md, pki, util as forgeUtil } from "node-forge";
+import fs from "fs";
+import NodeRSA from "node-rsa";
+import { promisify } from "util";
+
+const readFile = promisify(fs.readFile);
 
 export class CliArgumentsParser {
-  public static parse() {
+  public static async parse() {
     const cli = new Commander.Command()
       .option("-P|--port <port>", "Port to bind the media listener", "2003")
       .option(
@@ -27,11 +30,6 @@ export class CliArgumentsParser {
         "RSASHA256"
       )
       .option(
-        "-D|--live-discard-window <integer>",
-        "Live discard window",
-        "100"
-      )
-      .option(
         "-T|--tracker <trackerUrl>",
         "Tracker to find peers",
         "wss://tracker.bitstreamy.com:8080"
@@ -39,18 +37,17 @@ export class CliArgumentsParser {
       .parse(process.argv);
 
     const tcpServerPort = parseInt(cli.port, 10);
-    const liveDiscardWindow = parseInt(cli.liveDiscardWindow, 10);
 
     const { tracker: trackerUrl } = cli;
 
-    const privateKey = cli.privateKey
-      ? pki.privateKeyFromPem(readFileSync(cli.privateKey))
-      : pki.rsa.generateKeyPair({
-          bits: 1024,
-          e: 65537
-        }).privateKey;
+    const privateKey = new NodeRSA({ b: 2048 });
 
-    // const publicKey = pki.rsa.setPublicKey(privateKey.n, privateKey.e);
+    cli.privateKey
+      ? privateKey.importKey(
+          await readFile(cli.privateKey),
+          "pkcs1-private-pem"
+        )
+      : privateKey.generateKeyPair();
 
     let swarmId: Buffer;
     let liveSignatureAlgorithm: number | undefined;
@@ -64,21 +61,34 @@ export class CliArgumentsParser {
         switch (cli.liveSignatureAlgorithm) {
           case "RSASHA1":
             liveSignatureAlgorithm = LiveSignatureAlgorithm.RSASHA1;
+
+            privateKey.setOptions({ signingScheme: "pkcs1-sha1" });
             break;
           case "RSASHA256":
             liveSignatureAlgorithm = LiveSignatureAlgorithm.RSASHA256;
+
+            privateKey.setOptions({ signingScheme: "pkcs1-sha256" });
             break;
           default:
             throw new Error("Invalid live signature algorithm");
         }
 
-        const n = Buffer.from(
-          forgeUtil.binary.hex.decode(privateKey.n.toString(16))
+        const { n, ...keyComponents } = privateKey.exportKey(
+          "components-public"
         );
 
-        const e = Buffer.from(
-          forgeUtil.binary.hex.decode(privateKey.e.toString(16))
-        );
+        let e: Buffer;
+
+        if (keyComponents.e instanceof Buffer) {
+          e = keyComponents.e;
+        } else {
+          if (keyComponents.e > Math.pow(2, 4 * 8)) {
+            throw new Error("Invalid key exponent (too big)");
+          }
+
+          e = Buffer.alloc(4);
+          e.writeUInt32BE(keyComponents.e, 0);
+        }
 
         let eLength: Buffer;
 
@@ -95,7 +105,7 @@ export class CliArgumentsParser {
           Buffer.from([liveSignatureAlgorithm]),
           eLength,
           e,
-          n
+          n.slice(1)
         ]);
 
         break;
@@ -107,17 +117,10 @@ export class CliArgumentsParser {
         swarmId = Buffer.from("abc", "utf-8");
     }
 
-    const ownershipSignature = Buffer.from(
-      forgeUtil.binary.raw.decode(
-        privateKey.sign(
-          md.sha1.create().update(forgeUtil.binary.raw.encode(swarmId))
-        )
-      )
-    );
+    const ownershipSignature = privateKey.sign(swarmId);
 
     return {
       contentIntegrityProtectionMethod,
-      liveDiscardWindow,
       liveSignatureAlgorithm,
       ownershipSignature,
       privateKey,

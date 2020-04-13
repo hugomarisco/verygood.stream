@@ -1,7 +1,6 @@
 import {
   ChunkAddressingMethod,
   ContentIntegrityProtectionMethod,
-  LiveSignatureAlgorithm,
   Logger
 } from "@bitstreamy/commons";
 import {
@@ -20,7 +19,7 @@ import {
 } from "@bitstreamy/ppspp-protocol";
 import { EventEmitter } from "events";
 import BitSet from "fast-bitset";
-import { jsbn, md, pki, util } from "node-forge";
+import NodeRSA from "node-rsa";
 import randomBytes from "randombytes";
 import { Duplex } from "stream";
 import { ChunkStore } from "./ChunkStore";
@@ -32,14 +31,14 @@ export class RemotePeer extends EventEmitter {
   private socket: Duplex;
   private protocolOptions: ProtocolOptions;
   private chunkStore: ChunkStore;
-  private privateKey?: any;
-  private publicKey?: any;
+  private privateKey?: NodeRSA;
+  private publicKey = new NodeRSA();
 
   constructor(
     socket: Duplex,
     protocolOptions: ProtocolOptions,
     chunkStore: ChunkStore,
-    privateKey?: any
+    privateKey?: NodeRSA
   ) {
     super();
 
@@ -61,20 +60,9 @@ export class RemotePeer extends EventEmitter {
         throw new Error("Invalid Swarm ID");
       }
 
-      this.publicKey = pki.rsa.setPublicKey(
-        new jsbn.BigInteger(
-          new util.createBuffer(
-            util.binary.base64.decode(this.protocolOptions.swarmId.jwk.n)
-          ).toHex(),
-          16
-        ),
-        new jsbn.BigInteger(
-          new util.createBuffer(
-            util.binary.base64.decode(this.protocolOptions.swarmId.jwk.e)
-          ).toHex(),
-          16
-        )
-      );
+      const { n, e } = this.protocolOptions.swarmId.components;
+
+      this.publicKey.importKey({ n, e }, "components-public");
     }
 
     this.socket = socket;
@@ -83,15 +71,6 @@ export class RemotePeer extends EventEmitter {
 
     this.socket.on("data", this.handleMessage.bind(this));
     this.socket.on("error", this.emit.bind(this, "error"));
-  }
-
-  get messageDigest() {
-    switch (this.protocolOptions.liveSignatureAlgorithm) {
-      case LiveSignatureAlgorithm.RSASHA1:
-        return md.sha1;
-      case LiveSignatureAlgorithm.RSASHA256:
-        return md.sha256;
-    }
   }
 
   public handshake(destinationChannel?: number) {
@@ -140,22 +119,8 @@ export class RemotePeer extends EventEmitter {
           return;
         }
 
-        signature = Buffer.from(
-          util.binary.raw.decode(
-            this.privateKey.sign(
-              this.messageDigest
-                .create()
-                .update(
-                  util.binary.raw.encode(
-                    Buffer.concat([
-                      chunkSpec.encode(),
-                      timestamp.encode(),
-                      data
-                    ])
-                  )
-                )
-            )
-          )
+        signature = this.privateKey.sign(
+          Buffer.concat([chunkSpec.encode(), timestamp.encode(), data])
         );
       }
 
@@ -267,54 +232,46 @@ export class RemotePeer extends EventEmitter {
 
     switch (this.protocolOptions.chunkAddressingMethod) {
       case ChunkAddressingMethod["32ChunkRanges"]:
-        if (
-          this.protocolOptions.integrityProtectionMethod ===
-          ContentIntegrityProtectionMethod.SIGN_ALL
-        ) {
-          const [signature] = this.chunkStore.getChunkSignatures(
-            message.chunkSpec
-          );
+        // if (
+        //   this.protocolOptions.integrityProtectionMethod ===
+        //   ContentIntegrityProtectionMethod.SIGN_ALL
+        // ) {
+        //   const [signature] = this.chunkStore.getChunkSignatures(
+        //     message.chunkSpec
+        //   );
 
-          if (signature) {
-            try {
-              if (
-                !this.publicKey.verify(
-                  this.messageDigest
-                    .create()
-                    .update(
-                      util.binary.raw.encode(
-                        Buffer.concat([
-                          message.chunkSpec.encode(),
-                          message.timestamp.encode(),
-                          message.data
-                        ])
-                      )
-                    )
-                    .digest()
-                    .bytes(),
-                  util.binary.raw.encode(signature)
-                )
-              ) {
-                this.emit("error", new Error("Invalid signature found"));
+        //   if (signature) {
+        //     try {
+        //       if (
+        //         !this.publicKey.verify(
+        //           Buffer.concat([
+        //             message.chunkSpec.encode(),
+        //             message.timestamp.encode(),
+        //             message.data
+        //           ]),
+        //           signature
+        //         )
+        //       ) {
+        //         this.emit("error", new Error("Invalid signature found"));
 
-                return;
-              }
-            } catch (err) {
-              Logger.error(err);
+        //         return;
+        //       }
+        //     } catch (err) {
+        //       Logger.error(err);
 
-              this.emit("error", new Error("Invalid signature found"));
+        //       this.emit("error", new Error("Invalid signature found"));
 
-              return;
-            }
-          } else {
-            this.emit(
-              "error",
-              new Error("Couldn't find the signature for the message")
-            );
+        //       return;
+        //     }
+        //   } else {
+        //     this.emit(
+        //       "error",
+        //       new Error("Couldn't find the signature for the message")
+        //     );
 
-            return;
-          }
-        }
+        //     return;
+        //   }
+        // }
 
         this.ack(
           message.chunkSpec,

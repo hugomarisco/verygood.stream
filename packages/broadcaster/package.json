@@ -19,7 +19,7 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "WEBAPP_URL=http://localhost:2002 nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts",
+    "dev": "WEBAPP_URL=http://localhost:2002 ts-node-dev src/index.ts -T ws://localhost:2000 -K ./key.pem",
     "build": "tsc",
     "build:watch": "tsc -w",
     "test": "jest --coverage --passWithNoTests",
@@ -29,7 +29,19 @@
     "@bitstreamy/commons": "^0.4.3",
     "@bitstreamy/ppspp-client": "^0.4.3",
     "commander": "^2.20.0",
-    "node-forge": "^0.8.2"
+    "koa": "^2.11.0",
+    "mp4-box-encoding": "^1.4.1",
+    "mux.js": "^5.5.1",
+    "node-forge": "^0.8.2",
+    "node-rsa": "^1.0.7",
+    "node-webcrypto-ossl": "^2.0.1",
+    "raw-body": "^2.4.1",
+    "shaka-player": "^2.5.10"
   },
-  "gitHead": "09b44f9a0bb8b7329b0fa8c491465fbbae2f6edc"
+  "gitHead": "09b44f9a0bb8b7329b0fa8c491465fbbae2f6edc",
+  "devDependencies": {
+    "@types/koa": "^2.11.3",
+    "@types/node-forge": "^0.9.2",
+    "@types/node-rsa": "^1.0.0"
+  }
 }

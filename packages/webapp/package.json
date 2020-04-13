@@ -44,6 +44,7 @@
     "mobx": "^5.10.1",
     "mobx-react": "^6.0.3",
     "mp4box": "^0.3.19",
+    "mux.js": "^5.5.1",
     "optimize-css-assets-webpack-plugin": "5.0.1",
     "pnp-webpack-plugin": "1.1.0",
     "polished": "^3.3.2",

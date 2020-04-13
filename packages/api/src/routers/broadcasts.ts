@@ -20,8 +20,7 @@ broadcasts.post("/", async (ctx, next) => {
 
   ctx.body = await Broadcast.query()
     .eager("category")
-    .insert(broadcast)
-    .returning("*");
+    .insertAndFetch({ ...broadcast, swarmId: base64UrlUnescape(broadcast.swarmId) });
 
   next();
 });
@@ -68,9 +67,7 @@ broadcasts.patch("/:broadcastId", async (ctx, next) => {
 
   ctx.body = await Broadcast.query()
     .eager("category")
-    .findById(hashIds.decode(ctx.params.broadcastId).join(""))
-    .patch(broadcast)
-    .returning("*");
+    .patchAndFetchById(hashIds.decode(ctx.params.broadcastId).join(""), broadcast);
 
   next();
 });

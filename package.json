@@ -4,7 +4,7 @@
   "scripts": {
     "lerna": "lerna",
     "bootstrap": "lerna bootstrap",
-    "dev": "lerna run dev --stream",
+    "dev": "lerna run dev --parallel",
     "db:migrate": "lerna run knex -- migrate:latest",
     "db:seed": "lerna run knex -- seed:run",
     "build": "lerna run build",
@@ -24,6 +24,7 @@
     "prettier": "^1.17.0",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.1.0",
+    "ts-node-dev": "^1.0.0-pre.44",
     "tslint": "^5.16.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.4.4"

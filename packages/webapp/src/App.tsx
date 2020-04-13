@@ -21,7 +21,7 @@ class App extends Component {
               <Router>
                 <Route path="/" exact component={Home} />
                 <Route
-                  path="/b/:swarmId/edit"
+                  path="/edit"
                   exact
                   component={EditBroadcast}
                 />

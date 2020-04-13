@@ -19,7 +19,7 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts",
+    "dev": "ts-node-dev src/index.ts",
     "knex": "knex",
     "build": "tsc",
     "build:watch": "tsc -w",

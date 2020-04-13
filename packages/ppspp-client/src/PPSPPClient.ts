@@ -6,6 +6,7 @@ import {
   ProtocolOptions
 } from "@bitstreamy/ppspp-protocol";
 import { Client as TrackerClient } from "@bitstreamy/tracker";
+import NodeRSA from "node-rsa";
 import { Duplex } from "stream";
 import { ChunkStore } from "./ChunkStore";
 import { RemotePeer } from "./RemotePeer";
@@ -17,14 +18,14 @@ export class PPSPPClient extends Duplex {
   private peers: { [peerId: string]: RemotePeer };
   private protocolOptions: ProtocolOptions;
   private chunkStore: ChunkStore;
-  private privateKey?: any;
+  private privateKey?: NodeRSA;
 
   constructor(
     metadata: SwarmMetadata,
     {
-      liveDiscardWindow = 100,
+      liveDiscardWindow,
       privateKey
-    }: { liveDiscardWindow?: number; privateKey?: any },
+    }: { liveDiscardWindow: number; privateKey?: NodeRSA },
     trackerUrl: string
   ) {
     super();
