@@ -32,7 +32,7 @@
     "koa": "^2.11.0",
     "mp4-box-encoding": "^1.4.1",
     "mux.js": "^5.5.1",
-    "node-forge": "^0.8.2",
+    "node-forge": "^0.10.0",
     "node-rsa": "^1.0.7",
     "node-webcrypto-ossl": "^2.0.1",
     "raw-body": "^2.4.1",
